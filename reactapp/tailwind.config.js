@@ -9,12 +9,11 @@ module.exports = {
         height: "height",
       },
       colors: {
-        "primary-0": "#423A8E",
-        "primary-1": "#00CCCD",
-        "secondary-0": "#FFC107",
-        "secondary-1": "#DC3545",
-        "secondary-2": "#198754",
-        "secondary-3": "#0D6EFD",
+        cam: "#ff9c72",
+        vang: "#fffd84",
+        hong: "#f0217d",
+        xanh: "#1b9a8c",
+        den: "#292c42",
       },
       screens: {
         phone: "444px",
