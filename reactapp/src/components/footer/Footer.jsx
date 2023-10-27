@@ -2,7 +2,7 @@ import React from "react";
 
 const Footer = () => {
   return (
-    <footer className="bg-den">
+    <footer className="bg-black">
       <div className="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:py-16 lg:px-8">
         <div className="xl:grid xl:grid-cols-3 xl:gap-8">
           <div className="grid grid-cols-1 gap-8 xl:col-span-2 md:grid-cols-2">
@@ -11,19 +11,16 @@ const Footer = () => {
                 About Us
               </h3>
               <p className="mt-2 max-w-md text-sm leading-5 text-gray-400">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed
-                euismod, diam id blandit elementum, eros est lacinia lacus, vel
-                tincidunt mi nibh sit amet lorem.
+                Website cho người muồn tìm hiểu về luật giao thông.
               </p>
               <div className="mt-8">
                 <h3 className="text-lg font-medium leading-6 text-gray-200">
                   Contact Us
                 </h3>
                 <div className="mt-2 max-w-md text-sm leading-5 text-gray-400">
-                  <p>1234 Main St.</p>
-                  <p>Anytown, USA 12345</p>
-                  <p>info@example.com</p>
-                  <p>555-555-5555</p>
+                  <p>Nguyen Hoang Phuc</p>
+                  <p>20521767@gm.uit.edu.vn</p>
+                  <p>012345678</p>
                 </div>
               </div>
             </div>
