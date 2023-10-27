@@ -11,9 +11,12 @@
     "predev": "node aspnetcore-https.js"
   },
   "dependencies": {
+    "@emotion/react": "^11.11.1",
+    "@emotion/styled": "^11.11.0",
     "@headlessui/react": "^1.7.17",
     "@heroicons/react": "^2.0.18",
-    "@mui/material": "^5.14.14",
+    "@mui/icons-material": "^5.14.15",
+    "@mui/material": "^5.14.15",
     "@reduxjs/toolkit": "^1.9.7",
     "axios": "^1.5.1",
     "react": "^18.2.0",
