@@ -9,7 +9,7 @@ const FineMenu = () => {
   };
 
   return (
-    <nav className="z-10 shadow-md w-56 flex-shrink-0">
+    <nav className="z-10 shadow-md w-full sm:w-56 flex-shrink-0">
       <div className="flex flex-col h-full">
         <div className="flex items-center justify-center h-16">
           <h1 className="text-den font-bold text-xl">
@@ -62,7 +62,7 @@ const FineMenu = () => {
             </span>
           </div>
           <p className="ml-2 mt-2">Lọc theo: </p>
-          <hr className="bg-gray-100 border-1 border-gray-100 mx-2" />
+          <hr className="bg-gray-500 border-1 border-gray-300 mx-2" />
           <NavLink
             to="/trafficfine"
             exact

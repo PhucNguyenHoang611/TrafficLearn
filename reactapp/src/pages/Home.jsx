@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Outlet } from "react-router-dom";
-import NavBar from "../components/navbar/NavBar";
-import Footer from "../components/footer/Footer";
+import NavBar from "@/components/navbar/NavBar";
+import Footer from "@/components/footer/Footer";
 
 const Home = () => {
   const [visible, setVisible] = useState(true);

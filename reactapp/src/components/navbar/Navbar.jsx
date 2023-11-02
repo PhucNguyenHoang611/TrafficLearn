@@ -4,9 +4,15 @@ import NavFine from "./NavFine";
 import NavProfile from "./NavProfile";
 
 const NavBar = () => {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  function toggleMenu() {
+    setIsMenuOpen(!isMenuOpen);
+  }
+
   return (
     <nav className="shadow-md bg-white">
-      <section className="max-w-8xl mx-auto px-2 sm:px-6 lg:px-8">
+      <section className="lg:max-w-8xl mx-auto px-2 sm:px-6 lg:px-8">
         <div className="relative flex items-center justify-between h-16">
           <div className="absolute inset-y-0 left-0 flex items-center sm:hidden">
             {/* Mobile menu button */}
@@ -15,6 +21,7 @@ const NavBar = () => {
               className="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-white hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white"
               aria-controls="mobile-menu"
               aria-expanded="false"
+              onClick={toggleMenu}
             >
               <span className="sr-only">Menu</span>
               {/* Icon when menu is closed. */}
@@ -57,10 +64,12 @@ const NavBar = () => {
             <div className="flex-shrink-0 flex items-center">
               <img
                 className="hidden lg:block h-10 w-auto"
-                src="/traffic_logo.png"
+                src="/logo.webp"
                 alt="Workflow"
               />
-              <p className="uppercase">Học luật giao thông</p>
+              <p className="uppercase max-sm:hidden mx-2">
+                Học luật giao thông
+              </p>
             </div>
             <div className="hidden sm:block sm:ml-6">
               <div className="flex space-x-4">
@@ -95,38 +104,40 @@ const NavBar = () => {
       </section>
 
       {/* Mobile menu, show/hide based on menu state. */}
-      <section className="sm:hidden" id="mobile-menu">
-        <div className="px-2 pt-2 pb-3 space-y-1">
-          {/* Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" */}
-          <a
-            href="#"
-            className="bg-gray-900 text-white block px-3 py-2 rounded-md text-base font-medium"
-          >
-            Mức phạt giao thông
-          </a>
+      {isMenuOpen && (
+        <section className="sm:hidden" id="mobile-menu">
+          <div className="px-2 pt-2 pb-3 space-y-1">
+            {/* Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" */}
+            <Link
+              to={"/fine/motobike"}
+              className="bg-gray-900 text-white block px-3 py-2 rounded-md text-base font-medium"
+            >
+              Mức phạt giao thông
+            </Link>
 
-          <a
-            href="#"
-            className="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium"
-          >
-            Biển báo giao thông
-          </a>
+            <a
+              href="#"
+              className="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium"
+            >
+              Biển báo giao thông
+            </a>
 
-          <a
-            href="#"
-            className="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium"
-          >
-            Ôn thi GPLX
-          </a>
+            <a
+              href="#"
+              className="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium"
+            >
+              Ôn thi GPLX
+            </a>
 
-          <a
-            href="#"
-            className="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium"
-          >
-            Tin tức giao thông
-          </a>
-        </div>
-      </section>
+            <a
+              href="#"
+              className="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium"
+            >
+              Tin tức giao thông
+            </a>
+          </div>
+        </section>
+      )}
     </nav>
   );
 };
