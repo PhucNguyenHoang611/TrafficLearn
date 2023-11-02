@@ -44,7 +44,7 @@ const NavFine = () => {
   return (
     <div className="relative">
       <button
-        className="bg-den text-white font-bold py-2 px-4 rounded"
+        className="bg-den text-white py-2 px-4 rounded-md text-sm font-medium"
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
       >
@@ -52,7 +52,7 @@ const NavFine = () => {
       </button>
       {isOpen && (
         <div
-          className="absolute z-50 top-9 right-0 mt-2 py-2 w-48 bg-white rounded-md shadow-lg"
+          className="absolute z-50 top-9 right-0 mt-2 py-2 w-48 bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5"
           onMouseEnter={handleMenuMouseEnter}
           ref={menuRef}
         >

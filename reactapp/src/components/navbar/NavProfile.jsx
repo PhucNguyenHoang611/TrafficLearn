@@ -1,15 +1,30 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
+import { Link } from "react-router-dom";
 
 const NavProfile = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = useRef(null);
 
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
   };
 
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsOpen(false);
+      }
+    };
+
+    document.addEventListener("click", handleClickOutside);
+    return () => {
+      document.removeEventListener("click", handleClickOutside);
+    };
+  }, []);
+
   return (
     <>
-      <div className="ml-3 relative">
+      <div className="ml-3 relative" ref={dropdownRef}>
         <div>
           <button
             type="button"
@@ -52,13 +67,15 @@ const NavProfile = () => {
               Tài khoản
             </button>
 
-            <button
-              href=""
-              className="block w-full px-4 py-2 text-left text-sm bg-transparent border-none text-gray-700 hover:bg-gray-100"
-              role="menuitem"
-            >
-              Cài đặt
-            </button>
+            <Link to={"/history"}>
+              <button
+                href=""
+                className="block w-full px-4 py-2 text-left text-sm bg-transparent border-none text-gray-700 hover:bg-gray-100"
+                role="menuitem"
+              >
+                Lịch sử
+              </button>
+            </Link>
 
             <button
               href=""
