@@ -1,15 +1,26 @@
 import React, { useState, useRef, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
 
 const NavProfile = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const auth = useSelector((state) => state.auth);
   const [isOpen, setIsOpen] = useState(false);
+  const [isLogout, setIsLogout] = useState(false);
   const dropdownRef = useRef(null);
+
+  const handleLogout = () => {
+    navigate("/login");
+    dispatch({ type: "LOGOUT" });
+  };
 
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
   };
 
   useEffect(() => {
+    // Close dropdown menu if clicked on outside of element
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
         setIsOpen(false);
@@ -21,6 +32,13 @@ const NavProfile = () => {
       document.removeEventListener("click", handleClickOutside);
     };
   }, []);
+
+  useEffect(() => {
+    // Check if auth is changed
+    if (auth.token === "") {
+      setIsLogout(true);
+    }
+  }, [auth]);
 
   return (
     <>
@@ -59,31 +77,46 @@ const NavProfile = () => {
             aria-orientation="vertical"
             aria-labelledby="user-menu"
           >
-            <button
-              href=""
-              className="block w-full px-4 py-2 text-left text-sm bg-transparent border-none text-gray-700 hover:bg-gray-100"
-              role="menuitem"
-            >
-              Tài khoản
-            </button>
+            {isLogout ? (
+              <>
+                <button
+                  href=""
+                  className="block w-full px-4 py-2 text-left text-sm bg-transparent border-none text-gray-700 hover:bg-gray-100"
+                  role="menuitem"
+                  onClick={() => navigate("/login")}
+                >
+                  Đăng nhập
+                </button>
+              </>
+            ) : (
+              <>
+                <button
+                  href=""
+                  className="block w-full px-4 py-2 text-left text-sm bg-transparent border-none text-gray-700 hover:bg-gray-100"
+                  role="menuitem"
+                >
+                  Tài khoản
+                </button>
 
-            <Link to={"/history"}>
-              <button
-                href=""
-                className="block w-full px-4 py-2 text-left text-sm bg-transparent border-none text-gray-700 hover:bg-gray-100"
-                role="menuitem"
-              >
-                Lịch sử
-              </button>
-            </Link>
+                <Link to={"/history"}>
+                  <button
+                    href=""
+                    className="block w-full px-4 py-2 text-left text-sm bg-transparent border-none text-gray-700 hover:bg-gray-100"
+                    role="menuitem"
+                  >
+                    Lịch sử
+                  </button>
+                </Link>
 
-            <button
-              href=""
-              className="block w-full px-4 py-2 text-left text-hong text-sm bg-transparent border-none hover:bg-gray-100"
-              role="menuitem"
-            >
-              Đăng xuất
-            </button>
+                <button
+                  className="block w-full px-4 py-2 text-left text-hong text-sm bg-transparent border-none hover:bg-gray-100"
+                  role="menuitem"
+                  onClick={handleLogout}
+                >
+                  Đăng xuất
+                </button>
+              </>
+            )}
           </div>
         )}
       </div>

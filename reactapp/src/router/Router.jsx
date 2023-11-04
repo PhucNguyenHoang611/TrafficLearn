@@ -13,6 +13,8 @@ import TrafficFine from "../pages/TrafficFine";
 import TrafficSign from "../pages/TrafficSign";
 import ExamHistory from "@/pages/ExamHistory";
 import Login from "../pages/Login";
+import SignUp from "../pages/SignUp";
+import ForgotPassword from "../pages/ForgotPassword";
 
 export const router = createBrowserRouter(
   createRoutesFromElements(
@@ -24,6 +26,8 @@ export const router = createBrowserRouter(
         <Route path="history" element={<ExamHistory />}></Route>
       </Route>
       <Route path="login" element={<Login />} />
+      <Route path="signup" element={<SignUp />} />
+      <Route path="forgotpassword" element={<ForgotPassword />} />
 
       <Route path="*" element={<NotFound />} />
     </Route>

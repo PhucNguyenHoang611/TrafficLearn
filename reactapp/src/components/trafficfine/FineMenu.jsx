@@ -65,7 +65,6 @@ const FineMenu = () => {
           <hr className="bg-gray-500 border-1 border-gray-300 mx-2" />
           <NavLink
             to="/trafficfine"
-            exact
             activeClassName="bg-gray-900 text-white px-3 py-2 rounded-md text-sm font-medium"
             className="text-gray-800 no-underline hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
           >
