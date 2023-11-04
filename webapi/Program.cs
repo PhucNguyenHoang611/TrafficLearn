@@ -6,6 +6,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
+var secretKey = builder.Configuration["Jwt:SecretKey"];
 
 // Add services to the container.
 builder.Services.Configure<DatabaseSettings>(builder.Configuration.GetSection("DatabaseSettings"));
@@ -56,7 +57,7 @@ builder.Services.AddAuthentication(options =>
         ValidateIssuerSigningKey = true,
         ValidAudience = "TrafficLearnBackend",
         ValidIssuer = "TrafficLearnBackend",
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("EFb2Mg83oilBJ6CELtgZpsW8878D8x7qwX+7A18lZo7eCQnvjlak+R/PgI3lioeT"))
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey))
     };
 
     options.Events = new JwtBearerEvents

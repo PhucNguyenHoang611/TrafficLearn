@@ -15,10 +15,12 @@ namespace webapi.Controllers
     public class LoginController : ControllerBase
     {
         private readonly UserServices _userServices;
+        private readonly IConfiguration _configuration;
 
-        public LoginController(UserServices userServices)
+        public LoginController(UserServices userServices, IConfiguration configuration)
         {
             _userServices = userServices;
+            _configuration = configuration;
         }
 
         [HttpPost]
@@ -29,7 +31,8 @@ namespace webapi.Controllers
                 new Claim(ClaimTypes.Name, request.Email)
             };
 
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("EFb2Mg83oilBJ6CELtgZpsW8878D8x7qwX+7A18lZo7eCQnvjlak+R/PgI3lioeT"));
+            var secretKey = _configuration["Jwt:SecretKey"];
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey));
 
             var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 

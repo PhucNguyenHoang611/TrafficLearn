@@ -9,10 +9,14 @@ namespace webapi.Services
     public class UserServices
     {
         private readonly IMongoCollection<User> _usersCollection;
+        private readonly IConfiguration _configuration;
 
-        public UserServices (IOptions<DatabaseSettings> databaseSettings)
+        public UserServices (IOptions<DatabaseSettings> databaseSettings, IConfiguration configuration)
         {
-            var mongoClient = new MongoClient(databaseSettings.Value.ConnectionString);
+            _configuration = configuration;
+
+            var connectionString = _configuration["DatabaseSettings:ConnectionString"];
+            var mongoClient = new MongoClient(connectionString);
 
             var mongoDatabase = mongoClient.GetDatabase(databaseSettings.Value.DatabaseName);
 

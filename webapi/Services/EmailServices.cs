@@ -9,10 +9,12 @@ namespace webapi.Services
     public class EmailServices : IEmailServices
     {
         private readonly EmailSettings _emailSettings;
+        private readonly IConfiguration _configuration;
 
-        public EmailServices(IOptions<EmailSettings> options)
+        public EmailServices(IOptions<EmailSettings> options, IConfiguration configuration)
         {
             _emailSettings = options.Value;
+            _configuration = configuration;
         }
 
         public async Task SendEmailAsync(EmailRequest request)
@@ -28,8 +30,9 @@ namespace webapi.Services
             email.Body = builder.ToMessageBody();
 
             using var smtp = new SmtpClient();
+            var password = _configuration["EmailSettings:Password"];
             smtp.Connect(_emailSettings.Host, _emailSettings.Port, SecureSocketOptions.StartTls);
-            smtp.Authenticate(_emailSettings.Email, _emailSettings.Password);
+            smtp.Authenticate(_emailSettings.Email, password);
             await smtp.SendAsync(email);
             smtp.Disconnect(true);
         }
