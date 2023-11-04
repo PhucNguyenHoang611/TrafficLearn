@@ -1,6 +1,56 @@
-import React from "react";
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useForm } from "react-hook-form";
+import { login } from "../apis/api_function";
+import { useDispatch } from "react-redux";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import LoadingOnPage from "@/utils/LoadingOnPage";
 
 const Login = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
+  const [showPassword, setShowPassword] = useState(false);
+  const [isNotify, setIsNotify] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  const handleShowPassword = () => {
+    setShowPassword((prev) => !prev);
+  };
+
+  const onSubmit = async (data) => {
+    try {
+      if (!data.email || !data.password) {
+        return;
+      } else if (loading) {
+        return;
+      }
+
+      setLoading(true);
+
+      const res = await login(data.email, data.password);
+      if (res.status === 200) {
+        dispatch({ type: "LOGIN", payload: res.data });
+        setLoading(false);
+        navigate("/");
+      }
+    } catch (error) {
+      setLoading(false);
+      if (error.response.data.error === "Email doesn't exist !") {
+        toast.error("Email không tồn tại !");
+      }
+      if (error.response.data.error === "Incorrect password !") {
+        toast.error("Mật khẩu không đúng !");
+      }
+    }
+  };
+
   return (
     <div>
       <link
@@ -27,10 +77,10 @@ const Login = () => {
             </div>
           </div>
           <div className="mt-10">
-            <form action="#">
-              <div className="flex flex-col mb-6">
+            <form onSubmit={handleSubmit(onSubmit)}>
+              <div className="flex flex-col mb-2">
                 <label
-                  for="email"
+                  htmlFor="email"
                   className="mb-1 text-xs sm:text-sm tracking-wide text-gray-600"
                 >
                   Địa chỉ E-Mail:
@@ -40,9 +90,9 @@ const Login = () => {
                     <svg
                       className="h-6 w-6"
                       fill="none"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
                       viewBox="0 0 24 24"
                       stroke="currentColor"
                     >
@@ -56,12 +106,19 @@ const Login = () => {
                     name="email"
                     className="text-sm sm:text-base placeholder-gray-500 pl-10 pr-4 rounded-lg border border-gray-400 w-full py-2 focus:outline-none focus:border-blue-400"
                     placeholder="Địa chỉ E-Mail"
+                    aria-invalid={errors.email ? "true" : "false"}
+                    {...register("email", { required: true })}
                   />
                 </div>
+                {errors.email?.type === "required" && (
+                  <p role="alert" className="text-red-500">
+                    Hãy nhập email
+                  </p>
+                )}
               </div>
-              <div className="flex flex-col mb-6">
+              <div className="flex flex-col mt-4 mb-2">
                 <label
-                  for="password"
+                  htmlFor="password"
                   className="mb-1 text-xs sm:text-sm tracking-wide text-gray-600"
                 >
                   Mật khẩu:
@@ -72,9 +129,9 @@ const Login = () => {
                       <svg
                         className="h-6 w-6"
                         fill="none"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
                         viewBox="0 0 24 24"
                         stroke="currentColor"
                       >
@@ -85,22 +142,44 @@ const Login = () => {
 
                   <input
                     id="password"
-                    type="password"
+                    type={showPassword ? "text" : "password"}
                     name="password"
                     className="text-sm sm:text-base placeholder-gray-500 pl-10 pr-4 rounded-lg border border-gray-400 w-full py-2 focus:outline-none focus:border-blue-400"
                     placeholder="Mật khẩu"
+                    {...register("password", { required: true })}
                   />
+
+                  <div className="inline-flex items-center justify-center absolute right-0 top-0 h-full w-10 text-gray-400">
+                    <span>
+                      {showPassword ? (
+                        <Visibility
+                          onClick={handleShowPassword}
+                          className="h-6 w-6"
+                        />
+                      ) : (
+                        <VisibilityOff
+                          onClick={handleShowPassword}
+                          className="h-6 w-6"
+                        />
+                      )}
+                    </span>
+                  </div>
                 </div>
+                {errors.password?.type === "required" && (
+                  <p role="alert" className="text-red-500">
+                    Hãy nhập mật khẩu
+                  </p>
+                )}
               </div>
 
-              <div className="flex items-center mb-6 -mt-4">
+              <div className="flex items-center mb-6">
                 <div className="flex ml-auto">
-                  <a
-                    href="#"
-                    className="inline-flex text-xs sm:text-sm text-den hover:text-blue-700"
+                  <label
+                    onClick={() => navigate("/forgotpassword")}
+                    className="inline-flex text-xs sm:text-sm text-den hover:text-blue-700 cursor-pointer"
                   >
                     Quên mật khẩu?
-                  </a>
+                  </label>
                 </div>
               </div>
 
@@ -114,9 +193,9 @@ const Login = () => {
                     <svg
                       className="h-6 w-6"
                       fill="none"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
                       viewBox="0 0 24 24"
                       stroke="currentColor"
                     >
@@ -128,18 +207,18 @@ const Login = () => {
             </form>
           </div>
           <div className="flex justify-center items-center mt-6">
-            <a
-              href="#"
+            <button
+              onClick={() => navigate("/signup")}
               target="_blank"
-              className="inline-flex items-center font-bold text-den hover:text-blue-700 text-xs text-center"
+              className="inline-flex items-center font-bold text-den hover:text-blue-700 text-xs text-center cursor-pointer"
             >
               <span>
                 <svg
                   className="h-6 w-6"
                   fill="none"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
                 >
@@ -147,10 +226,22 @@ const Login = () => {
                 </svg>
               </span>
               <span className="ml-2">Bạn chưa có tài khoản?</span>
-            </a>
+            </button>
           </div>
         </div>
       </div>
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
+      <LoadingOnPage open={loading} setOpen={setLoading} />
     </div>
   );
 };
