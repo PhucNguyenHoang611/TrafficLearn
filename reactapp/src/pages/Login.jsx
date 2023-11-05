@@ -70,7 +70,7 @@ const Login = () => {
         //   payload: { type: "success", message: "Đăng nhập thành công !" },
         // });
         setLoading(false);
-        navigate("/landing");
+        navigate("/");
       }
     } catch (error) {
       setLoading(false);
