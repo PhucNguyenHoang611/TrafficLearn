@@ -44,7 +44,8 @@ const NavFine = () => {
   return (
     <div className="relative">
       <button
-        className="bg-den text-white py-2 px-4 rounded-md text-sm font-medium"
+        // className="bg-den text-white py-2 px-4 rounded-md text-sm font-medium"
+        className="no-underline text-gray-600 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
       >

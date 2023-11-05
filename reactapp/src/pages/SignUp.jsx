@@ -47,7 +47,13 @@ const SignUp = () => {
       const check = await checkValid(data.email);
       if (check.status === 200) {
         if (check.data === false) {
-          toast.error("Email chưa được xác thực !");
+          dispatch({
+            type: "NOTIFY",
+            payload: {
+              type: "warning",
+              message: "Hãy xác thực email !",
+            },
+          });
           // email verify
           dispatch({ type: "SET_EMAIL", payload: data });
           const send = await sendVerifyEmail(data.email);
@@ -82,6 +88,13 @@ const SignUp = () => {
         dispatch({
           type: "GET_EMAIL",
           payload: res.data.email,
+        });
+        dispatch({
+          type: "SET_NOTIFY",
+          payload: {
+            type: "success",
+            message: "Đăng ký thành công, hãy xác thực email !",
+          },
         });
         navigate("/verify");
       }
