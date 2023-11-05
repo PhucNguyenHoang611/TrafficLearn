@@ -13,7 +13,7 @@ export const login = (email, password) => {
   });
 };
 
-//register
+// Register
 export const registerUser = (
   email,
   password,
@@ -33,5 +33,33 @@ export const registerUser = (
     PhoneNumber: phoneNumber,
     Provider: "default",
     Role: "User",
+  });
+};
+
+// Verify Email
+export const verifyEmail = (email, TOTP) => {
+  return mainApi.post(apiEndpoints.VERIFY_EMAIL, {
+    Email: email,
+    TOTP: TOTP,
+  });
+};
+
+// Send verify email
+export const sendVerifyEmail = (email) => {
+  return mainApi.post(
+    apiEndpoints.SEND_VERIFY_EMAIL,
+    {},
+    {
+      params: { email: email },
+    }
+  );
+};
+
+// Check valid
+export const checkValid = (email) => {
+  // const params = new URLSearchParams([["email", email]]);
+  // return mainApi.get(apiEndpoints.CHECK_VALID, { params });
+  return mainApi.get(apiEndpoints.CHECK_VALID, {
+    params: { email: email },
   });
 };

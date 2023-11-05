@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
-import { login } from "../apis/api_function";
+import { login, checkValid, sendVerifyEmail } from "../apis/api_function";
 import { useDispatch } from "react-redux";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { toast, ToastContainer } from "react-toastify";
@@ -25,15 +25,37 @@ const Login = () => {
   };
 
   const onSubmit = async (data) => {
+    if (!data.email || !data.password) {
+      return;
+    } else if (loading) {
+      return;
+    }
+
+    setLoading(true);
     try {
-      if (!data.email || !data.password) {
-        return;
-      } else if (loading) {
-        return;
+      const check = await checkValid(data.email);
+      if (check.status === 200) {
+        if (check.data === false) {
+          toast.error("Email chưa được xác thực !");
+          // email verify
+          dispatch({ type: "SET_EMAIL", payload: data });
+          const send = await sendVerifyEmail(data.email);
+          if (send.status === 200) {
+            navigate("/verify");
+            setLoading(false);
+            return;
+          }
+
+          setLoading(false);
+          return;
+        }
       }
+    } catch (error) {
+      setLoading(false);
+      console.log(error);
+    }
 
-      setLoading(true);
-
+    try {
       const res = await login(data.email, data.password);
       if (res.status === 200) {
         dispatch({ type: "LOGIN", payload: res.data });
@@ -50,6 +72,10 @@ const Login = () => {
       }
     }
   };
+
+  useEffect(() => {
+    document.title = "Đăng nhập";
+  }, []);
 
   return (
     <div>
@@ -186,7 +212,7 @@ const Login = () => {
               <div className="flex w-full">
                 <button
                   type="submit"
-                  className="flex items-center justify-center focus:outline-none text-white text-sm sm:text-base bg-den hover:bg-blue-700 rounded py-2 w-full transition duration-150 ease-in"
+                  className="flex items-center justify-center focus:outline-none text-white text-sm sm:text-base bg-den hover:bg-indigo-700 rounded py-2 w-full transition duration-150 ease-in"
                 >
                   <span className="mr-2 uppercase">Đăng nhập</span>
                   <span>

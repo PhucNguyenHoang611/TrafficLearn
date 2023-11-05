@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useForm } from "react-hook-form";
-import { registerUser } from "../apis/api_function";
+import { set, useForm } from "react-hook-form";
+import { registerUser, checkValid } from "../apis/api_function";
 import { useDispatch } from "react-redux";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import VpnKeyIcon from "@mui/icons-material/VpnKey";
@@ -9,6 +9,7 @@ import SubscriptionsIcon from "@mui/icons-material/Subscriptions";
 import { toast, ToastContainer } from "react-toastify";
 import CustomDatetime from "@/utils/CustomDatetime";
 import "react-toastify/dist/ReactToastify.css";
+import LoadingOnPage from "@/utils/LoadingOnPage";
 
 const SignUp = () => {
   const dispatch = useDispatch();
@@ -21,6 +22,7 @@ const SignUp = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [isNotify, setIsNotify] = useState(false);
   const [date, setDate] = useState(new Date());
+  const [loading, setLoading] = useState(false);
 
   function onDateChange(date) {
     setDate(date);
@@ -31,10 +33,40 @@ const SignUp = () => {
   };
 
   const onSubmit = async (data) => {
+    if (!data.email || !data.password) {
+      return;
+    } else if (loading) {
+      return;
+    } else if (data.password !== data.rwpassword) {
+      toast.error("Mật khẩu không khớp !");
+      return;
+    }
+
+    setLoading(true);
     try {
-      if (!data.email || !data.password) {
-        return;
+      const check = await checkValid(data.email);
+      if (check.status === 200) {
+        if (check.data === false) {
+          toast.error("Email chưa được xác thực !");
+          // email verify
+          dispatch({ type: "SET_EMAIL", payload: data });
+          const send = await sendVerifyEmail(data.email);
+          if (send.status === 200) {
+            navigate("/verify");
+            setLoading(false);
+            return;
+          }
+
+          setLoading(false);
+          return;
+        }
       }
+    } catch (error) {
+      setLoading(false);
+      console.log(error);
+    }
+
+    try {
       const birthday = date.toISOString();
       const res = await registerUser(
         data.email,
@@ -47,17 +79,36 @@ const SignUp = () => {
       );
       if (res.status === 200) {
         // toast.success("Đăng ký thành công !");
-        navigate("/login");
+        dispatch({
+          type: "GET_EMAIL",
+          payload: res.data.email,
+        });
+        navigate("/verify");
       }
+      setLoading(false);
     } catch (error) {
+      setLoading(false);
       if (error.response.data.error === "Email doesn't exist !") {
         toast.error("Email không tồn tại !");
-      }
-      if (error.response.data.error === "Incorrect password !") {
+      } else if (error.response.data.error === "Incorrect password !") {
         toast.error("Mật khẩu không đúng !");
+      } else if (
+        error.response.data.error === "Email address is already in use !"
+      ) {
+        toast.error("Email đã tồn tại !");
+      } else if (
+        error.response.data.error === "Phone number is already in use !"
+      ) {
+        toast.error("Số điện thoại đã tồn tại !");
       }
+
+      console.log(error);
     }
   };
+
+  useEffect(() => {
+    document.title = "Đăng ký";
+  }, []);
 
   return (
     <div>
@@ -305,7 +356,7 @@ const SignUp = () => {
               <div className="flex w-full">
                 <button
                   type="submit"
-                  className="flex items-center justify-center focus:outline-none text-white text-sm sm:text-base bg-den hover:bg-blue-700 rounded py-2 w-full transition duration-150 ease-in"
+                  className="flex items-center justify-center focus:outline-none text-white text-sm sm:text-base bg-den hover:bg-indigo-700 rounded py-2 w-full transition duration-150 ease-in"
                 >
                   <span className="mr-2 uppercase">Đăng ký</span>
                   <span className="mb-1">
@@ -340,6 +391,7 @@ const SignUp = () => {
         draggable
         pauseOnHover
       />
+      <LoadingOnPage open={loading} setOpen={setLoading} />
     </div>
   );
 };
