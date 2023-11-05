@@ -1,9 +1,10 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import NavFine from "./NavFine";
 import NavProfile from "./NavProfile";
 
 const NavBar = () => {
+  const navigate = useNavigate();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   function toggleMenu() {
@@ -63,15 +64,17 @@ const NavBar = () => {
           <div className="flex-1 flex items-center justify-center sm:items-stretch sm:justify-start">
             <div className="flex-shrink-0 flex items-center">
               <img
-                className="hidden lg:block h-10 w-auto"
+                className="hidden lg:block h-10 w-auto cursor-pointer"
                 src="/logo.webp"
                 alt="Workflow"
+                onClick={() => navigate("/landing")}
               />
-              <p className="uppercase max-sm:hidden mx-2">
+              {/* <p className="uppercase max-sm:hidden mx-2">
                 Học luật giao thông
-              </p>
+              </p> */}
             </div>
-            <div className="hidden sm:block sm:ml-6">
+            {/* sm:ml-6 -> sm:ml-[12rem] */}
+            <div className="hidden sm:block sm:ml-[12rem]">
               <div className="flex space-x-4">
                 {/* Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" */}
                 <NavFine />

@@ -28,6 +28,13 @@ const Verify = () => {
     try {
       const result = await verifyEmail(email, sotp);
       if (result) {
+        dispatch({
+          type: "NOTIFY",
+          payload: {
+            type: "success",
+            message: "Xác thực email thành công, hãy đăng nhập lại!",
+          },
+        });
         dispatch({ type: "UN_EMAIL" });
         navigate("/login");
       }
@@ -40,7 +47,12 @@ const Verify = () => {
     console.log("resend", email);
     try {
       const result = await sendVerifyEmail(email);
-      console.log(result);
+      if (result) {
+        dispatch({
+          type: "NOTIFY",
+          payload: { type: "success", message: "Gửi lại mã OTP thành công" },
+        });
+      }
     } catch (error) {
       console.log(error);
     }

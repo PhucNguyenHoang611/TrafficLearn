@@ -36,7 +36,13 @@ const Login = () => {
       const check = await checkValid(data.email);
       if (check.status === 200) {
         if (check.data === false) {
-          toast.error("Email chưa được xác thực !");
+          dispatch({
+            type: "NOTIFY",
+            payload: {
+              type: "error",
+              message: "Email chưa được xác thực !",
+            },
+          });
           // email verify
           dispatch({ type: "SET_EMAIL", payload: data });
           const send = await sendVerifyEmail(data.email);
@@ -59,8 +65,12 @@ const Login = () => {
       const res = await login(data.email, data.password);
       if (res.status === 200) {
         dispatch({ type: "LOGIN", payload: res.data });
+        // dispatch({
+        //   type: "NOTIFY",
+        //   payload: { type: "success", message: "Đăng nhập thành công !" },
+        // });
         setLoading(false);
-        navigate("/");
+        navigate("/landing");
       }
     } catch (error) {
       setLoading(false);
