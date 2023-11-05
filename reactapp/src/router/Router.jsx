@@ -15,6 +15,7 @@ import ExamHistory from "@/pages/ExamHistory";
 import Login from "../pages/Login";
 import SignUp from "../pages/SignUp";
 import ForgotPassword from "../pages/ForgotPassword";
+import Verify from "../pages/Verify";
 
 export const router = createBrowserRouter(
   createRoutesFromElements(
@@ -27,6 +28,7 @@ export const router = createBrowserRouter(
       </Route>
       <Route path="login" element={<Login />} />
       <Route path="signup" element={<SignUp />} />
+      <Route path="verify" element={<Verify />} />
       <Route path="forgotpassword" element={<ForgotPassword />} />
 
       <Route path="*" element={<NotFound />} />

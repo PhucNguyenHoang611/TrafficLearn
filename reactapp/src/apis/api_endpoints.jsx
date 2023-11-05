@@ -28,8 +28,20 @@ export const getRegisterBody = (
 });
 
 // Verify Email
-export const VERIFY_EMAIL = "/verifyEmail";
+export const VERIFY_EMAIL = "/register/verifyEmail";
 export const getVerifyEmailBody = (email, TOTP) => ({
   Email: email,
   TOTP: TOTP,
+});
+
+// Send verify email
+export const SEND_VERIFY_EMAIL = "/register/sendVerificationEmail";
+export const getSendVerifyEmailBody = (email) => ({
+  Email: email,
+});
+
+// Check valid
+export const CHECK_VALID = "/register/checkValid";
+export const getCheckValidBody = (email) => ({
+  Email: email,
 });

@@ -12,10 +12,14 @@ import storage from "redux-persist/lib/storage";
 import storageSession from "redux-persist/lib/storage/session";
 import { configureStore, combineReducers } from "@reduxjs/toolkit";
 import authReducer from "./reducers/auth_reducers";
+import verifyReducer from "./reducers/verify_reducers";
+import notifyReducer from "./reducers/notify_reducers";
 
 // Define your root reducer
 const rootReducer = combineReducers({
   auth: authReducer,
+  verify: verifyReducer,
+  notify: notifyReducer,
 });
 
 // Define your persist config
@@ -42,8 +46,11 @@ export const store = configureStore({
 
 export const persistor = persistStore(store);
 
-// persistor.purge().then(() => {
-//   console.log('Data reset successful');
-// }).catch(() => {
-//   console.log('Data reset failed');
-// });
+// persistor
+//   .purge()
+//   .then(() => {
+//     console.log("Data reset successful");
+//   })
+//   .catch(() => {
+//     console.log("Data reset failed");
+//   });
