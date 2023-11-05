@@ -4,7 +4,9 @@ import { Link } from "react-router-dom";
 import { theme } from "@/themes/CustomeTheme";
 import { useSelector } from "react-redux";
 import car from "/public/car.jpg";
-import crossRoad from "/public/crossRoad.jpg";
+import crossRoad from "/public/crossRoad.webp";
+import { LazyLoadImage } from "react-lazy-load-image-component";
+import "react-lazy-load-image-component/src/effects/blur.css";
 
 const Landing = () => {
   const auth = useSelector((state) => state.auth);
@@ -53,15 +55,16 @@ const Landing = () => {
           )}
         </div>
         <div className="max-w-[36rem]">
-          <img src={crossRoad} alt="Cross Road Image" />
+          <LazyLoadImage src={crossRoad} alt="Cross Road Image" effect="blur" />
         </div>
       </div>
 
       <div className="flex items-center justify-center w-full">
         <div className="max-w-[50rem] min-w-[20rem]">
-          <img
+          <LazyLoadImage
             src={car}
             alt="Traffic Landing Image"
+            effect="blur"
             className="h-auto w-full max-w-screen-lg"
           />
         </div>
