@@ -3,10 +3,10 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { theme } from "@/themes/CustomeTheme";
 import { useSelector } from "react-redux";
-import car from "/public/car.jpg";
-import crossRoad from "/public/crossRoad.webp";
-import { LazyLoadImage } from "react-lazy-load-image-component";
+import crossRoad from "/crossRoad.svg";
 import "react-lazy-load-image-component/src/effects/blur.css";
+import LandFooter from "../components/landing/LandFooter";
+import LandRedirect from "../components/landing/LandRedirect";
 
 const Landing = () => {
   const auth = useSelector((state) => state.auth);
@@ -18,7 +18,7 @@ const Landing = () => {
   }, [auth.token]);
   return (
     <div className="">
-      <div className="flex justify-center items-center">
+      <div className="flex max-sm:flex-col ms:justify-center items-center">
         <div className="flex flex-col justify-center items-center text-center">
           <h1 className="text-4xl font-bold mb-8 text-gray-800">
             Chào mừng bạn đến với website học luật giao thông online
@@ -54,29 +54,18 @@ const Landing = () => {
             </Button>
           )}
         </div>
-        <div className="max-w-[36rem]">
-          <LazyLoadImage src={crossRoad} alt="Cross Road Image" effect="blur" />
-        </div>
-      </div>
-
-      <div className="flex items-center justify-center w-full">
-        <div className="max-w-[50rem] min-w-[20rem]">
-          <LazyLoadImage
-            src={car}
-            alt="Traffic Landing Image"
-            effect="blur"
-            className="h-auto w-full max-w-screen-lg"
+        <div>
+          {/* <LazyLoadImage src={crossRoad} alt="Cross Road Image" effect="blur" /> */}
+          <img
+            src={crossRoad}
+            alt="Cross Road Image"
+            width={600}
+            height={600}
           />
         </div>
-        <div>
-          <h2 className="font-bold text-lg">
-            Định làm j đó nhưng chưa nghĩ ra sẽ nhét j
-          </h2>
-          <p>
-            lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam
-          </p>
-        </div>
       </div>
+      <LandRedirect />
+      <LandFooter />
     </div>
   );
 };
