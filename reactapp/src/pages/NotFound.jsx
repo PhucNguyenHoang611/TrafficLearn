@@ -8,13 +8,19 @@ const NotFound = () => {
           <div className="sm:mx-auto sm:w-full sm:max-w-md">
             <div className="text-center">
               <h2 className="text-3xl font-bold text-red-700">404 Error</h2>
+
               <p className="mt-2 text-lg font-medium text-gray-900">
-                Khum tìm thấy trang
+                Không tìm thấy trang
               </p>
               <p className="mt-1 text-gray-600">
                 Trang bạn đang tìm không tồn tại.
               </p>
             </div>
+            <img
+              src="https://i.pinimg.com/236x/3a/52/08/3a52083989b854ab0e72efeb3531f6d3.jpg"
+              alt="crying on day"
+              className="py-4 mx-auto"
+            />
             <div className="mt-6">
               <Link
                 to={"/"}
