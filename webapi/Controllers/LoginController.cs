@@ -6,7 +6,7 @@ using System.IdentityModel.Tokens.Jwt;
 using Microsoft.AspNetCore.Mvc;
 using webapi.Models;
 using webapi.Services;
-
+using Microsoft.AspNetCore.Authentication;
 
 namespace webapi.Controllers
 {
@@ -96,6 +96,41 @@ namespace webapi.Controllers
                     });
                 }
             }
+        }
+
+        [HttpGet]
+        [Route("google/callback")]
+        [ApiExplorerSettings(IgnoreApi = true)]
+        public ActionResult GoogleLogin()
+        {
+            var properties = new AuthenticationProperties()
+            {
+                RedirectUri = _configuration["Authentication:Google:RedirectUri"],
+                AllowRefresh = true
+            };
+
+            return Challenge(properties, "TrafficLearn");
+        }
+
+        [HttpGet]
+        [Route("google/success")]
+        [ApiExplorerSettings(IgnoreApi = true)]
+        public async Task<IActionResult> GoogleResponse()
+        {
+            var userInfo = await HttpContext.AuthenticateAsync("TrafficLearn");
+
+            var userId = userInfo.Principal.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var userEmail = userInfo.Principal.FindFirst(ClaimTypes.Email)?.Value;
+            var userFirstName = userInfo.Principal.FindFirst(ClaimTypes.GivenName)?.Value;
+            var userLastName = userInfo.Principal.FindFirst(ClaimTypes.Surname)?.Value;
+
+            return Ok(new
+            {
+                userId = userId,
+                userEmail = userEmail,
+                userFirstName = userFirstName,
+                userLastName = userLastName
+            });
         }
     }
 }
