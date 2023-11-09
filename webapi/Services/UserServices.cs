@@ -47,24 +47,27 @@ namespace webapi.Services
             return totpGenerator.Generate(user.VerificationKey);
         }
 
-        public async Task<bool> ValidateTOTP(string email, int totp)
+        public bool ValidateTOTP(User user, int totp)
         {
-            List<User> users = await _usersCollection.Find(x => x.UserEmail == email).ToListAsync();
-            User user = users[0];
-
             var totpGenerator = new TotpGenerator();
             var totpValidator = new TotpValidator(totpGenerator);
 
             if (totpValidator.Validate(user.VerificationKey, totp))
-            {
-                user.IsVerified = true;
-                await _usersCollection.ReplaceOneAsync(x => x.Id == user.Id, user);
                 return true;
-            }
             else
-            {
                 return false;
-            }
+        }
+
+        public async Task VerifyUser(User user)
+        {
+            user.IsVerified = true;
+            await _usersCollection.ReplaceOneAsync(x => x.Id == user.Id, user);
+        }
+
+        public async Task UpdatePassword(User user, string newPassword)
+        {
+            user.UserPassword = newPassword;
+            await _usersCollection.ReplaceOneAsync(x => x.Id == user.Id, user);
         }
     }
 }

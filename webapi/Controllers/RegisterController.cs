@@ -69,42 +69,6 @@ namespace webapi.Controllers
         }
 
         [HttpPost]
-        [Route("verifyEmail")]
-        public async Task<IActionResult> VerifyEmail([FromBody] VerifyEmailRequest request)
-        {
-            try
-            {
-                var check = await _userServices.ValidateTOTP(request.Email, request.TOTP);
-                if (check)
-                {
-                    return Ok(new
-                    {
-                        success = "Your account has been successfully verified !"
-                    });
-                }
-                else
-                {
-                    return BadRequest(new
-                    {
-                        error = "Invalid OTP !"
-                    });
-                }
-            }
-            catch
-            {
-                throw;
-            }
-        }
-
-        [HttpGet]
-        [Route("checkValid")]
-        public async Task<Boolean> CheckValid([FromQuery] String email)
-        {
-            var res = await _userServices.GetUserByEmail(email) as dynamic;
-            return (res.Count > 0) && res[0].IsVerified && res[0].IsActive;
-        }
-
-        [HttpPost]
         [Route("sendVerificationEmail")]
         public async Task<IActionResult> SendVerificationEmail([FromQuery] String email)
         {
@@ -125,6 +89,50 @@ namespace webapi.Controllers
                 {
                     success = "Verification code has been sent to your email !"
                 });
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        [HttpPost]
+        [Route("verifyEmail")]
+        public async Task<IActionResult> VerifyEmail([FromBody] VerifyEmailRequest request)
+        {
+            try
+            {
+                List<User> users = await _userServices.GetUserByEmail(request.Email);
+
+                if (users.Count == 0)
+                {
+                    return BadRequest(new
+                    {
+                        error = "Email doesn't exist !"
+                    });
+                }
+                else
+                {
+                    User user = users[0];
+                    var check = _userServices.ValidateTOTP(user, request.TOTP);
+
+                    if (check)
+                    {
+                        await _userServices.VerifyUser(user);
+
+                        return Ok(new
+                        {
+                            success = "Your account has been successfully verified !"
+                        });
+                    }
+                    else
+                    {
+                        return BadRequest(new
+                        {
+                            error = "Invalid OTP !"
+                        });
+                    }
+                }
             }
             catch
             {
