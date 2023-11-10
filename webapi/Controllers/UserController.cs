@@ -13,7 +13,6 @@ namespace webapi.Controllers
         public string NewPassword { get; set; } = string.Empty;
     }
 
-    [Authorize]
     [ApiController]
     [Route("api/user")]
     public class UserController : ControllerBase
@@ -23,6 +22,36 @@ namespace webapi.Controllers
         public UserController(UserServices userServices)
         {
             _userServices = userServices;
+        }
+
+        [HttpGet]
+        [Route("getAllUsers")]
+        [Authorize]
+        public async Task<IActionResult> GetAllUsers()
+        {
+            try
+            {
+                var identity = User.Identity as ClaimsIdentity;
+
+                string userRole = await _userServices.JwtAuthentication(identity);
+
+                if (userRole == "Admin")
+                {
+                    List<User> users = await _userServices.GetAllUsers();
+                    return Ok(users);
+                }
+                else
+                {
+                    return Unauthorized(new
+                    {
+                        error = "Unauthorized user !"
+                    });
+                }
+            }
+            catch
+            {
+                throw;
+            }
         }
 
         [HttpPost]

@@ -3,6 +3,7 @@ using MongoDB.Driver;
 using webapi.Models;
 using AspNetCore.Totp;
 using AspNetCore.Totp.Interface;
+using System.Security.Claims;
 
 namespace webapi.Services
 {
@@ -21,6 +22,29 @@ namespace webapi.Services
             var mongoDatabase = mongoClient.GetDatabase(databaseSettings.Value.DatabaseName);
 
             _usersCollection = mongoDatabase.GetCollection<User>(databaseSettings.Value.UsersCollectionName);
+        }
+
+        public async Task<string> JwtAuthentication(ClaimsIdentity identity)
+        {
+            if (identity != null && identity.Claims != null)
+            {
+                var emailClaim = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name);
+
+                if (emailClaim != null)
+                {
+                    string email = emailClaim.Value;
+                    List<User> users = await _usersCollection.Find(x => x.UserEmail == email).ToListAsync();
+
+                    if (users.Count == 0)
+                        return "";
+                    else
+                        return users[0].UserRole;
+                }
+                else
+                    return "";
+            }
+            else
+                return "";
         }
 
         public async Task<List<User>> GetAllUsers() => await _usersCollection.Find(_ => true).ToListAsync();
