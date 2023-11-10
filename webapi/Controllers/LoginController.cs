@@ -74,8 +74,7 @@ namespace webapi.Controllers
                 {
                     var claims = new[]
                     {
-                        new Claim(ClaimTypes.Name, user.UserEmail),
-                        new Claim(ClaimTypes.Role, user.UserRole)
+                        new Claim(ClaimTypes.Name, user.UserEmail)
                     };
 
                     var secretKey = _configuration["Jwt:SecretKey"];
