@@ -7,6 +7,7 @@ import { Visibility, VisibilityOff, Send } from "@mui/icons-material";
 import ThumbUpAltIcon from "@mui/icons-material/ThumbUpAlt";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { forgetPassword } from "../apis/api_function";
 
 const ForgotPassword = () => {
   const dispatch = useDispatch();
@@ -16,31 +17,35 @@ const ForgotPassword = () => {
     handleSubmit,
     formState: { errors },
   } = useForm();
-  const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [isNotify, setIsNotify] = useState(false);
 
-  const handleShowPassword = () => {
-    setShowPassword((prev) => !prev);
-  };
-
   const onSubmit = async (data) => {
-    // try {
-    //   if (!data.email || !data.password) {
-    //     return;
-    //   }
-    //   const res = await login(data.email, data.password);
-    //   if (res.status === 200) {
-    //     dispatch({ type: "LOGIN", payload: res.data });
-    //     navigate("/");
-    //   }
-    // } catch (error) {
-    //   if (error.response.data.error === "Email doesn't exist !") {
-    //     toast.error("Email không tồn tại !");
-    //   }
-    //   if (error.response.data.error === "Incorrect password !") {
-    //     toast.error("Mật khẩu không đúng !");
-    //   }
-    // }
+    if (loading) {
+      return;
+    }
+    setLoading(true);
+    try {
+      const res = await forgetPassword(data.email);
+      if (res.status === 200) {
+        dispatch({
+          type: "SET_EMAIL",
+          payload: { email: data.email, TOTP: "" },
+        });
+        dispatch({ type: "CURRENT", payload: { current: "verifyPassword" } });
+        toast.success("Vui lòng kiểm tra email của bạn !");
+        setLoading(false);
+        navigate("/verify");
+      }
+    } catch (error) {
+      setLoading(false);
+      if (error.response.data.error === "Email doesn't exist !") {
+        toast.error("Email không tồn tại !");
+      }
+      if (error.response.data.error === "Incorrect password !") {
+        toast.error("Mật khẩu không đúng !");
+      }
+    }
   };
 
   return (
@@ -99,12 +104,21 @@ const ForgotPassword = () => {
               <div className="flex w-full">
                 <button
                   type="submit"
-                  className="flex items-center justify-center focus:outline-none text-white text-sm sm:text-base bg-den hover:bg-indigo-700 rounded py-2 w-full transition duration-150 ease-in"
+                  className={`${
+                    loading ? "button__loader" : ""
+                  } flex items-center justify-center focus:outline-none text-white text-sm sm:text-base bg-den hover:bg-indigo-700 rounded py-2 w-full transition duration-150 ease-in`}
+                  disabled={loading}
                 >
-                  <span className="mr-2 uppercase">Gửi</span>
-                  <span className="mb-1">
-                    <Send />
-                  </span>
+                  {loading ? (
+                    <span class="button__text">Loading...</span>
+                  ) : (
+                    <>
+                      <span className="mr-2 uppercase z-10">Gửi</span>
+                      <span className="mb-1">
+                        <Send />
+                      </span>
+                    </>
+                  )}
                 </button>
               </div>
             </form>
@@ -114,6 +128,7 @@ const ForgotPassword = () => {
               onClick={() => navigate("/login")}
               target="_blank"
               className="inline-flex items-center font-bold text-den hover:text-blue-700 text-xs text-center cursor-pointer"
+              disabled={loading}
             >
               <span>
                 <ThumbUpAltIcon />

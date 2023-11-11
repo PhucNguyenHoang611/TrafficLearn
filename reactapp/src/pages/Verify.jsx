@@ -10,8 +10,10 @@ import { verifyEmail, sendVerifyEmail } from "../apis/api_function";
 const Verify = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const current = useSelector((state) => state.current.current);
   const email = useSelector((state) => state.verify.email);
   const auth = useSelector((state) => state.auth);
+  const [loading, setLoading] = useState(false);
   const [otp, setOTP] = useState("");
 
   const validateChar = (value, index) => {
@@ -23,28 +25,48 @@ const Verify = () => {
     setOTP(newValue);
   };
 
+  const handleVerifyPassword = async (totp) => {
+    dispatch({ type: "SET_EMAIL", payload: { email: email, TOTP: totp } });
+    navigate("/resetpassword");
+  };
+
   const handleComplete = async (totp) => {
+    if (loading) {
+      return;
+    }
+    setLoading(true);
     const sotp = parseInt(totp);
-    try {
-      const result = await verifyEmail(email, sotp);
-      if (result) {
-        dispatch({
-          type: "NOTIFY",
-          payload: {
-            type: "success",
-            message: "Xác thực email thành công, hãy đăng nhập lại!",
-          },
-        });
-        dispatch({ type: "UN_EMAIL" });
-        navigate("/login");
+    if (isNaN(sotp)) {
+      return;
+    }
+    if (current === "verifyPassword") {
+      handleVerifyPassword(totp);
+    } else if (current === "verifyEmail") {
+      try {
+        const result = await verifyEmail(email, sotp);
+        if (result) {
+          dispatch({
+            type: "NOTIFY",
+            payload: {
+              type: "success",
+              message: "Xác thực email thành công, hãy đăng nhập lại!",
+            },
+          });
+          dispatch({ type: "UN_EMAIL" });
+          navigate("/login");
+        }
+      } catch (error) {
+        console.log(error);
       }
-    } catch (error) {
-      console.log(error);
     }
   };
 
   const handleResendOTP = async () => {
     console.log("resend", email);
+    if (current === "verifyPassword") {
+      navigate("/forgotpassword");
+      return;
+    }
     try {
       const result = await sendVerifyEmail(email);
       if (result) {
@@ -56,6 +78,10 @@ const Verify = () => {
     } catch (error) {
       console.log(error);
     }
+  };
+
+  const handleResendOTPPassword = async () => {
+    navigate("/forgotpassword");
   };
 
   return (
@@ -78,15 +104,6 @@ const Verify = () => {
             Vui lòng nhập mã vào ô bên dưới.
           </p>
           <Box sx={{ mb: 2, mt: 4 }}>
-            {/* <Typography
-              id="modal-modal-title"
-              variant="h6"
-              component="h2"
-              className="text-center"
-              sx={{ mb: 2 }}
-            >
-              Nhập OTP được gửi đến email của bạn ô bên dưới
-            </Typography> */}
             <MuiOtpInput
               value={otp}
               onChange={handleChange}
@@ -98,12 +115,17 @@ const Verify = () => {
               Không nhận được OTP?
               <Button
                 sx={{ fontSize: "1rem", fontWeight: "bold" }}
-                onClick={handleResendOTP}
+                onClick={
+                  current === "verifyPassword"
+                    ? handleResendOTPPassword
+                    : handleResendOTP
+                }
               >
                 Gửi lại
               </Button>
             </Typography>
           </Box>
+
           {/* <button
             onClick={() => navigate("/")}
             class="mt-3 inline-block w-96 rounded bg-den px-5 py-3 font-medium text-white shadow-md shadow-indigo-500/20 hover:bg-indigo-700"

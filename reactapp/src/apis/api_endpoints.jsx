@@ -45,3 +45,17 @@ export const CHECK_VALID = "/register/checkValid";
 export const getCheckValidBody = (email) => ({
   Email: email,
 });
+
+// Forget password
+export const FORGET_PASSWORD = "/login/forgetPassword";
+export const getForgetPasswordBody = (email) => ({
+  Email: email,
+});
+
+// Reset password
+export const RESET_PASSWORD = "/login/resetPassword";
+export const getResetPasswordBody = (email, password, TOTP) => ({
+  Email: email,
+  TOTP: TOTP,
+  NewPassword: password,
+});
