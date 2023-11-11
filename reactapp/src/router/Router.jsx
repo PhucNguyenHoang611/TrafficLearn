@@ -15,6 +15,7 @@ import ExamHistory from "@/pages/ExamHistory";
 import Login from "../pages/Login";
 import SignUp from "../pages/SignUp";
 import ForgotPassword from "../pages/ForgotPassword";
+import ResetPassword from "../pages/ResetPassword";
 import Verify from "../pages/Verify";
 import Landing from "../pages/Landing";
 // const Landing = lazy(() => import("../pages/Landing"));
@@ -34,6 +35,7 @@ export const router = createBrowserRouter(
       <Route path="signup" element={<SignUp />} />
       <Route path="verify" element={<Verify />} />
       <Route path="forgotpassword" element={<ForgotPassword />} />
+      <Route path="resetpassword" element={<ResetPassword />} />
 
       <Route path="*" element={<NotFound />} />
     </Route>

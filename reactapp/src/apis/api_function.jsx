@@ -63,3 +63,25 @@ export const checkValid = (email) => {
     params: { email: email },
   });
 };
+
+// Forget password
+export const forgetPassword = (email) => {
+  return mainApi.post(
+    apiEndpoints.FORGET_PASSWORD,
+    {},
+    {
+      params: {
+        email: email,
+      },
+    }
+  );
+};
+
+// Reset password
+export const resetPassword = (email, password, TOTP) => {
+  return mainApi.post(apiEndpoints.RESET_PASSWORD, {
+    Email: email,
+    TOTP: TOTP,
+    NewPassword: password,
+  });
+};

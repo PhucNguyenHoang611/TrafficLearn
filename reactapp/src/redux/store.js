@@ -14,12 +14,14 @@ import { configureStore, combineReducers } from "@reduxjs/toolkit";
 import authReducer from "./reducers/auth_reducers";
 import verifyReducer from "./reducers/verify_reducers";
 import notifyReducer from "./reducers/notify_reducers";
+import currentReducer from "./reducers/current_reducers";
 
 // Define your root reducer
 const rootReducer = combineReducers({
   auth: authReducer,
   verify: verifyReducer,
   notify: notifyReducer,
+  current: currentReducer,
 });
 
 // Define your persist config
