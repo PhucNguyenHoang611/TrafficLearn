@@ -69,8 +69,8 @@ namespace webapi.Controllers
         }
 
         [HttpPost]
-        [Route("sendVerificationEmail")]
-        public async Task<IActionResult> SendVerificationEmail([FromQuery] String email)
+        [Route("sendVerificationEmail/{email}")]
+        public async Task<IActionResult> SendVerificationEmail(String email)
         {
             try
             {

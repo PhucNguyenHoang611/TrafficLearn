@@ -54,6 +54,178 @@ namespace webapi.Controllers
             }
         }
 
+        [HttpGet]
+        [Route("getUserById/{id}")]
+        public async Task<IActionResult> GetUserById(String id)
+        {
+            try
+            {
+
+                List<User> users = await _userServices.GetUserById(id);
+
+                if (users.Count == 0)
+                {
+                    return NotFound(new
+                    {
+                        error = "No user found !"
+                    });
+                }
+                else
+                    return Ok(users[0]);
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        [HttpPut]
+        [Route("updateUser/{id}")]
+        [Authorize]
+        public async Task<IActionResult> UpdateUser(String id, [FromBody] User user)
+        {
+            try
+            {
+                var identity = User.Identity as ClaimsIdentity;
+
+                string userRole = await _userServices.JwtAuthentication(identity);
+
+                if (userRole == "User")
+                {
+                    await _userServices.UpdateUser(id, user);
+                    return Ok(new
+                    {
+                        success = "Update user successfully !"
+                    });
+                }
+                else
+                {
+                    return Unauthorized(new
+                    {
+                        error = "Unauthorized user !"
+                    });
+                }
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        [HttpPut]
+        [Route("updateUserByAdmin/{id}")]
+        [Authorize]
+        public async Task<IActionResult> UpdateUserByAdmin(String id, [FromBody] User user)
+        {
+            try
+            {
+                var identity = User.Identity as ClaimsIdentity;
+
+                string userRole = await _userServices.JwtAuthentication(identity);
+
+                if (userRole == "Admin")
+                {
+                    await _userServices.UpdateUser(id, user);
+                    return Ok(new
+                    {
+                        success = "Update user successfully !"
+                    });
+                }
+                else
+                {
+                    return Unauthorized(new
+                    {
+                        error = "Unauthorized user !"
+                    });
+                }
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        [HttpDelete]
+        [Route("deleteUser/{id}")]
+        [Authorize]
+        public async Task<IActionResult> DeleteUser(String id)
+        {
+            try
+            {
+                var identity = User.Identity as ClaimsIdentity;
+
+                string userRole = await _userServices.JwtAuthentication(identity);
+
+                if (userRole == "Admin")
+                {
+                    await _userServices.DeleteUser(id);
+                    return Ok(new
+                    {
+                        success = "Delete user successfully !"
+                    });
+                }
+                else
+                {
+                    return Unauthorized(new
+                    {
+                        error = "Unauthorized user !"
+                    });
+                }
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        [HttpPut]
+        [Route("activeOrInactiveUser/{id}")]
+        [Authorize]
+        public async Task<IActionResult> ActiveOrInactiveUser(String id)
+        {
+            try
+            {
+                var identity = User.Identity as ClaimsIdentity;
+
+                string userRole = await _userServices.JwtAuthentication(identity);
+
+                if (userRole == "Admin")
+                {
+                    List<User> users = await _userServices.GetUserById(id);
+
+                    if (users.Count == 0)
+                    {
+                        return BadRequest(new
+                        {
+                            error = "No user found !"
+                        });
+                    }
+                    else
+                    {
+                        User user = users[0];
+                        user.IsActive = user.IsActive ? false : true;
+                        await _userServices.UpdateUser(id, user);
+
+                        return Ok(new
+                        {
+                            success = user.IsActive ? "Active user successfully !" : "Inactive user successfully !"
+                        });
+                    }
+                }
+                else
+                {
+                    return Unauthorized(new
+                    {
+                        error = "Unauthorized user !"
+                    });
+                }
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
         [HttpPost]
         [Route("changePassword")]
         public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordRequest request)
