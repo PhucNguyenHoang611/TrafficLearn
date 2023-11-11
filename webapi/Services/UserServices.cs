@@ -4,6 +4,7 @@ using webapi.Models;
 using AspNetCore.Totp;
 using AspNetCore.Totp.Interface;
 using System.Security.Claims;
+using System.Reflection.Emit;
 
 namespace webapi.Services
 {
@@ -68,7 +69,14 @@ namespace webapi.Services
             await _usersCollection.ReplaceOneAsync(x => x.Id == user.Id, user);
 
             var totpGenerator = new TotpGenerator();
-            return totpGenerator.Generate(user.VerificationKey);
+            int totp;
+            
+            do
+            {
+                totp = totpGenerator.Generate(user.VerificationKey);
+            } while (totp < 100000 || totp > 999999);
+
+            return totp;
         }
 
         public bool ValidateTOTP(User user, int totp)
