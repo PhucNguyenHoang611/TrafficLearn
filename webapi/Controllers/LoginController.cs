@@ -108,8 +108,8 @@ namespace webapi.Controllers
         }
 
         [HttpPost]
-        [Route("forgetPassword")]
-        public async Task<IActionResult> ForgetPassword([FromQuery] String email)
+        [Route("forgetPassword/{email}")]
+        public async Task<IActionResult> ForgetPassword(String email)
         {
             try
             {
