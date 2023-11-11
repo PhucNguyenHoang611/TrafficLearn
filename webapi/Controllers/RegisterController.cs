@@ -74,21 +74,33 @@ namespace webapi.Controllers
         {
             try
             {
-                int totp = await _userServices.GetTOTP(email);
+                List<User> users = await _userServices.GetUserByEmail(email);
 
-                EmailRequest request = new EmailRequest
+                if (users.Count == 0)
                 {
-                    ToEmail = email,
-                    Subject = "Email Verification",
-                    Body = $"<p>Please input this OTP Code to finish your registration process: <b>{totp}</b></p>"
-                };
-
-                await _emailServices.SendEmailAsync(request);
-
-                return Ok(new
+                    return BadRequest(new
+                    {
+                        error = "Email doesn't exist !"
+                    });
+                }
+                else
                 {
-                    success = "Verification code has been sent to your email !"
-                });
+                    int totp = await _userServices.GetTOTP(email);
+
+                    EmailRequest request = new EmailRequest
+                    {
+                        ToEmail = email,
+                        Subject = "Email Verification",
+                        Body = $"<p>Please input this OTP Code to finish your registration process: <b>{totp}</b></p>"
+                    };
+
+                    await _emailServices.SendEmailAsync(request);
+
+                    return Ok(new
+                    {
+                        success = "Verification code has been sent to your email !"
+                    });
+                }
             }
             catch
             {
