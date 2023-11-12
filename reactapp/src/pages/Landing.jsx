@@ -12,10 +12,10 @@ const Landing = () => {
   const auth = useSelector((state) => state.auth);
   const [isLogin, setIsLogin] = useState(false);
   useEffect(() => {
-    if (auth.token !== "" && auth.token !== null) {
+    if (auth.provider !== "" && auth.provider !== null) {
       setIsLogin(true);
     }
-  }, [auth.token]);
+  }, [auth]);
   return (
     <div className="">
       <div className="flex max-sm:flex-col ms:justify-center items-center">

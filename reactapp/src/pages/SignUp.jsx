@@ -10,6 +10,7 @@ import { toast, ToastContainer } from "react-toastify";
 import CustomDatetime from "@/utils/CustomDatetime";
 import "react-toastify/dist/ReactToastify.css";
 import LoadingOnPage from "@/utils/LoadingOnPage";
+import "@/themes/buttonstyles/submitButton.css";
 
 const SignUp = () => {
   const dispatch = useDispatch();
@@ -33,16 +34,27 @@ const SignUp = () => {
   };
 
   const onSubmit = async (data) => {
-    if (!data.email || !data.password) {
+    if (loading) {
       return;
-    } else if (loading) {
+    }
+    setLoading(true);
+    if (!data.email || !data.password) {
       return;
     } else if (data.password !== data.rwpassword) {
       toast.error("Mật khẩu không khớp !");
       return;
     }
 
-    setLoading(true);
+    // email verify
+    dispatch({
+      type: "SET_EMAIL",
+      payload: { email: data.email, TOTP: "" },
+    });
+    dispatch({
+      type: "CURRENT",
+      payload: { current: "verifyEmail" },
+    });
+
     try {
       const check = await checkValid(data.email);
       if (check.status === 200) {
@@ -54,8 +66,7 @@ const SignUp = () => {
               message: "Hãy xác thực email !",
             },
           });
-          // email verify
-          dispatch({ type: "SET_EMAIL", payload: data });
+
           const send = await sendVerifyEmail(data.email);
           if (send.status === 200) {
             navigate("/verify");
@@ -355,21 +366,12 @@ const SignUp = () => {
                   </p>
                 )}
               </div>
-              <div className="flex items-center mb-6">
-                <div className="flex ml-auto">
-                  <label
-                    onClick={() => navigate("/forgotpassword")}
-                    className="inline-flex text-xs sm:text-sm text-den hover:text-blue-700 cursor-pointer"
-                  >
-                    Quên mật khẩu?
-                  </label>
-                </div>
-              </div>
 
-              <div className="flex w-full">
+              <div className="flex w-full mt-8">
                 <button
                   type="submit"
-                  className="flex items-center justify-center focus:outline-none text-white text-sm sm:text-base bg-den hover:bg-indigo-700 rounded py-2 w-full transition duration-150 ease-in"
+                  className={`${loading ? "button__loader" : ""}
+                  className="flex items-center justify-center focus:outline-none text-white text-sm sm:text-base bg-den hover:bg-indigo-700 rounded py-2 w-full transition duration-150 ease-in`}
                 >
                   <span className="mr-2 uppercase">Đăng ký</span>
                   <span className="mb-1">

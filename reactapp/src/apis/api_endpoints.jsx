@@ -5,6 +5,15 @@ export const getLoginBody = (email, password) => ({
   Password: password,
 });
 
+// Login with Google
+export const LOGIN_GOOGLE = "/login/google/callback";
+export const getLoginGoogleBody = (tokenId) => ({
+  TokenId: tokenId,
+});
+
+// Login Google success
+export const LOGIN_GOOGLE_SUCCESS = "/login/google/success";
+
 // Register
 export const REGISTER = "/register";
 export const getRegisterBody = (
@@ -35,7 +44,8 @@ export const getVerifyEmailBody = (email, TOTP) => ({
 });
 
 // Send verify email
-export const SEND_VERIFY_EMAIL = "/register/sendVerificationEmail";
+export const SEND_VERIFY_EMAIL = (email) =>
+  `/register/sendVerificationEmail/${email}`;
 export const getSendVerifyEmailBody = (email) => ({
   Email: email,
 });
@@ -47,7 +57,7 @@ export const getCheckValidBody = (email) => ({
 });
 
 // Forget password
-export const FORGET_PASSWORD = "/login/forgetPassword";
+export const FORGET_PASSWORD = (email) => `/login/forgetPassword/${email}`;
 export const getForgetPasswordBody = (email) => ({
   Email: email,
 });

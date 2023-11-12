@@ -13,6 +13,20 @@ export const login = (email, password) => {
   });
 };
 
+export const googleLoginCallback = () => {
+  window.open(`${baseURL}/login/google/callback`, "_self");
+};
+
+export const googleLoginSuccess = async () => {
+  return await mainApi.get(apiEndpoints.GOOGLE_LOGIN_SUCCESS, {
+    withCredentials: true,
+  });
+};
+
+export const googleLogout = () => {
+  window.open(`${baseURL}/auth/google/logout`, "_self");
+};
+
 // Register
 export const registerUser = (
   email,
@@ -46,13 +60,7 @@ export const verifyEmail = (email, TOTP) => {
 
 // Send verify email
 export const sendVerifyEmail = (email) => {
-  return mainApi.post(
-    apiEndpoints.SEND_VERIFY_EMAIL,
-    {},
-    {
-      params: { email: email },
-    }
-  );
+  return mainApi.post(apiEndpoints.SEND_VERIFY_EMAIL(email));
 };
 
 // Check valid
@@ -66,15 +74,7 @@ export const checkValid = (email) => {
 
 // Forget password
 export const forgetPassword = (email) => {
-  return mainApi.post(
-    apiEndpoints.FORGET_PASSWORD,
-    {},
-    {
-      params: {
-        email: email,
-      },
-    }
-  );
+  return mainApi.post(apiEndpoints.FORGET_PASSWORD(email));
 };
 
 // Reset password
