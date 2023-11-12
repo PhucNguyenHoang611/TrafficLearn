@@ -1,6 +1,6 @@
-﻿using webapi.Models;
+﻿using webapi.Models.Request;
 
-namespace webapi.Services
+namespace webapi.Services.Email
 {
     public interface IEmailServices
     {

@@ -2,9 +2,8 @@
 using MongoDB.Driver;
 using webapi.Models;
 using AspNetCore.Totp;
-using AspNetCore.Totp.Interface;
 using System.Security.Claims;
-using System.Reflection.Emit;
+using webapi.Models.Settings;
 
 namespace webapi.Services
 {

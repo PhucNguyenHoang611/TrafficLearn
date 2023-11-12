@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 using webapi.Models;
 using webapi.Services;
 using Microsoft.AspNetCore.Authentication;
+using webapi.Models.Request;
+using webapi.Services.Email;
 
 namespace webapi.Controllers
 {

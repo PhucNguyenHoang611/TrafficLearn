@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using webapi.Models;
 using webapi.Services;
-using AspNetCore.Totp;
-using AspNetCore.Totp.Interface;
+using webapi.Models.Request;
+using webapi.Services.Email;
 
 namespace webapi.Controllers
 {

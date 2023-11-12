@@ -1,4 +1,3 @@
-using webapi.Models;
 using webapi.Services;
 using Microsoft.OpenApi.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -7,6 +6,8 @@ using System.Text;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication;
 using System.Security.Claims;
+using webapi.Models.Settings;
+using webapi.Services.Email;
 
 var builder = WebApplication.CreateBuilder(args);
 var secretKey = builder.Configuration["Jwt:SecretKey"];
@@ -25,10 +26,10 @@ builder.Services.AddCors(options =>
     options.AddPolicy(name: "policy",
         builder =>
         {
-            builder.WithOrigins("https://localhost:7220", "https://localhost:5173")
-                .AllowAnyOrigin()
+            builder.WithOrigins("https://localhost:5173", "https://localhost:7220")
                 .AllowAnyHeader()
-                .AllowAnyMethod();
+                .AllowAnyMethod()
+                .AllowCredentials();
         });
 });
 

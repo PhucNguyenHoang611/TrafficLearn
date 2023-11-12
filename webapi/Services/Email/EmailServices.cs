@@ -2,9 +2,10 @@
 using MailKit.Security;
 using Microsoft.Extensions.Options;
 using MimeKit;
-using webapi.Models;
+using webapi.Models.Request;
+using webapi.Models.Settings;
 
-namespace webapi.Services
+namespace webapi.Services.Email
 {
     public class EmailServices : IEmailServices
     {
