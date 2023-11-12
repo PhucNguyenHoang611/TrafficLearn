@@ -1,11 +1,15 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Outlet } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
+import { ggLogin } from "../redux/reducers/auth_reducers";
+import { googleLoginSuccess } from "../apis/api_function";
 
 const RootPage = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const notify = useSelector((state) => state.notify);
+  const provider = useSelector((state) => state.auth.provider);
   useEffect(() => {
     document.title = "Trang chủ";
 
@@ -36,6 +40,39 @@ const RootPage = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [notify]
   );
+
+  useEffect(() => {
+    const handleLoginWithGoogle = async () => {
+      try {
+        const result = await googleLoginSuccess();
+        console.log("rs", result);
+
+        const ggUser = result.data;
+
+        const userLogin = {
+          id: ggUser.userId,
+          email: ggUser.userEmail,
+          firstName: ggUser.userFirstName,
+          lastName: ggUser.userLastName,
+        };
+
+        dispatch(ggLogin(userLogin));
+        navigate("/");
+      } catch (error) {
+        if (notify.type !== "error") {
+          dispatch({
+            type: "NOTIFY",
+            payload: {
+              type: "error",
+              message: "Đăng nhập thất bại, vui lòng thử lại!",
+            },
+          });
+        }
+        // dispatch({ type: "LOGOUT" });
+      }
+    };
+    if (provider === "google") handleLoginWithGoogle();
+  }, [provider, dispatch, navigate]);
 
   return (
     <>

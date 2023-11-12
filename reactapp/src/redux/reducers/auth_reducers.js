@@ -17,6 +17,8 @@ const initialState = {
 // Actions
 export const login = createAction("LOGIN");
 export const logout = createAction("LOGOUT");
+export const ggLogin = createAction("GGLOGIN");
+export const gg = createAction("GG");
 
 // Reducer
 const authReducer = createReducer(initialState, (builder) => {
@@ -32,6 +34,21 @@ const authReducer = createReducer(initialState, (builder) => {
       state.phoneNumber = action.payload.phoneNumber;
       state.provider = action.payload.provider;
       state.isAdmin = action.payload.isAdmin;
+    })
+    .addCase(ggLogin, (state, action) => {
+      state.token = "";
+      state.id = action.payload.id;
+      state.firstName = action.payload.firstName;
+      state.lastName = action.payload.lastName;
+      state.email = action.payload.email;
+      state.birthday = "";
+      state.gender = "";
+      state.phoneNumber = "";
+      state.provider = "google";
+      state.isAdmin = "";
+    })
+    .addCase(gg, (state) => {
+      state.provider = "google";
     })
     .addCase(logout, (state) => {
       state.token = "";

@@ -7,6 +7,7 @@ import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import LoadingOnPage from "@/utils/LoadingOnPage";
+import GoogleLogin from "../components/login/GoogleLogin";
 
 const Login = () => {
   const dispatch = useDispatch();
@@ -99,12 +100,7 @@ const Login = () => {
           <div className="font-medium self-center text-xl sm:text-2xl text-gray-800">
             Chào mừng bạn trở lại!
           </div>
-          <button className="relative mt-6 border rounded-md py-2 text-sm text-gray-800 bg-gray-100 hover:bg-gray-200">
-            <span className="absolute left-0 top-0 flex items-center justify-center h-full w-10 text-blue-500">
-              <i className="fab fa-facebook-f"></i>
-            </span>
-            <span>Đăng nhập với Facebook</span>
-          </button>
+          <GoogleLogin />
           <div className="relative mt-10 h-px bg-gray-300">
             <div className="absolute left-0 top-0 flex justify-center w-full -mt-2">
               <span className="bg-white px-4 text-xs text-gray-500 uppercase">

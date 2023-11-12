@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { styleVerify } from "../themes/Styles";
 import { matchIsNumeric } from "../utils/function";
 import { verifyEmail, sendVerifyEmail } from "../apis/api_function";
+import LoadingOnPage from "@/utils/LoadingOnPage";
 
 const Verify = () => {
   const navigate = useNavigate();
@@ -30,6 +31,33 @@ const Verify = () => {
     navigate("/resetpassword");
   };
 
+  const handleVerifyEmail = async (totp) => {
+    console.log("verify", email, totp);
+    try {
+      const result = await verifyEmail(email, totp);
+      if (result) {
+        dispatch({
+          type: "NOTIFY",
+          payload: {
+            type: "success",
+            message: "Xác thực email thành công, hãy đăng nhập lại!",
+          },
+        });
+        dispatch({ type: "UN_EMAIL" });
+        navigate("/login");
+      }
+    } catch (error) {
+      setLoading(false);
+      if (error.response.data.error === "Invalid OTP !") {
+        dispatch({
+          type: "NOTIFY",
+          payload: { type: "error", message: "Mã OTP không đúng" },
+        });
+      }
+      console.log(error);
+    }
+  };
+
   const handleComplete = async (totp) => {
     if (loading) {
       return;
@@ -40,24 +68,9 @@ const Verify = () => {
       return;
     }
     if (current === "verifyPassword") {
-      handleVerifyPassword(totp);
+      handleVerifyPassword(sotp);
     } else if (current === "verifyEmail") {
-      try {
-        const result = await verifyEmail(email, sotp);
-        if (result) {
-          dispatch({
-            type: "NOTIFY",
-            payload: {
-              type: "success",
-              message: "Xác thực email thành công, hãy đăng nhập lại!",
-            },
-          });
-          dispatch({ type: "UN_EMAIL" });
-          navigate("/login");
-        }
-      } catch (error) {
-        console.log(error);
-      }
+      handleVerifyEmail(sotp);
     }
   };
 
@@ -134,6 +147,7 @@ const Verify = () => {
           </button> */}
         </div>
       </div>
+      <LoadingOnPage open={loading} setOpen={setLoading} />
     </div>
   );
 };
