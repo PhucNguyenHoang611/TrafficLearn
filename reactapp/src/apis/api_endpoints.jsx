@@ -14,6 +14,8 @@ export const getLoginGoogleBody = (tokenId) => ({
 // Login Google success
 export const LOGIN_GOOGLE_SUCCESS = "/login/google/success";
 
+// https://localhost:7220/api/login/google/success
+
 // Register
 export const REGISTER = "/register";
 export const getRegisterBody = (

@@ -18,9 +18,12 @@ export const googleLoginCallback = () => {
 };
 
 export const googleLoginSuccess = async () => {
-  return await mainApi.get(apiEndpoints.GOOGLE_LOGIN_SUCCESS, {
+  return axios.get(`https://localhost:7220/api/login/google/success`, {
     withCredentials: true,
   });
+  // return await mainApi.get(apiEndpoints.GOOGLE_LOGIN_SUCCESS, {
+  //   withCredentials: true,
+  // });
 };
 
 export const googleLogout = () => {
