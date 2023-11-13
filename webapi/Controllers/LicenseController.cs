@@ -59,7 +59,7 @@ namespace webapi.Controllers
         }
 
         [HttpPost]
-        [Route("createLicense/{id}")]
+        [Route("createLicense")]
         [Authorize]
         public async Task<IActionResult> CreateLicense([FromBody] License license)
         {
