@@ -7,26 +7,26 @@ using webapi.Services;
 namespace webapi.Controllers
 {
     [ApiController]
-    [Route("api/title")]
-    public class TitleController : ControllerBase
+    [Route("api/news")]
+    public class NewsController : ControllerBase
     {
-        private readonly TitleServices _titleServices;
+        private readonly NewsServices _newsServices;
         private readonly UserServices _userServices;
 
-        public TitleController(TitleServices titleServices, UserServices userServices)
+        public NewsController(NewsServices NewsServices, UserServices userServices)
         {
-            _titleServices = titleServices;
+            _newsServices = NewsServices;
             _userServices = userServices;
         }
 
         [HttpGet]
-        [Route("getAllTitles")]
-        public async Task<IActionResult> GetAllTitles()
+        [Route("getAllNews")]
+        public async Task<IActionResult> GetAllNews()
         {
             try
             {
-                List<Title> titles = await _titleServices.GetAllTitles();
-                return Ok(titles);
+                List<News> news = await _newsServices.GetAllNews();
+                return Ok(news);
             }
             catch
             {
@@ -35,22 +35,22 @@ namespace webapi.Controllers
         }
 
         [HttpGet]
-        [Route("getTitleById/{id}")]
-        public async Task<IActionResult> GetTitleById(String id)
+        [Route("getNewsById/{id}")]
+        public async Task<IActionResult> GetNewsById(string id)
         {
             try
             {
-                List<Title> titles = await _titleServices.GetTitleById(id);
+                List<News> news = await _newsServices.GetNewsById(id);
 
-                if (titles.Count ==  0)
+                if (news.Count == 0)
                 {
                     return NotFound(new
                     {
-                        error = "No user found !"
+                        error = "No news found !"
                     });
                 }
                 else
-                    return Ok(titles[0]);
+                    return Ok(news[0]);
             }
             catch
             {
@@ -59,9 +59,9 @@ namespace webapi.Controllers
         }
 
         [HttpPost]
-        [Route("createTitle")]
+        [Route("createNews")]
         [Authorize]
-        public async Task<IActionResult> CreateTitle([FromBody] Title title)
+        public async Task<IActionResult> CreateNews([FromBody] News news)
         {
             try
             {
@@ -71,16 +71,21 @@ namespace webapi.Controllers
 
                 if (userRole == "Admin")
                 {
-                    Title t = new Title
+                    News n = new News
                     {
-                        TitleName = title.TitleName
+                        NewsTitle = news.NewsTitle,
+                        NewsClarify = news.NewsClarify,
+                        NewsDate = news.NewsDate,
+                        NewsContent = news.NewsContent,
+                        NewsImage = news.NewsImage,
+                        NewsImageTitle = news.NewsImageTitle
                     };
 
-                    await _titleServices.CreateTitle(t);
+                    await _newsServices.CreateNews(n);
 
                     return Ok(new
                     {
-                        success = "Create title successfully !"
+                        success = "Create news successfully !"
                     });
                 }
                 else
@@ -98,9 +103,9 @@ namespace webapi.Controllers
         }
 
         [HttpPut]
-        [Route("updateTitle/{id}")]
+        [Route("updateNews/{id}")]
         [Authorize]
-        public async Task<IActionResult> UpdateTitle(String id, [FromBody] Title title)
+        public async Task<IActionResult> UpdateNews(string id, [FromBody] News news)
         {
             try
             {
@@ -110,11 +115,11 @@ namespace webapi.Controllers
 
                 if (userRole == "Admin")
                 {
-                    await _titleServices.UpdateTitle(id, title);
+                    await _newsServices.UpdateNews(id, news);
 
                     return Ok(new
                     {
-                        success = "Update title successfully !"
+                        success = "Update news successfully !"
                     });
                 }
                 else
@@ -132,18 +137,32 @@ namespace webapi.Controllers
         }
 
         [HttpDelete]
-        [Route("deleteTitle/{id}")]
+        [Route("deleteNews/{id}")]
         [Authorize]
-        public async Task<IActionResult> DeleteTitle(String id)
+        public async Task<IActionResult> DeleteNews(string id)
         {
             try
             {
-                await _titleServices.DeleteTitle(id);
+                var identity = User.Identity as ClaimsIdentity;
 
-                return Ok(new
+                string userRole = await _userServices.JwtAuthentication(identity);
+
+                if (userRole == "Admin")
                 {
-                    success = "Delete title successfully !"
-                });
+                    await _newsServices.DeleteNews(id);
+
+                    return Ok(new
+                    {
+                        success = "Delete news successfully !"
+                    });
+                }
+                else
+                {
+                    return Unauthorized(new
+                    {
+                        error = "Unauthorized user !"
+                    });
+                }
             }
             catch
             {

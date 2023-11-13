@@ -7,26 +7,26 @@ using webapi.Services;
 namespace webapi.Controllers
 {
     [ApiController]
-    [Route("api/title")]
-    public class TitleController : ControllerBase
+    [Route("api/decree")]
+    public class DecreeController : ControllerBase
     {
-        private readonly TitleServices _titleServices;
+        private readonly DecreeServices _decreeServices;
         private readonly UserServices _userServices;
 
-        public TitleController(TitleServices titleServices, UserServices userServices)
+        public DecreeController(DecreeServices decreeServices, UserServices userServices)
         {
-            _titleServices = titleServices;
+            _decreeServices = decreeServices;
             _userServices = userServices;
         }
 
         [HttpGet]
-        [Route("getAllTitles")]
-        public async Task<IActionResult> GetAllTitles()
+        [Route("getAllDecrees")]
+        public async Task<IActionResult> GetAllDecrees()
         {
             try
             {
-                List<Title> titles = await _titleServices.GetAllTitles();
-                return Ok(titles);
+                List<Decree> decrees = await _decreeServices.GetAllDecrees();
+                return Ok(decrees);
             }
             catch
             {
@@ -35,22 +35,22 @@ namespace webapi.Controllers
         }
 
         [HttpGet]
-        [Route("getTitleById/{id}")]
-        public async Task<IActionResult> GetTitleById(String id)
+        [Route("getDecreeById/{id}")]
+        public async Task<IActionResult> GetDecreeById(string id)
         {
             try
             {
-                List<Title> titles = await _titleServices.GetTitleById(id);
+                List<Decree> decrees = await _decreeServices.GetDecreeById(id);
 
-                if (titles.Count ==  0)
+                if (decrees.Count == 0)
                 {
                     return NotFound(new
                     {
-                        error = "No user found !"
+                        error = "No Decree found !"
                     });
                 }
                 else
-                    return Ok(titles[0]);
+                    return Ok(decrees[0]);
             }
             catch
             {
@@ -59,9 +59,9 @@ namespace webapi.Controllers
         }
 
         [HttpPost]
-        [Route("createTitle")]
+        [Route("createDecree")]
         [Authorize]
-        public async Task<IActionResult> CreateTitle([FromBody] Title title)
+        public async Task<IActionResult> CreateDecree([FromBody] Decree decree)
         {
             try
             {
@@ -71,16 +71,18 @@ namespace webapi.Controllers
 
                 if (userRole == "Admin")
                 {
-                    Title t = new Title
+                    Decree d = new Decree
                     {
-                        TitleName = title.TitleName
+                        DecreeName = decree.DecreeName,
+                        DecreeDate = decree.DecreeDate,
+                        DecreeNumber = decree.DecreeNumber
                     };
 
-                    await _titleServices.CreateTitle(t);
+                    await _decreeServices.CreateDecree(d);
 
                     return Ok(new
                     {
-                        success = "Create title successfully !"
+                        success = "Create decree successfully !"
                     });
                 }
                 else
@@ -98,9 +100,9 @@ namespace webapi.Controllers
         }
 
         [HttpPut]
-        [Route("updateTitle/{id}")]
+        [Route("updateDecree/{id}")]
         [Authorize]
-        public async Task<IActionResult> UpdateTitle(String id, [FromBody] Title title)
+        public async Task<IActionResult> UpdateDecree(string id, [FromBody] Decree decree)
         {
             try
             {
@@ -110,11 +112,11 @@ namespace webapi.Controllers
 
                 if (userRole == "Admin")
                 {
-                    await _titleServices.UpdateTitle(id, title);
+                    await _decreeServices.UpdateDecree(id, decree);
 
                     return Ok(new
                     {
-                        success = "Update title successfully !"
+                        success = "Update decree successfully !"
                     });
                 }
                 else
@@ -132,18 +134,32 @@ namespace webapi.Controllers
         }
 
         [HttpDelete]
-        [Route("deleteTitle/{id}")]
+        [Route("deleteDecree/{id}")]
         [Authorize]
-        public async Task<IActionResult> DeleteTitle(String id)
+        public async Task<IActionResult> DeleteDecree(string id)
         {
             try
             {
-                await _titleServices.DeleteTitle(id);
+                var identity = User.Identity as ClaimsIdentity;
 
-                return Ok(new
+                string userRole = await _userServices.JwtAuthentication(identity);
+
+                if (userRole == "Admin")
                 {
-                    success = "Delete title successfully !"
-                });
+                    await _decreeServices.DeleteDecree(id);
+
+                    return Ok(new
+                    {
+                        success = "Delete decree successfully !"
+                    });
+                }
+                else
+                {
+                    return Unauthorized(new
+                    {
+                        error = "Unauthorized user !"
+                    });
+                }
             }
             catch
             {

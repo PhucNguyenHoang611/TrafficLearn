@@ -19,6 +19,13 @@ builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("Emai
 builder.Services.AddTransient<IEmailServices, EmailServices>();
 
 builder.Services.AddSingleton<UserServices>();
+builder.Services.AddSingleton<QuestionServices>();
+builder.Services.AddSingleton<DecreeServices>();
+builder.Services.AddSingleton<LicenseServices>();
+builder.Services.AddSingleton<TitleServices>();
+builder.Services.AddSingleton<NewsServices>();
+builder.Services.AddSingleton<TrafficFineTypeServices>();
+builder.Services.AddSingleton<TrafficSignTypeServices>();
 builder.Services.AddSingleton<EmailServices>();
 
 builder.Services.AddCors(options =>

@@ -7,26 +7,26 @@ using webapi.Services;
 namespace webapi.Controllers
 {
     [ApiController]
-    [Route("api/license")]
-    public class LicenseController : ControllerBase
+    [Route("api/trafficFineType")]
+    public class TrafficFineTypeController : ControllerBase
     {
-        private readonly LicenseServices _licenseServices;
+        private readonly TrafficFineTypeServices _trafficFineTypeServices;
         private readonly UserServices _userServices;
 
-        public LicenseController(LicenseServices licenseServices, UserServices userServices)
+        public TrafficFineTypeController(TrafficFineTypeServices trafficFineTypeServices, UserServices userServices)
         {
-            _licenseServices = licenseServices;
+            _trafficFineTypeServices = trafficFineTypeServices;
             _userServices = userServices;
         }
 
         [HttpGet]
-        [Route("getAllLicenses")]
-        public async Task<IActionResult> GetAllLicenses()
+        [Route("getAllTrafficFineTypes")]
+        public async Task<IActionResult> GetAllTrafficFineTypes()
         {
             try
             {
-                List<License> licenses = await _licenseServices.GetAllLicenses();
-                return Ok(licenses);
+                List<TrafficFineType> trafficFineTypes = await _trafficFineTypeServices.GetAllTrafficFineTypes();
+                return Ok(trafficFineTypes);
             }
             catch
             {
@@ -35,22 +35,22 @@ namespace webapi.Controllers
         }
 
         [HttpGet]
-        [Route("getLicenseById/{id}")]
-        public async Task<IActionResult> GetLicenseById(String id)
+        [Route("getTrafficFineTypeById/{id}")]
+        public async Task<IActionResult> GetTrafficFineTypeById(string id)
         {
             try
             {
-                List<License> licenses = await _licenseServices.GetLicenseById(id);
+                List<TrafficFineType> trafficFineTypes = await _trafficFineTypeServices.GetTrafficFineTypeById(id);
 
-                if (licenses.Count == 0)
+                if (trafficFineTypes.Count == 0)
                 {
                     return NotFound(new
                     {
-                        error = "No license found !"
+                        error = "No type found !"
                     });
                 }
                 else
-                    return Ok(licenses[0]);
+                    return Ok(trafficFineTypes[0]);
             }
             catch
             {
@@ -59,9 +59,9 @@ namespace webapi.Controllers
         }
 
         [HttpPost]
-        [Route("createLicense/{id}")]
+        [Route("createTrafficFineType")]
         [Authorize]
-        public async Task<IActionResult> CreateLicense([FromBody] License license)
+        public async Task<IActionResult> CreateTrafficFineType([FromBody] TrafficFineType trafficFineType)
         {
             try
             {
@@ -71,16 +71,16 @@ namespace webapi.Controllers
 
                 if (userRole == "Admin")
                 {
-                    License l = new License
+                    TrafficFineType tft = new TrafficFineType
                     {
-                        LicenseName = license.LicenseName
+                        FineType = trafficFineType.FineType
                     };
 
-                    await _licenseServices.CreateLicense(l);
+                    await _trafficFineTypeServices.CreateTrafficFineType(tft);
 
                     return Ok(new
                     {
-                        success = "Create license successfully !"
+                        success = "Create type successfully !"
                     });
                 }
                 else
@@ -98,9 +98,9 @@ namespace webapi.Controllers
         }
 
         [HttpPut]
-        [Route("updateLicense/{id}")]
+        [Route("updateTrafficFineType/{id}")]
         [Authorize]
-        public async Task<IActionResult> UpdateLicense(String id, [FromBody] License license)
+        public async Task<IActionResult> UpdateTrafficFineType(string id, [FromBody] TrafficFineType trafficFineType)
         {
             try
             {
@@ -110,11 +110,11 @@ namespace webapi.Controllers
 
                 if (userRole == "Admin")
                 {
-                    await _licenseServices.UpdateLicense(id, license);
+                    await _trafficFineTypeServices.UpdateTrafficFineType(id, trafficFineType);
 
                     return Ok(new
                     {
-                        success = "Update license successfully !"
+                        success = "Update type successfully !"
                     });
                 }
                 else
@@ -132,9 +132,9 @@ namespace webapi.Controllers
         }
 
         [HttpDelete]
-        [Route("deleteLicense/{id}")]
+        [Route("deleteTrafficFineType/{id}")]
         [Authorize]
-        public async Task<IActionResult> DeleteLicense(String id)
+        public async Task<IActionResult> DeleteTrafficFineType(string id)
         {
             try
             {
@@ -144,11 +144,11 @@ namespace webapi.Controllers
 
                 if (userRole == "Admin")
                 {
-                    await _licenseServices.DeleteLicense(id);
+                    await _trafficFineTypeServices.DeleteTrafficFineType(id);
 
                     return Ok(new
                     {
-                        success = "Delete license successfully !"
+                        success = "Delete type successfully !"
                     });
                 }
                 else

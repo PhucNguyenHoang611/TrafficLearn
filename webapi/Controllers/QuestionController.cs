@@ -7,26 +7,26 @@ using webapi.Services;
 namespace webapi.Controllers
 {
     [ApiController]
-    [Route("api/license")]
-    public class LicenseController : ControllerBase
+    [Route("api/question")]
+    public class QuestionController : ControllerBase
     {
-        private readonly LicenseServices _licenseServices;
+        private readonly QuestionServices _questionServices;
         private readonly UserServices _userServices;
 
-        public LicenseController(LicenseServices licenseServices, UserServices userServices)
+        public QuestionController(QuestionServices questionServices, UserServices userServices)
         {
-            _licenseServices = licenseServices;
+            _questionServices = questionServices;
             _userServices = userServices;
         }
 
         [HttpGet]
-        [Route("getAllLicenses")]
-        public async Task<IActionResult> GetAllLicenses()
+        [Route("getAllQuestions")]
+        public async Task<IActionResult> GetAllQuestions()
         {
             try
             {
-                List<License> licenses = await _licenseServices.GetAllLicenses();
-                return Ok(licenses);
+                List<Question> questions = await _questionServices.GetAllQuestions();
+                return Ok(questions);
             }
             catch
             {
@@ -35,22 +35,22 @@ namespace webapi.Controllers
         }
 
         [HttpGet]
-        [Route("getLicenseById/{id}")]
-        public async Task<IActionResult> GetLicenseById(String id)
+        [Route("getQuestionById/{id}")]
+        public async Task<IActionResult> GetQuestionById(string id)
         {
             try
             {
-                List<License> licenses = await _licenseServices.GetLicenseById(id);
+                List<Question> questions = await _questionServices.GetQuestionById(id);
 
-                if (licenses.Count == 0)
+                if (questions.Count == 0)
                 {
                     return NotFound(new
                     {
-                        error = "No license found !"
+                        error = "No question found !"
                     });
                 }
                 else
-                    return Ok(licenses[0]);
+                    return Ok(questions[0]);
             }
             catch
             {
@@ -59,9 +59,9 @@ namespace webapi.Controllers
         }
 
         [HttpPost]
-        [Route("createLicense/{id}")]
+        [Route("createQuestion")]
         [Authorize]
-        public async Task<IActionResult> CreateLicense([FromBody] License license)
+        public async Task<IActionResult> CreateQuestion([FromBody] Question question)
         {
             try
             {
@@ -71,16 +71,21 @@ namespace webapi.Controllers
 
                 if (userRole == "Admin")
                 {
-                    License l = new License
+                    Question q = new Question
                     {
-                        LicenseName = license.LicenseName
+                        TestGroup = question.TestGroup,
+                        QuestionType = question.QuestionType,
+                        QuestionContent = question.QuestionContent,
+                        QuestionImage = question.QuestionImage,
+                        Important = question.Important,
+                        Explanation = question.Explanation
                     };
 
-                    await _licenseServices.CreateLicense(l);
+                    await _questionServices.CreateQuestion(q);
 
                     return Ok(new
                     {
-                        success = "Create license successfully !"
+                        success = "Create question successfully !"
                     });
                 }
                 else
@@ -98,9 +103,9 @@ namespace webapi.Controllers
         }
 
         [HttpPut]
-        [Route("updateLicense/{id}")]
+        [Route("updateQuestion/{id}")]
         [Authorize]
-        public async Task<IActionResult> UpdateLicense(String id, [FromBody] License license)
+        public async Task<IActionResult> UpdateQuestion(string id, [FromBody] Question question)
         {
             try
             {
@@ -110,11 +115,11 @@ namespace webapi.Controllers
 
                 if (userRole == "Admin")
                 {
-                    await _licenseServices.UpdateLicense(id, license);
+                    await _questionServices.UpdateQuestion(id, question);
 
                     return Ok(new
                     {
-                        success = "Update license successfully !"
+                        success = "Update question successfully !"
                     });
                 }
                 else
@@ -132,9 +137,9 @@ namespace webapi.Controllers
         }
 
         [HttpDelete]
-        [Route("deleteLicense/{id}")]
+        [Route("deleteQuestion/{id}")]
         [Authorize]
-        public async Task<IActionResult> DeleteLicense(String id)
+        public async Task<IActionResult> DeleteQuestion(string id)
         {
             try
             {
@@ -144,11 +149,11 @@ namespace webapi.Controllers
 
                 if (userRole == "Admin")
                 {
-                    await _licenseServices.DeleteLicense(id);
+                    await _questionServices.DeleteQuestion(id);
 
                     return Ok(new
                     {
-                        success = "Delete license successfully !"
+                        success = "Delete question successfully !"
                     });
                 }
                 else

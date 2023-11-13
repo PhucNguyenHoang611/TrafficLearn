@@ -7,26 +7,26 @@ using webapi.Services;
 namespace webapi.Controllers
 {
     [ApiController]
-    [Route("api/license")]
-    public class LicenseController : ControllerBase
+    [Route("api/trafficSignType")]
+    public class TrafficSignTypeController : ControllerBase
     {
-        private readonly LicenseServices _licenseServices;
+        private readonly TrafficSignTypeServices _trafficSignTypeServices;
         private readonly UserServices _userServices;
 
-        public LicenseController(LicenseServices licenseServices, UserServices userServices)
+        public TrafficSignTypeController(TrafficSignTypeServices trafficSignTypeServices, UserServices userServices)
         {
-            _licenseServices = licenseServices;
+            _trafficSignTypeServices = trafficSignTypeServices;
             _userServices = userServices;
         }
 
         [HttpGet]
-        [Route("getAllLicenses")]
-        public async Task<IActionResult> GetAllLicenses()
+        [Route("getAllTrafficSignTypes")]
+        public async Task<IActionResult> GetAllTrafficSignTypes()
         {
             try
             {
-                List<License> licenses = await _licenseServices.GetAllLicenses();
-                return Ok(licenses);
+                List<TrafficSignType> trafficSignTypes = await _trafficSignTypeServices.GetAllTrafficSignTypes();
+                return Ok(trafficSignTypes);
             }
             catch
             {
@@ -35,22 +35,22 @@ namespace webapi.Controllers
         }
 
         [HttpGet]
-        [Route("getLicenseById/{id}")]
-        public async Task<IActionResult> GetLicenseById(String id)
+        [Route("getTrafficSignTypeById/{id}")]
+        public async Task<IActionResult> GetTrafficSignTypeById(string id)
         {
             try
             {
-                List<License> licenses = await _licenseServices.GetLicenseById(id);
+                List<TrafficSignType> trafficSignTypes = await _trafficSignTypeServices.GetTrafficSignTypeById(id);
 
-                if (licenses.Count == 0)
+                if (trafficSignTypes.Count == 0)
                 {
                     return NotFound(new
                     {
-                        error = "No license found !"
+                        error = "No type found !"
                     });
                 }
                 else
-                    return Ok(licenses[0]);
+                    return Ok(trafficSignTypes[0]);
             }
             catch
             {
@@ -59,9 +59,9 @@ namespace webapi.Controllers
         }
 
         [HttpPost]
-        [Route("createLicense/{id}")]
+        [Route("createTrafficSignType")]
         [Authorize]
-        public async Task<IActionResult> CreateLicense([FromBody] License license)
+        public async Task<IActionResult> CreateTrafficSignType([FromBody] TrafficSignType trafficSignType)
         {
             try
             {
@@ -71,16 +71,16 @@ namespace webapi.Controllers
 
                 if (userRole == "Admin")
                 {
-                    License l = new License
+                    TrafficSignType tst = new TrafficSignType
                     {
-                        LicenseName = license.LicenseName
+                        SignType = trafficSignType.SignType
                     };
 
-                    await _licenseServices.CreateLicense(l);
+                    await _trafficSignTypeServices.CreateTrafficSignType(tst);
 
                     return Ok(new
                     {
-                        success = "Create license successfully !"
+                        success = "Create type successfully !"
                     });
                 }
                 else
@@ -98,9 +98,9 @@ namespace webapi.Controllers
         }
 
         [HttpPut]
-        [Route("updateLicense/{id}")]
+        [Route("updateTrafficSignType/{id}")]
         [Authorize]
-        public async Task<IActionResult> UpdateLicense(String id, [FromBody] License license)
+        public async Task<IActionResult> UpdateTrafficSignType(string id, [FromBody] TrafficSignType trafficSignType)
         {
             try
             {
@@ -110,11 +110,11 @@ namespace webapi.Controllers
 
                 if (userRole == "Admin")
                 {
-                    await _licenseServices.UpdateLicense(id, license);
+                    await _trafficSignTypeServices.UpdateTrafficSignType(id, trafficSignType);
 
                     return Ok(new
                     {
-                        success = "Update license successfully !"
+                        success = "Update type successfully !"
                     });
                 }
                 else
@@ -132,9 +132,9 @@ namespace webapi.Controllers
         }
 
         [HttpDelete]
-        [Route("deleteLicense/{id}")]
+        [Route("deleteTrafficSignType/{id}")]
         [Authorize]
-        public async Task<IActionResult> DeleteLicense(String id)
+        public async Task<IActionResult> DeleteTrafficSignType(string id)
         {
             try
             {
@@ -144,11 +144,11 @@ namespace webapi.Controllers
 
                 if (userRole == "Admin")
                 {
-                    await _licenseServices.DeleteLicense(id);
+                    await _trafficSignTypeServices.DeleteTrafficSignType(id);
 
                     return Ok(new
                     {
-                        success = "Delete license successfully !"
+                        success = "Delete type successfully !"
                     });
                 }
                 else
