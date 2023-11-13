@@ -1,4 +1,4 @@
-﻿namespace webapi.Models
+﻿namespace webapi.Models.Settings
 {
     public class EmailSettings
     {

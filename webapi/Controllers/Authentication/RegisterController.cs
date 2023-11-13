@@ -1,10 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using webapi.Models;
 using webapi.Services;
-using AspNetCore.Totp;
-using AspNetCore.Totp.Interface;
+using webapi.Models.Request;
+using webapi.Services.Email;
 
-namespace webapi.Controllers
+namespace webapi.Controllers.Authentication
 {
     public class VerifyEmailRequest
     {
@@ -70,7 +70,7 @@ namespace webapi.Controllers
 
         [HttpPost]
         [Route("sendVerificationEmail/{email}")]
-        public async Task<IActionResult> SendVerificationEmail(String email)
+        public async Task<IActionResult> SendVerificationEmail(string email)
         {
             try
             {

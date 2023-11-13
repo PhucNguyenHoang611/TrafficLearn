@@ -7,8 +7,10 @@ using Microsoft.AspNetCore.Mvc;
 using webapi.Models;
 using webapi.Services;
 using Microsoft.AspNetCore.Authentication;
+using webapi.Models.Request;
+using webapi.Services.Email;
 
-namespace webapi.Controllers
+namespace webapi.Controllers.Authentication
 {
     public class ResetPasswordBody
     {
@@ -109,7 +111,7 @@ namespace webapi.Controllers
 
         [HttpPost]
         [Route("forgetPassword/{email}")]
-        public async Task<IActionResult> ForgetPassword(String email)
+        public async Task<IActionResult> ForgetPassword(string email)
         {
             try
             {
@@ -218,10 +220,10 @@ namespace webapi.Controllers
 
             return Ok(new
             {
-                userId = userId,
-                userEmail = userEmail,
-                userFirstName = userFirstName,
-                userLastName = userLastName
+                userId,
+                userEmail,
+                userFirstName,
+                userLastName
             });
         }
     }
