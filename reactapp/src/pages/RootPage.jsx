@@ -25,12 +25,15 @@ const RootPage = () => {
         switch (type) {
           case "success":
             toast.success(message);
+            dispatch({ type: "UN_NOTIFY" });
             break;
           case "error":
             toast.error(message);
+            dispatch({ type: "UN_NOTIFY" });
             break;
           case "warning":
             toast.warning(message);
+            dispatch({ type: "UN_NOTIFY" });
             break;
           default:
             break;
@@ -68,6 +71,7 @@ const RootPage = () => {
             },
           });
         }
+        console.log("error", error);
         // dispatch({ type: "LOGOUT" });
       }
     };

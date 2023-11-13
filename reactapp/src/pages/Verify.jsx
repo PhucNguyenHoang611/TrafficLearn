@@ -43,6 +43,7 @@ const Verify = () => {
             message: "Xác thực email thành công, hãy đăng nhập lại!",
           },
         });
+        dispatch({ type: "UN_NOTIFY" });
         dispatch({ type: "UN_EMAIL" });
         navigate("/login");
       }
