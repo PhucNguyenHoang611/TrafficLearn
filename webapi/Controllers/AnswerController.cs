@@ -8,26 +8,26 @@ using webapi.Services;
 namespace webapi.Controllers
 {
     [ApiController]
-    [Route("api/decree")]
-    public class DecreeController : ControllerBase
+    [Route("api/answer")]
+    public class AnswerController : ControllerBase
     {
-        private readonly DecreeServices _decreeServices;
+        private readonly AnswerServices _answerServices;
         private readonly UserServices _userServices;
 
-        public DecreeController(DecreeServices decreeServices, UserServices userServices)
+        public AnswerController(AnswerServices answerServices, UserServices userServices)
         {
-            _decreeServices = decreeServices;
+            _answerServices = answerServices;
             _userServices = userServices;
         }
 
         [HttpGet]
-        [Route("getAllDecrees")]
-        public async Task<IActionResult> GetAllDecrees()
+        [Route("getAllAnswers")]
+        public async Task<IActionResult> GetAllAnswers()
         {
             try
             {
-                List<Decree> decrees = await _decreeServices.GetAllDecrees();
-                return Ok(decrees);
+                List<Answer> answers = await _answerServices.GetAllAnswers();
+                return Ok(answers);
             }
             catch
             {
@@ -36,8 +36,8 @@ namespace webapi.Controllers
         }
 
         [HttpGet]
-        [Route("getDecreeById/{id}")]
-        public async Task<IActionResult> GetDecreeById(string id)
+        [Route("getAnswerById/{id}")]
+        public async Task<IActionResult> GetAnswerById(string id)
         {
             try
             {
@@ -49,17 +49,17 @@ namespace webapi.Controllers
                     });
                 }
 
-                List<Decree> decrees = await _decreeServices.GetDecreeById(id);
+                List<Answer> answers = await _answerServices.GetAnswerById(id);
 
-                if (decrees.Count == 0)
+                if (answers.Count == 0)
                 {
                     return NotFound(new
                     {
-                        error = "No decree found !"
+                        error = "No answer found !"
                     });
                 }
                 else
-                    return Ok(decrees[0]);
+                    return Ok(answers[0]);
             }
             catch
             {
@@ -68,9 +68,9 @@ namespace webapi.Controllers
         }
 
         [HttpPost]
-        [Route("createDecree")]
+        [Route("createAnswer")]
         [Authorize]
-        public async Task<IActionResult> CreateDecree([FromBody] Decree decree)
+        public async Task<IActionResult> CreateAnswer([FromBody] Answer answer)
         {
             try
             {
@@ -80,18 +80,26 @@ namespace webapi.Controllers
 
                 if (userRole == "Admin")
                 {
-                    Decree d = new Decree
+                    if (!ObjectId.TryParse(answer.QuestionId, out _))
                     {
-                        DecreeName = decree.DecreeName,
-                        DecreeDate = decree.DecreeDate,
-                        DecreeNumber = decree.DecreeNumber
+                        return BadRequest(new
+                        {
+                            error = "Invalid question ID !"
+                        });
+                    }
+
+                    Answer a = new Answer
+                    {
+                        QuestionId = answer.QuestionId,
+                        AnswerContent = answer.AnswerContent,
+                        Result = answer.Result
                     };
 
-                    await _decreeServices.CreateDecree(d);
+                    await _answerServices.CreateAnswer(a);
 
                     return Ok(new
                     {
-                        success = "Create decree successfully !"
+                        success = "Create answer successfully !"
                     });
                 }
                 else
@@ -109,9 +117,9 @@ namespace webapi.Controllers
         }
 
         [HttpPut]
-        [Route("updateDecree/{id}")]
+        [Route("updateAnswer/{id}")]
         [Authorize]
-        public async Task<IActionResult> UpdateDecree(string id, [FromBody] Decree decree)
+        public async Task<IActionResult> UpdateAnswer(string id, [FromBody] Answer answer)
         {
             try
             {
@@ -129,21 +137,29 @@ namespace webapi.Controllers
                         });
                     }
 
-                    List<Decree> decrees = await _decreeServices.GetDecreeById(id);
+                    List<Answer> answers = await _answerServices.GetAnswerById(id);
 
-                    if (decrees.Count == 0)
+                    if (answers.Count == 0)
                     {
                         return NotFound(new
                         {
-                            error = "No decree found !"
+                            error = "No answer found !"
                         });
                     }
 
-                    await _decreeServices.UpdateDecree(id, decree);
+                    if (!ObjectId.TryParse(answer.QuestionId, out _))
+                    {
+                        return BadRequest(new
+                        {
+                            error = "Invalid question ID !"
+                        });
+                    }
+
+                    await _answerServices.UpdateAnswer(id, answer);
 
                     return Ok(new
                     {
-                        success = "Update decree successfully !"
+                        success = "Update answer successfully !"
                     });
                 }
                 else
@@ -161,9 +177,9 @@ namespace webapi.Controllers
         }
 
         [HttpDelete]
-        [Route("deleteDecree/{id}")]
+        [Route("deleteAnswer/{id}")]
         [Authorize]
-        public async Task<IActionResult> DeleteDecree(string id)
+        public async Task<IActionResult> DeleteAnswer(string id)
         {
             try
             {
@@ -181,21 +197,21 @@ namespace webapi.Controllers
                         });
                     }
 
-                    List<Decree> decrees = await _decreeServices.GetDecreeById(id);
+                    List<Answer> answers = await _answerServices.GetAnswerById(id);
 
-                    if (decrees.Count == 0)
+                    if (answers.Count == 0)
                     {
                         return NotFound(new
                         {
-                            error = "No decree found !"
+                            error = "No answer found !"
                         });
                     }
 
-                    await _decreeServices.DeleteDecree(id);
+                    await _answerServices.DeleteAnswer(id);
 
                     return Ok(new
                     {
-                        success = "Delete decree successfully !"
+                        success = "Delete answer successfully !"
                     });
                 }
                 else

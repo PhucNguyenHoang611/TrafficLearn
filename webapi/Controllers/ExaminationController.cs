@@ -8,26 +8,26 @@ using webapi.Services;
 namespace webapi.Controllers
 {
     [ApiController]
-    [Route("api/decree")]
-    public class DecreeController : ControllerBase
+    [Route("api/examination")]
+    public class ExaminationController : ControllerBase
     {
-        private readonly DecreeServices _decreeServices;
+        private readonly ExaminationServices _examinationServices;
         private readonly UserServices _userServices;
 
-        public DecreeController(DecreeServices decreeServices, UserServices userServices)
+        public ExaminationController(ExaminationServices examinationServices, UserServices userServices)
         {
-            _decreeServices = decreeServices;
+            _examinationServices = examinationServices;
             _userServices = userServices;
         }
 
         [HttpGet]
-        [Route("getAllDecrees")]
-        public async Task<IActionResult> GetAllDecrees()
+        [Route("getAllExaminations")]
+        public async Task<IActionResult> GetAllExaminations()
         {
             try
             {
-                List<Decree> decrees = await _decreeServices.GetAllDecrees();
-                return Ok(decrees);
+                List<Examination> examinations = await _examinationServices.GetAllExaminations();
+                return Ok(examinations);
             }
             catch
             {
@@ -36,8 +36,8 @@ namespace webapi.Controllers
         }
 
         [HttpGet]
-        [Route("getDecreeById/{id}")]
-        public async Task<IActionResult> GetDecreeById(string id)
+        [Route("getExaminationById/{id}")]
+        public async Task<IActionResult> GetExaminationById(string id)
         {
             try
             {
@@ -49,17 +49,17 @@ namespace webapi.Controllers
                     });
                 }
 
-                List<Decree> decrees = await _decreeServices.GetDecreeById(id);
+                List<Examination> examinations = await _examinationServices.GetExaminationById(id);
 
-                if (decrees.Count == 0)
+                if (examinations.Count == 0)
                 {
                     return NotFound(new
                     {
-                        error = "No decree found !"
+                        error = "No examination found !"
                     });
                 }
                 else
-                    return Ok(decrees[0]);
+                    return Ok(examinations[0]);
             }
             catch
             {
@@ -68,9 +68,9 @@ namespace webapi.Controllers
         }
 
         [HttpPost]
-        [Route("createDecree")]
+        [Route("createExamination")]
         [Authorize]
-        public async Task<IActionResult> CreateDecree([FromBody] Decree decree)
+        public async Task<IActionResult> CreateExamination([FromBody] Examination examination)
         {
             try
             {
@@ -80,18 +80,36 @@ namespace webapi.Controllers
 
                 if (userRole == "Admin")
                 {
-                    Decree d = new Decree
+                    if (!ObjectId.TryParse(examination.UserId, out _))
                     {
-                        DecreeName = decree.DecreeName,
-                        DecreeDate = decree.DecreeDate,
-                        DecreeNumber = decree.DecreeNumber
+                        return BadRequest(new
+                        {
+                            error = "Invalid user ID !"
+                        });
+                    }
+
+                    if (!ObjectId.TryParse(examination.LicenseId, out _))
+                    {
+                        return BadRequest(new
+                        {
+                            error = "Invalid license ID !"
+                        });
+                    }
+
+                    Examination e = new Examination
+                    {
+                        UserId = examination.UserId,
+                        LicenseId = examination.LicenseId,
+                        ExaminationDate = examination.ExaminationDate,
+                        Score = examination.Score,
+                        IsPassed = examination.IsPassed
                     };
 
-                    await _decreeServices.CreateDecree(d);
+                    await _examinationServices.CreateExamination(e);
 
                     return Ok(new
                     {
-                        success = "Create decree successfully !"
+                        success = "Create examination successfully !"
                     });
                 }
                 else
@@ -109,9 +127,9 @@ namespace webapi.Controllers
         }
 
         [HttpPut]
-        [Route("updateDecree/{id}")]
+        [Route("updateExamination/{id}")]
         [Authorize]
-        public async Task<IActionResult> UpdateDecree(string id, [FromBody] Decree decree)
+        public async Task<IActionResult> UpdateExamination(string id, [FromBody] Examination examination)
         {
             try
             {
@@ -129,21 +147,37 @@ namespace webapi.Controllers
                         });
                     }
 
-                    List<Decree> decrees = await _decreeServices.GetDecreeById(id);
+                    List<Examination> examinations = await _examinationServices.GetExaminationById(id);
 
-                    if (decrees.Count == 0)
+                    if (examinations.Count == 0)
                     {
                         return NotFound(new
                         {
-                            error = "No decree found !"
+                            error = "No examination found !"
                         });
                     }
 
-                    await _decreeServices.UpdateDecree(id, decree);
+                    if (!ObjectId.TryParse(examination.UserId, out _))
+                    {
+                        return BadRequest(new
+                        {
+                            error = "Invalid user ID !"
+                        });
+                    }
+
+                    if (!ObjectId.TryParse(examination.LicenseId, out _))
+                    {
+                        return BadRequest(new
+                        {
+                            error = "Invalid license ID !"
+                        });
+                    }
+
+                    await _examinationServices.UpdateExamination(id, examination);
 
                     return Ok(new
                     {
-                        success = "Update decree successfully !"
+                        success = "Update examination successfully !"
                     });
                 }
                 else
@@ -161,9 +195,9 @@ namespace webapi.Controllers
         }
 
         [HttpDelete]
-        [Route("deleteDecree/{id}")]
+        [Route("deleteExamination/{id}")]
         [Authorize]
-        public async Task<IActionResult> DeleteDecree(string id)
+        public async Task<IActionResult> DeleteExamination(string id)
         {
             try
             {
@@ -181,21 +215,21 @@ namespace webapi.Controllers
                         });
                     }
 
-                    List<Decree> decrees = await _decreeServices.GetDecreeById(id);
+                    List<Examination> examinations = await _examinationServices.GetExaminationById(id);
 
-                    if (decrees.Count == 0)
+                    if (examinations.Count == 0)
                     {
                         return NotFound(new
                         {
-                            error = "No decree found !"
+                            error = "No examination found !"
                         });
                     }
 
-                    await _decreeServices.DeleteDecree(id);
+                    await _examinationServices.DeleteExamination(id);
 
                     return Ok(new
                     {
-                        success = "Delete decree successfully !"
+                        success = "Delete examination successfully !"
                     });
                 }
                 else

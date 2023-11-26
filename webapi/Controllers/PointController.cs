@@ -8,26 +8,26 @@ using webapi.Services;
 namespace webapi.Controllers
 {
     [ApiController]
-    [Route("api/decree")]
-    public class DecreeController : ControllerBase
+    [Route("api/point")]
+    public class PointController : ControllerBase
     {
-        private readonly DecreeServices _decreeServices;
+        private readonly PointServices _pointServices;
         private readonly UserServices _userServices;
 
-        public DecreeController(DecreeServices decreeServices, UserServices userServices)
+        public PointController(PointServices pointServices, UserServices userServices)
         {
-            _decreeServices = decreeServices;
+            _pointServices = pointServices;
             _userServices = userServices;
         }
 
         [HttpGet]
-        [Route("getAllDecrees")]
-        public async Task<IActionResult> GetAllDecrees()
+        [Route("getAllPoints")]
+        public async Task<IActionResult> GetAllPoints()
         {
             try
             {
-                List<Decree> decrees = await _decreeServices.GetAllDecrees();
-                return Ok(decrees);
+                List<Point> points = await _pointServices.GetAllPoints();
+                return Ok(points);
             }
             catch
             {
@@ -36,8 +36,8 @@ namespace webapi.Controllers
         }
 
         [HttpGet]
-        [Route("getDecreeById/{id}")]
-        public async Task<IActionResult> GetDecreeById(string id)
+        [Route("getPointById/{id}")]
+        public async Task<IActionResult> GetPointById(string id)
         {
             try
             {
@@ -49,17 +49,17 @@ namespace webapi.Controllers
                     });
                 }
 
-                List<Decree> decrees = await _decreeServices.GetDecreeById(id);
+                List<Point> points = await _pointServices.GetPointById(id);
 
-                if (decrees.Count == 0)
+                if (points.Count == 0)
                 {
                     return NotFound(new
                     {
-                        error = "No decree found !"
+                        error = "No point found !"
                     });
                 }
                 else
-                    return Ok(decrees[0]);
+                    return Ok(points[0]);
             }
             catch
             {
@@ -68,9 +68,9 @@ namespace webapi.Controllers
         }
 
         [HttpPost]
-        [Route("createDecree")]
+        [Route("createPoint")]
         [Authorize]
-        public async Task<IActionResult> CreateDecree([FromBody] Decree decree)
+        public async Task<IActionResult> CreatePoint([FromBody] Point point)
         {
             try
             {
@@ -80,18 +80,27 @@ namespace webapi.Controllers
 
                 if (userRole == "Admin")
                 {
-                    Decree d = new Decree
+
+                    if (!ObjectId.TryParse(point.ClauseId, out _))
                     {
-                        DecreeName = decree.DecreeName,
-                        DecreeDate = decree.DecreeDate,
-                        DecreeNumber = decree.DecreeNumber
+                        return BadRequest(new
+                        {
+                            error = "Invalid clause ID !"
+                        });
+                    }
+
+                    Point p = new Point
+                    {
+                        ClauseId = point.ClauseId,
+                        PointTitle = point.PointTitle,
+                        PointContent = point.PointContent
                     };
 
-                    await _decreeServices.CreateDecree(d);
+                    await _pointServices.CreatePoint(p);
 
                     return Ok(new
                     {
-                        success = "Create decree successfully !"
+                        success = "Create point successfully !"
                     });
                 }
                 else
@@ -109,9 +118,9 @@ namespace webapi.Controllers
         }
 
         [HttpPut]
-        [Route("updateDecree/{id}")]
+        [Route("updatePoint/{id}")]
         [Authorize]
-        public async Task<IActionResult> UpdateDecree(string id, [FromBody] Decree decree)
+        public async Task<IActionResult> UpdatePoint(string id, [FromBody] Point point)
         {
             try
             {
@@ -129,21 +138,29 @@ namespace webapi.Controllers
                         });
                     }
 
-                    List<Decree> decrees = await _decreeServices.GetDecreeById(id);
+                    List<Point> points = await _pointServices.GetPointById(id);
 
-                    if (decrees.Count == 0)
+                    if (points.Count == 0)
                     {
                         return NotFound(new
                         {
-                            error = "No decree found !"
+                            error = "No point found !"
                         });
                     }
 
-                    await _decreeServices.UpdateDecree(id, decree);
+                    if (!ObjectId.TryParse(point.ClauseId, out _))
+                    {
+                        return BadRequest(new
+                        {
+                            error = "Invalid clause ID !"
+                        });
+                    }
+
+                    await _pointServices.UpdatePoint(id, point);
 
                     return Ok(new
                     {
-                        success = "Update decree successfully !"
+                        success = "Update point successfully !"
                     });
                 }
                 else
@@ -161,9 +178,9 @@ namespace webapi.Controllers
         }
 
         [HttpDelete]
-        [Route("deleteDecree/{id}")]
+        [Route("deletePoint/{id}")]
         [Authorize]
-        public async Task<IActionResult> DeleteDecree(string id)
+        public async Task<IActionResult> DeletePoint(string id)
         {
             try
             {
@@ -181,21 +198,21 @@ namespace webapi.Controllers
                         });
                     }
 
-                    List<Decree> decrees = await _decreeServices.GetDecreeById(id);
+                    List<Point> points = await _pointServices.GetPointById(id);
 
-                    if (decrees.Count == 0)
+                    if (points.Count == 0)
                     {
                         return NotFound(new
                         {
-                            error = "No decree found !"
+                            error = "No point found !"
                         });
                     }
 
-                    await _decreeServices.DeleteDecree(id);
+                    await _pointServices.DeletePoint(id);
 
                     return Ok(new
                     {
-                        success = "Delete decree successfully !"
+                        success = "Delete point successfully !"
                     });
                 }
                 else

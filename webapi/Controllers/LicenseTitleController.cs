@@ -8,26 +8,26 @@ using webapi.Services;
 namespace webapi.Controllers
 {
     [ApiController]
-    [Route("api/decree")]
-    public class DecreeController : ControllerBase
+    [Route("api/licenseTitle")]
+    public class LicenseTitleController : ControllerBase
     {
-        private readonly DecreeServices _decreeServices;
+        private readonly LicenseTitleServices _licenseTitleServices;
         private readonly UserServices _userServices;
 
-        public DecreeController(DecreeServices decreeServices, UserServices userServices)
+        public LicenseTitleController(LicenseTitleServices licenseTitleServices, UserServices userServices)
         {
-            _decreeServices = decreeServices;
+            _licenseTitleServices = licenseTitleServices;
             _userServices = userServices;
         }
 
         [HttpGet]
-        [Route("getAllDecrees")]
-        public async Task<IActionResult> GetAllDecrees()
+        [Route("getAllLicenseTitles")]
+        public async Task<IActionResult> GetAllLicenseTitles()
         {
             try
             {
-                List<Decree> decrees = await _decreeServices.GetAllDecrees();
-                return Ok(decrees);
+                List<LicenseTitle> licenseTitles = await _licenseTitleServices.GetAllLicenseTitles();
+                return Ok(licenseTitles);
             }
             catch
             {
@@ -36,8 +36,8 @@ namespace webapi.Controllers
         }
 
         [HttpGet]
-        [Route("getDecreeById/{id}")]
-        public async Task<IActionResult> GetDecreeById(string id)
+        [Route("getLicenseTitleById/{id}")]
+        public async Task<IActionResult> GetLicenseTitleById(string id)
         {
             try
             {
@@ -49,17 +49,17 @@ namespace webapi.Controllers
                     });
                 }
 
-                List<Decree> decrees = await _decreeServices.GetDecreeById(id);
+                List<LicenseTitle> licenseTitles = await _licenseTitleServices.GetLicenseTitleById(id);
 
-                if (decrees.Count == 0)
+                if (licenseTitles.Count == 0)
                 {
                     return NotFound(new
                     {
-                        error = "No decree found !"
+                        error = "No license title found !"
                     });
                 }
                 else
-                    return Ok(decrees[0]);
+                    return Ok(licenseTitles[0]);
             }
             catch
             {
@@ -68,9 +68,9 @@ namespace webapi.Controllers
         }
 
         [HttpPost]
-        [Route("createDecree")]
+        [Route("createLicenseTitle")]
         [Authorize]
-        public async Task<IActionResult> CreateDecree([FromBody] Decree decree)
+        public async Task<IActionResult> CreateLicenseTitle([FromBody] LicenseTitle licenseTitle)
         {
             try
             {
@@ -80,18 +80,33 @@ namespace webapi.Controllers
 
                 if (userRole == "Admin")
                 {
-                    Decree d = new Decree
+                    if (!ObjectId.TryParse(licenseTitle.LicenseId, out _))
                     {
-                        DecreeName = decree.DecreeName,
-                        DecreeDate = decree.DecreeDate,
-                        DecreeNumber = decree.DecreeNumber
+                        return BadRequest(new
+                        {
+                            error = "Invalid license ID !"
+                        });
+                    }
+
+                    if (!ObjectId.TryParse(licenseTitle.TitleId, out _))
+                    {
+                        return BadRequest(new
+                        {
+                            error = "Invalid title ID !"
+                        });
+                    }
+
+                    LicenseTitle lt = new LicenseTitle
+                    {
+                        LicenseId = licenseTitle.LicenseId,
+                        TitleId = licenseTitle.TitleId
                     };
 
-                    await _decreeServices.CreateDecree(d);
+                    await _licenseTitleServices.CreateLicenseTitle(lt);
 
                     return Ok(new
                     {
-                        success = "Create decree successfully !"
+                        success = "Create license title successfully !"
                     });
                 }
                 else
@@ -109,9 +124,9 @@ namespace webapi.Controllers
         }
 
         [HttpPut]
-        [Route("updateDecree/{id}")]
+        [Route("updateLicenseTitle/{id}")]
         [Authorize]
-        public async Task<IActionResult> UpdateDecree(string id, [FromBody] Decree decree)
+        public async Task<IActionResult> UpdateLicenseTitle(string id, [FromBody] LicenseTitle licenseTitle)
         {
             try
             {
@@ -129,21 +144,37 @@ namespace webapi.Controllers
                         });
                     }
 
-                    List<Decree> decrees = await _decreeServices.GetDecreeById(id);
+                    List<LicenseTitle> licenseTitles = await _licenseTitleServices.GetLicenseTitleById(id);
 
-                    if (decrees.Count == 0)
+                    if (licenseTitles.Count == 0)
                     {
                         return NotFound(new
                         {
-                            error = "No decree found !"
+                            error = "No license title found !"
                         });
                     }
 
-                    await _decreeServices.UpdateDecree(id, decree);
+                    if (!ObjectId.TryParse(licenseTitle.LicenseId, out _))
+                    {
+                        return BadRequest(new
+                        {
+                            error = "Invalid license ID !"
+                        });
+                    }
+
+                    if (!ObjectId.TryParse(licenseTitle.TitleId, out _))
+                    {
+                        return BadRequest(new
+                        {
+                            error = "Invalid title ID !"
+                        });
+                    }
+
+                    await _licenseTitleServices.UpdateLicenseTitle(id, licenseTitle);
 
                     return Ok(new
                     {
-                        success = "Update decree successfully !"
+                        success = "Update license title successfully !"
                     });
                 }
                 else
@@ -161,9 +192,9 @@ namespace webapi.Controllers
         }
 
         [HttpDelete]
-        [Route("deleteDecree/{id}")]
+        [Route("deleteLicenseTitle/{id}")]
         [Authorize]
-        public async Task<IActionResult> DeleteDecree(string id)
+        public async Task<IActionResult> DeleteLicenseTitle(string id)
         {
             try
             {
@@ -181,21 +212,21 @@ namespace webapi.Controllers
                         });
                     }
 
-                    List<Decree> decrees = await _decreeServices.GetDecreeById(id);
+                    List<LicenseTitle> licenseTitles = await _licenseTitleServices.GetLicenseTitleById(id);
 
-                    if (decrees.Count == 0)
+                    if (licenseTitles.Count == 0)
                     {
                         return NotFound(new
                         {
-                            error = "No decree found !"
+                            error = "No license title found !"
                         });
                     }
 
-                    await _decreeServices.DeleteDecree(id);
+                    await _licenseTitleServices.DeleteLicenseTitle(id);
 
                     return Ok(new
                     {
-                        success = "Delete decree successfully !"
+                        success = "Delete license title successfully !"
                     });
                 }
                 else

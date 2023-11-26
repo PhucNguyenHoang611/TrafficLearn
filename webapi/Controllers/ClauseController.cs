@@ -8,26 +8,26 @@ using webapi.Services;
 namespace webapi.Controllers
 {
     [ApiController]
-    [Route("api/decree")]
-    public class DecreeController : ControllerBase
+    [Route("api/clause")]
+    public class ClauseController : ControllerBase
     {
-        private readonly DecreeServices _decreeServices;
+        private readonly ClauseServices _clauseServices;
         private readonly UserServices _userServices;
 
-        public DecreeController(DecreeServices decreeServices, UserServices userServices)
+        public ClauseController(ClauseServices clauseServices, UserServices userServices)
         {
-            _decreeServices = decreeServices;
+            _clauseServices = clauseServices;
             _userServices = userServices;
         }
 
         [HttpGet]
-        [Route("getAllDecrees")]
-        public async Task<IActionResult> GetAllDecrees()
+        [Route("getAllClauses")]
+        public async Task<IActionResult> GetAllClauses()
         {
             try
             {
-                List<Decree> decrees = await _decreeServices.GetAllDecrees();
-                return Ok(decrees);
+                List<Clause> clauses = await _clauseServices.GetAllClauses();
+                return Ok(clauses);
             }
             catch
             {
@@ -36,8 +36,8 @@ namespace webapi.Controllers
         }
 
         [HttpGet]
-        [Route("getDecreeById/{id}")]
-        public async Task<IActionResult> GetDecreeById(string id)
+        [Route("getClauseById/{id}")]
+        public async Task<IActionResult> GetClauseById(string id)
         {
             try
             {
@@ -49,17 +49,17 @@ namespace webapi.Controllers
                     });
                 }
 
-                List<Decree> decrees = await _decreeServices.GetDecreeById(id);
+                List<Clause> clauses = await _clauseServices.GetClauseById(id);
 
-                if (decrees.Count == 0)
+                if (clauses.Count == 0)
                 {
                     return NotFound(new
                     {
-                        error = "No decree found !"
+                        error = "No clause found !"
                     });
                 }
                 else
-                    return Ok(decrees[0]);
+                    return Ok(clauses[0]);
             }
             catch
             {
@@ -68,9 +68,9 @@ namespace webapi.Controllers
         }
 
         [HttpPost]
-        [Route("createDecree")]
+        [Route("createClause")]
         [Authorize]
-        public async Task<IActionResult> CreateDecree([FromBody] Decree decree)
+        public async Task<IActionResult> CreateClause([FromBody] Clause clause)
         {
             try
             {
@@ -80,18 +80,25 @@ namespace webapi.Controllers
 
                 if (userRole == "Admin")
                 {
-                    Decree d = new Decree
+                    if (!ObjectId.TryParse(clause.ArticleId, out _))
                     {
-                        DecreeName = decree.DecreeName,
-                        DecreeDate = decree.DecreeDate,
-                        DecreeNumber = decree.DecreeNumber
+                        return BadRequest(new
+                        {
+                            error = "Invalid article ID !"
+                        });
+                    }
+
+                    Clause c = new Clause
+                    {
+                        ArticleId = clause.ArticleId,
+                        ClauseTitle = clause.ClauseTitle
                     };
 
-                    await _decreeServices.CreateDecree(d);
+                    await _clauseServices.CreateClause(c);
 
                     return Ok(new
                     {
-                        success = "Create decree successfully !"
+                        success = "Create clause successfully !"
                     });
                 }
                 else
@@ -109,9 +116,9 @@ namespace webapi.Controllers
         }
 
         [HttpPut]
-        [Route("updateDecree/{id}")]
+        [Route("updateClause/{id}")]
         [Authorize]
-        public async Task<IActionResult> UpdateDecree(string id, [FromBody] Decree decree)
+        public async Task<IActionResult> UpdateClause(string id, [FromBody] Clause clause)
         {
             try
             {
@@ -129,21 +136,29 @@ namespace webapi.Controllers
                         });
                     }
 
-                    List<Decree> decrees = await _decreeServices.GetDecreeById(id);
+                    List<Clause> clauses = await _clauseServices.GetClauseById(id);
 
-                    if (decrees.Count == 0)
+                    if (clauses.Count == 0)
                     {
                         return NotFound(new
                         {
-                            error = "No decree found !"
+                            error = "No clause found !"
                         });
                     }
 
-                    await _decreeServices.UpdateDecree(id, decree);
+                    if (!ObjectId.TryParse(clause.ArticleId, out _))
+                    {
+                        return BadRequest(new
+                        {
+                            error = "Invalid article ID !"
+                        });
+                    }
+
+                    await _clauseServices.UpdateClause(id, clause);
 
                     return Ok(new
                     {
-                        success = "Update decree successfully !"
+                        success = "Update clause successfully !"
                     });
                 }
                 else
@@ -161,9 +176,9 @@ namespace webapi.Controllers
         }
 
         [HttpDelete]
-        [Route("deleteDecree/{id}")]
+        [Route("deleteClause/{id}")]
         [Authorize]
-        public async Task<IActionResult> DeleteDecree(string id)
+        public async Task<IActionResult> DeleteClause(string id)
         {
             try
             {
@@ -181,21 +196,21 @@ namespace webapi.Controllers
                         });
                     }
 
-                    List<Decree> decrees = await _decreeServices.GetDecreeById(id);
+                    List<Clause> clauses = await _clauseServices.GetClauseById(id);
 
-                    if (decrees.Count == 0)
+                    if (clauses.Count == 0)
                     {
                         return NotFound(new
                         {
-                            error = "No decree found !"
+                            error = "No clause found !"
                         });
                     }
 
-                    await _decreeServices.DeleteDecree(id);
+                    await _clauseServices.DeleteClause(id);
 
                     return Ok(new
                     {
-                        success = "Delete decree successfully !"
+                        success = "Delete clause successfully !"
                     });
                 }
                 else

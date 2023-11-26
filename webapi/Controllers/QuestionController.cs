@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using MongoDB.Bson;
 using System.Security.Claims;
 using webapi.Models;
 using webapi.Services;
@@ -40,6 +41,14 @@ namespace webapi.Controllers
         {
             try
             {
+                if (!ObjectId.TryParse(id, out _))
+                {
+                    return BadRequest(new
+                    {
+                        error = "Invalid ID !"
+                    });
+                }
+
                 List<Question> questions = await _questionServices.GetQuestionById(id);
 
                 if (questions.Count == 0)
@@ -115,6 +124,24 @@ namespace webapi.Controllers
 
                 if (userRole == "Admin")
                 {
+                    if (!ObjectId.TryParse(id, out _))
+                    {
+                        return BadRequest(new
+                        {
+                            error = "Invalid ID !"
+                        });
+                    }
+
+                    List<Question> questions = await _questionServices.GetQuestionById(id);
+
+                    if (questions.Count == 0)
+                    {
+                        return NotFound(new
+                        {
+                            error = "No question found !"
+                        });
+                    }
+
                     await _questionServices.UpdateQuestion(id, question);
 
                     return Ok(new
@@ -149,6 +176,24 @@ namespace webapi.Controllers
 
                 if (userRole == "Admin")
                 {
+                    if (!ObjectId.TryParse(id, out _))
+                    {
+                        return BadRequest(new
+                        {
+                            error = "Invalid ID !"
+                        });
+                    }
+
+                    List<Question> questions = await _questionServices.GetQuestionById(id);
+
+                    if (questions.Count == 0)
+                    {
+                        return NotFound(new
+                        {
+                            error = "No question found !"
+                        });
+                    }
+
                     await _questionServices.DeleteQuestion(id);
 
                     return Ok(new
