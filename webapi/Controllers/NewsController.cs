@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using MongoDB.Bson;
 using System.Security.Claims;
 using webapi.Models;
 using webapi.Services;
@@ -40,6 +41,14 @@ namespace webapi.Controllers
         {
             try
             {
+                if (!ObjectId.TryParse(id, out _))
+                {
+                    return BadRequest(new
+                    {
+                        error = "Invalid ID !"
+                    });
+                }
+
                 List<News> news = await _newsServices.GetNewsById(id);
 
                 if (news.Count == 0)
@@ -115,6 +124,24 @@ namespace webapi.Controllers
 
                 if (userRole == "Admin")
                 {
+                    if (!ObjectId.TryParse(id, out _))
+                    {
+                        return BadRequest(new
+                        {
+                            error = "Invalid ID !"
+                        });
+                    }
+
+                    List<News> newsList = await _newsServices.GetNewsById(id);
+
+                    if (newsList.Count == 0)
+                    {
+                        return NotFound(new
+                        {
+                            error = "No news found !"
+                        });
+                    }
+
                     await _newsServices.UpdateNews(id, news);
 
                     return Ok(new
@@ -149,6 +176,24 @@ namespace webapi.Controllers
 
                 if (userRole == "Admin")
                 {
+                    if (!ObjectId.TryParse(id, out _))
+                    {
+                        return BadRequest(new
+                        {
+                            error = "Invalid ID !"
+                        });
+                    }
+
+                    List<News> news = await _newsServices.GetNewsById(id);
+
+                    if (news.Count == 0)
+                    {
+                        return NotFound(new
+                        {
+                            error = "No news found !"
+                        });
+                    }
+
                     await _newsServices.DeleteNews(id);
 
                     return Ok(new

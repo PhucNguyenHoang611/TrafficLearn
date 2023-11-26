@@ -8,26 +8,26 @@ using webapi.Services;
 namespace webapi.Controllers
 {
     [ApiController]
-    [Route("api/decree")]
-    public class DecreeController : ControllerBase
+    [Route("api/article")]
+    public class ArticleController : ControllerBase
     {
-        private readonly DecreeServices _decreeServices;
+        private readonly ArticleServices _articleServices;
         private readonly UserServices _userServices;
 
-        public DecreeController(DecreeServices decreeServices, UserServices userServices)
+        public ArticleController(ArticleServices ArticleServices, UserServices userServices)
         {
-            _decreeServices = decreeServices;
+            _articleServices = ArticleServices;
             _userServices = userServices;
         }
 
         [HttpGet]
-        [Route("getAllDecrees")]
-        public async Task<IActionResult> GetAllDecrees()
+        [Route("getAllArticles")]
+        public async Task<IActionResult> GetAllArticles()
         {
             try
             {
-                List<Decree> decrees = await _decreeServices.GetAllDecrees();
-                return Ok(decrees);
+                List<Article> articles = await _articleServices.GetAllArticles();
+                return Ok(articles);
             }
             catch
             {
@@ -36,8 +36,8 @@ namespace webapi.Controllers
         }
 
         [HttpGet]
-        [Route("getDecreeById/{id}")]
-        public async Task<IActionResult> GetDecreeById(string id)
+        [Route("getArticleById/{id}")]
+        public async Task<IActionResult> GetArticleById(string id)
         {
             try
             {
@@ -49,17 +49,17 @@ namespace webapi.Controllers
                     });
                 }
 
-                List<Decree> decrees = await _decreeServices.GetDecreeById(id);
+                List<Article> articles = await _articleServices.GetArticleById(id);
 
-                if (decrees.Count == 0)
+                if (articles.Count == 0)
                 {
                     return NotFound(new
                     {
-                        error = "No decree found !"
+                        error = "No article found !"
                     });
                 }
                 else
-                    return Ok(decrees[0]);
+                    return Ok(articles[0]);
             }
             catch
             {
@@ -68,9 +68,9 @@ namespace webapi.Controllers
         }
 
         [HttpPost]
-        [Route("createDecree")]
+        [Route("createArticle")]
         [Authorize]
-        public async Task<IActionResult> CreateDecree([FromBody] Decree decree)
+        public async Task<IActionResult> CreateArticle([FromBody] Article article)
         {
             try
             {
@@ -80,18 +80,25 @@ namespace webapi.Controllers
 
                 if (userRole == "Admin")
                 {
-                    Decree d = new Decree
+                    if (!ObjectId.TryParse(article.DecreeId, out _))
                     {
-                        DecreeName = decree.DecreeName,
-                        DecreeDate = decree.DecreeDate,
-                        DecreeNumber = decree.DecreeNumber
+                        return BadRequest(new
+                        {
+                            error = "Invalid decree ID !"
+                        });
+                    }
+
+                    Article a = new Article
+                    {
+                        DecreeId = article.DecreeId,
+                        ArticleTitle = article.ArticleTitle
                     };
 
-                    await _decreeServices.CreateDecree(d);
+                    await _articleServices.CreateArticle(a);
 
                     return Ok(new
                     {
-                        success = "Create decree successfully !"
+                        success = "Create article successfully !"
                     });
                 }
                 else
@@ -109,9 +116,9 @@ namespace webapi.Controllers
         }
 
         [HttpPut]
-        [Route("updateDecree/{id}")]
+        [Route("updateArticle/{id}")]
         [Authorize]
-        public async Task<IActionResult> UpdateDecree(string id, [FromBody] Decree decree)
+        public async Task<IActionResult> UpdateArticle(string id, [FromBody] Article article)
         {
             try
             {
@@ -129,21 +136,29 @@ namespace webapi.Controllers
                         });
                     }
 
-                    List<Decree> decrees = await _decreeServices.GetDecreeById(id);
+                    List<Article> articles = await _articleServices.GetArticleById(id);
 
-                    if (decrees.Count == 0)
+                    if (articles.Count == 0)
                     {
                         return NotFound(new
                         {
-                            error = "No decree found !"
+                            error = "No article found !"
                         });
                     }
 
-                    await _decreeServices.UpdateDecree(id, decree);
+                    if (!ObjectId.TryParse(article.DecreeId, out _))
+                    {
+                        return BadRequest(new
+                        {
+                            error = "Invalid decree ID !"
+                        });
+                    }
+
+                    await _articleServices.UpdateArticle(id, article);
 
                     return Ok(new
                     {
-                        success = "Update decree successfully !"
+                        success = "Update article successfully !"
                     });
                 }
                 else
@@ -161,9 +176,9 @@ namespace webapi.Controllers
         }
 
         [HttpDelete]
-        [Route("deleteDecree/{id}")]
+        [Route("deleteArticle/{id}")]
         [Authorize]
-        public async Task<IActionResult> DeleteDecree(string id)
+        public async Task<IActionResult> DeleteArticle(string id)
         {
             try
             {
@@ -181,21 +196,21 @@ namespace webapi.Controllers
                         });
                     }
 
-                    List<Decree> decrees = await _decreeServices.GetDecreeById(id);
+                    List<Article> articles = await _articleServices.GetArticleById(id);
 
-                    if (decrees.Count == 0)
+                    if (articles.Count == 0)
                     {
                         return NotFound(new
                         {
-                            error = "No decree found !"
+                            error = "No article found !"
                         });
                     }
 
-                    await _decreeServices.DeleteDecree(id);
+                    await _articleServices.DeleteArticle(id);
 
                     return Ok(new
                     {
-                        success = "Delete decree successfully !"
+                        success = "Delete article successfully !"
                     });
                 }
                 else

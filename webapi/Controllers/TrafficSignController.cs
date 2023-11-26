@@ -8,26 +8,26 @@ using webapi.Services;
 namespace webapi.Controllers
 {
     [ApiController]
-    [Route("api/decree")]
-    public class DecreeController : ControllerBase
+    [Route("api/trafficSign")]
+    public class TrafficSignController : ControllerBase
     {
-        private readonly DecreeServices _decreeServices;
+        private readonly TrafficSignServices _trafficSignServices;
         private readonly UserServices _userServices;
 
-        public DecreeController(DecreeServices decreeServices, UserServices userServices)
+        public TrafficSignController(TrafficSignServices trafficSignServices, UserServices userServices)
         {
-            _decreeServices = decreeServices;
+            _trafficSignServices = trafficSignServices;
             _userServices = userServices;
         }
 
         [HttpGet]
-        [Route("getAllDecrees")]
-        public async Task<IActionResult> GetAllDecrees()
+        [Route("getAllTrafficSigns")]
+        public async Task<IActionResult> GetAllTrafficSigns()
         {
             try
             {
-                List<Decree> decrees = await _decreeServices.GetAllDecrees();
-                return Ok(decrees);
+                List<TrafficSign> trafficSigns = await _trafficSignServices.GetAllTrafficSigns();
+                return Ok(trafficSigns);
             }
             catch
             {
@@ -36,8 +36,8 @@ namespace webapi.Controllers
         }
 
         [HttpGet]
-        [Route("getDecreeById/{id}")]
-        public async Task<IActionResult> GetDecreeById(string id)
+        [Route("getTrafficSignById/{id}")]
+        public async Task<IActionResult> GetTrafficSignById(string id)
         {
             try
             {
@@ -49,17 +49,17 @@ namespace webapi.Controllers
                     });
                 }
 
-                List<Decree> decrees = await _decreeServices.GetDecreeById(id);
+                List<TrafficSign> trafficSigns = await _trafficSignServices.GetTrafficSignById(id);
 
-                if (decrees.Count == 0)
+                if (trafficSigns.Count == 0)
                 {
                     return NotFound(new
                     {
-                        error = "No decree found !"
+                        error = "No traffic sign found !"
                     });
                 }
                 else
-                    return Ok(decrees[0]);
+                    return Ok(trafficSigns[0]);
             }
             catch
             {
@@ -68,9 +68,9 @@ namespace webapi.Controllers
         }
 
         [HttpPost]
-        [Route("createDecree")]
+        [Route("createTrafficSign")]
         [Authorize]
-        public async Task<IActionResult> CreateDecree([FromBody] Decree decree)
+        public async Task<IActionResult> CreateTrafficSign([FromBody] TrafficSign trafficSign)
         {
             try
             {
@@ -80,18 +80,27 @@ namespace webapi.Controllers
 
                 if (userRole == "Admin")
                 {
-                    Decree d = new Decree
+                    if (!ObjectId.TryParse(trafficSign.SignTypeId, out _))
                     {
-                        DecreeName = decree.DecreeName,
-                        DecreeDate = decree.DecreeDate,
-                        DecreeNumber = decree.DecreeNumber
+                        return BadRequest(new
+                        {
+                            error = "Invalid type ID !"
+                        });
+                    }
+
+                    TrafficSign ts = new TrafficSign
+                    {
+                        SignName = trafficSign.SignName,
+                        SignTypeId = trafficSign.SignTypeId,
+                        SignImage = trafficSign.SignImage,
+                        SignExplanation = trafficSign.SignExplanation
                     };
 
-                    await _decreeServices.CreateDecree(d);
+                    await _trafficSignServices.CreateTrafficSign(ts);
 
                     return Ok(new
                     {
-                        success = "Create decree successfully !"
+                        success = "Create traffic sign successfully !"
                     });
                 }
                 else
@@ -109,9 +118,9 @@ namespace webapi.Controllers
         }
 
         [HttpPut]
-        [Route("updateDecree/{id}")]
+        [Route("updateTrafficSign/{id}")]
         [Authorize]
-        public async Task<IActionResult> UpdateDecree(string id, [FromBody] Decree decree)
+        public async Task<IActionResult> UpdateTrafficSign(string id, [FromBody] TrafficSign trafficSign)
         {
             try
             {
@@ -129,21 +138,29 @@ namespace webapi.Controllers
                         });
                     }
 
-                    List<Decree> decrees = await _decreeServices.GetDecreeById(id);
+                    List<TrafficSign> trafficSigns = await _trafficSignServices.GetTrafficSignById(id);
 
-                    if (decrees.Count == 0)
+                    if (trafficSigns.Count == 0)
                     {
                         return NotFound(new
                         {
-                            error = "No decree found !"
+                            error = "No traffic sign found !"
                         });
                     }
 
-                    await _decreeServices.UpdateDecree(id, decree);
+                    if (!ObjectId.TryParse(trafficSign.SignTypeId, out _))
+                    {
+                        return BadRequest(new
+                        {
+                            error = "Invalid type ID !"
+                        });
+                    }
+
+                    await _trafficSignServices.UpdateTrafficSign(id, trafficSign);
 
                     return Ok(new
                     {
-                        success = "Update decree successfully !"
+                        success = "Update traffic sign successfully !"
                     });
                 }
                 else
@@ -161,9 +178,9 @@ namespace webapi.Controllers
         }
 
         [HttpDelete]
-        [Route("deleteDecree/{id}")]
+        [Route("deleteTrafficSign/{id}")]
         [Authorize]
-        public async Task<IActionResult> DeleteDecree(string id)
+        public async Task<IActionResult> DeleteTrafficSign(string id)
         {
             try
             {
@@ -181,21 +198,21 @@ namespace webapi.Controllers
                         });
                     }
 
-                    List<Decree> decrees = await _decreeServices.GetDecreeById(id);
+                    List<TrafficSign> trafficSigns = await _trafficSignServices.GetTrafficSignById(id);
 
-                    if (decrees.Count == 0)
+                    if (trafficSigns.Count == 0)
                     {
                         return NotFound(new
                         {
-                            error = "No decree found !"
+                            error = "No traffic sign found !"
                         });
                     }
 
-                    await _decreeServices.DeleteDecree(id);
+                    await _trafficSignServices.DeleteTrafficSign(id);
 
                     return Ok(new
                     {
-                        success = "Delete decree successfully !"
+                        success = "Delete traffic sign successfully !"
                     });
                 }
                 else

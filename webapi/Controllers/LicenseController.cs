@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using MongoDB.Bson;
 using System.Security.Claims;
 using webapi.Models;
 using webapi.Services;
@@ -36,10 +37,18 @@ namespace webapi.Controllers
 
         [HttpGet]
         [Route("getLicenseById/{id}")]
-        public async Task<IActionResult> GetLicenseById(String id)
+        public async Task<IActionResult> GetLicenseById(string id)
         {
             try
             {
+                if (!ObjectId.TryParse(id, out _))
+                {
+                    return BadRequest(new
+                    {
+                        error = "Invalid ID !"
+                    });
+                }
+
                 List<License> licenses = await _licenseServices.GetLicenseById(id);
 
                 if (licenses.Count == 0)
@@ -100,7 +109,7 @@ namespace webapi.Controllers
         [HttpPut]
         [Route("updateLicense/{id}")]
         [Authorize]
-        public async Task<IActionResult> UpdateLicense(String id, [FromBody] License license)
+        public async Task<IActionResult> UpdateLicense(string id, [FromBody] License license)
         {
             try
             {
@@ -110,6 +119,24 @@ namespace webapi.Controllers
 
                 if (userRole == "Admin")
                 {
+                    if (!ObjectId.TryParse(id, out _))
+                    {
+                        return BadRequest(new
+                        {
+                            error = "Invalid ID !"
+                        });
+                    }
+
+                    List<License> licenses = await _licenseServices.GetLicenseById(id);
+
+                    if (licenses.Count == 0)
+                    {
+                        return NotFound(new
+                        {
+                            error = "No license found !"
+                        });
+                    }
+
                     await _licenseServices.UpdateLicense(id, license);
 
                     return Ok(new
@@ -134,7 +161,7 @@ namespace webapi.Controllers
         [HttpDelete]
         [Route("deleteLicense/{id}")]
         [Authorize]
-        public async Task<IActionResult> DeleteLicense(String id)
+        public async Task<IActionResult> DeleteLicense(string id)
         {
             try
             {
@@ -144,6 +171,24 @@ namespace webapi.Controllers
 
                 if (userRole == "Admin")
                 {
+                    if (!ObjectId.TryParse(id, out _))
+                    {
+                        return BadRequest(new
+                        {
+                            error = "Invalid ID !"
+                        });
+                    }
+
+                    List<License> licenses = await _licenseServices.GetLicenseById(id);
+
+                    if (licenses.Count == 0)
+                    {
+                        return NotFound(new
+                        {
+                            error = "No license found !"
+                        });
+                    }
+
                     await _licenseServices.DeleteLicense(id);
 
                     return Ok(new

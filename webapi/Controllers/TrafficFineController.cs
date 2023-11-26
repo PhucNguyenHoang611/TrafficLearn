@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
+using System.Drawing;
 using System.Security.Claims;
 using webapi.Models;
 using webapi.Services;
@@ -8,26 +9,26 @@ using webapi.Services;
 namespace webapi.Controllers
 {
     [ApiController]
-    [Route("api/decree")]
-    public class DecreeController : ControllerBase
+    [Route("api/trafficFine")]
+    public class TrafficFineController : ControllerBase
     {
-        private readonly DecreeServices _decreeServices;
+        private readonly TrafficFineServices _trafficFineServices;
         private readonly UserServices _userServices;
 
-        public DecreeController(DecreeServices decreeServices, UserServices userServices)
+        public TrafficFineController(TrafficFineServices trafficFineServices, UserServices userServices)
         {
-            _decreeServices = decreeServices;
+            _trafficFineServices = trafficFineServices;
             _userServices = userServices;
         }
 
         [HttpGet]
-        [Route("getAllDecrees")]
-        public async Task<IActionResult> GetAllDecrees()
+        [Route("getAllTrafficFines")]
+        public async Task<IActionResult> GetAllTrafficFines()
         {
             try
             {
-                List<Decree> decrees = await _decreeServices.GetAllDecrees();
-                return Ok(decrees);
+                List<TrafficFine> trafficFines = await _trafficFineServices.GetAllTrafficFines();
+                return Ok(trafficFines);
             }
             catch
             {
@@ -36,8 +37,8 @@ namespace webapi.Controllers
         }
 
         [HttpGet]
-        [Route("getDecreeById/{id}")]
-        public async Task<IActionResult> GetDecreeById(string id)
+        [Route("getTrafficFineById/{id}")]
+        public async Task<IActionResult> GetTrafficFineById(string id)
         {
             try
             {
@@ -49,17 +50,17 @@ namespace webapi.Controllers
                     });
                 }
 
-                List<Decree> decrees = await _decreeServices.GetDecreeById(id);
+                List<TrafficFine> trafficFines = await _trafficFineServices.GetTrafficFineById(id);
 
-                if (decrees.Count == 0)
+                if (trafficFines.Count == 0)
                 {
                     return NotFound(new
                     {
-                        error = "No decree found !"
+                        error = "No traffic fine found !"
                     });
                 }
                 else
-                    return Ok(decrees[0]);
+                    return Ok(trafficFines[0]);
             }
             catch
             {
@@ -68,9 +69,9 @@ namespace webapi.Controllers
         }
 
         [HttpPost]
-        [Route("createDecree")]
+        [Route("createTrafficFine")]
         [Authorize]
-        public async Task<IActionResult> CreateDecree([FromBody] Decree decree)
+        public async Task<IActionResult> CreateTrafficFine([FromBody] TrafficFine trafficFine)
         {
             try
             {
@@ -80,18 +81,30 @@ namespace webapi.Controllers
 
                 if (userRole == "Admin")
                 {
-                    Decree d = new Decree
+                    if (!ObjectId.TryParse(trafficFine.FineTypeId, out _))
                     {
-                        DecreeName = decree.DecreeName,
-                        DecreeDate = decree.DecreeDate,
-                        DecreeNumber = decree.DecreeNumber
+                        return BadRequest(new
+                        {
+                            error = "Invalid type ID !"
+                        });
+                    }
+
+                    TrafficFine tf = new TrafficFine
+                    {
+                        FineName = trafficFine.FineName,
+                        FineTypeId = trafficFine.FineTypeId,
+                        VehicleType = trafficFine.VehicleType,
+                        FineBehavior = trafficFine.FineBehavior,
+                        FineContent = trafficFine.FineContent,
+                        FineAdditional = trafficFine.FineAdditional,
+                        FineNote = trafficFine.FineNote
                     };
 
-                    await _decreeServices.CreateDecree(d);
+                    await _trafficFineServices.CreateTrafficFine(tf);
 
                     return Ok(new
                     {
-                        success = "Create decree successfully !"
+                        success = "Create traffic fine successfully !"
                     });
                 }
                 else
@@ -109,9 +122,9 @@ namespace webapi.Controllers
         }
 
         [HttpPut]
-        [Route("updateDecree/{id}")]
+        [Route("updateTrafficFine/{id}")]
         [Authorize]
-        public async Task<IActionResult> UpdateDecree(string id, [FromBody] Decree decree)
+        public async Task<IActionResult> UpdateTrafficFine(string id, [FromBody] TrafficFine trafficFine)
         {
             try
             {
@@ -129,21 +142,29 @@ namespace webapi.Controllers
                         });
                     }
 
-                    List<Decree> decrees = await _decreeServices.GetDecreeById(id);
+                    List<TrafficFine> trafficFines = await _trafficFineServices.GetTrafficFineById(id);
 
-                    if (decrees.Count == 0)
+                    if (trafficFines.Count == 0)
                     {
                         return NotFound(new
                         {
-                            error = "No decree found !"
+                            error = "No traffic fine found !"
                         });
                     }
 
-                    await _decreeServices.UpdateDecree(id, decree);
+                    if (!ObjectId.TryParse(trafficFine.FineTypeId, out _))
+                    {
+                        return BadRequest(new
+                        {
+                            error = "Invalid type ID !"
+                        });
+                    }
+
+                    await _trafficFineServices.UpdateTrafficFine(id, trafficFine);
 
                     return Ok(new
                     {
-                        success = "Update decree successfully !"
+                        success = "Update traffic fine successfully !"
                     });
                 }
                 else
@@ -161,9 +182,9 @@ namespace webapi.Controllers
         }
 
         [HttpDelete]
-        [Route("deleteDecree/{id}")]
+        [Route("deleteTrafficFine/{id}")]
         [Authorize]
-        public async Task<IActionResult> DeleteDecree(string id)
+        public async Task<IActionResult> DeleteTrafficFine(string id)
         {
             try
             {
@@ -181,21 +202,21 @@ namespace webapi.Controllers
                         });
                     }
 
-                    List<Decree> decrees = await _decreeServices.GetDecreeById(id);
+                    List<TrafficFine> trafficFines = await _trafficFineServices.GetTrafficFineById(id);
 
-                    if (decrees.Count == 0)
+                    if (trafficFines.Count == 0)
                     {
                         return NotFound(new
                         {
-                            error = "No decree found !"
+                            error = "No traffic fine found !"
                         });
                     }
 
-                    await _decreeServices.DeleteDecree(id);
+                    await _trafficFineServices.DeleteTrafficFine(id);
 
                     return Ok(new
                     {
-                        success = "Delete decree successfully !"
+                        success = "Delete traffic fine successfully !"
                     });
                 }
                 else

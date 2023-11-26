@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using MongoDB.Bson;
 using System.Security.Claims;
 using webapi.Models;
 using webapi.Services;
@@ -40,6 +41,14 @@ namespace webapi.Controllers
         {
             try
             {
+                if (!ObjectId.TryParse(id, out _))
+                {
+                    return BadRequest(new
+                    {
+                        error = "Invalid ID !"
+                    });
+                }
+
                 List<TrafficFineType> trafficFineTypes = await _trafficFineTypeServices.GetTrafficFineTypeById(id);
 
                 if (trafficFineTypes.Count == 0)
@@ -110,6 +119,24 @@ namespace webapi.Controllers
 
                 if (userRole == "Admin")
                 {
+                    if (!ObjectId.TryParse(id, out _))
+                    {
+                        return BadRequest(new
+                        {
+                            error = "Invalid ID !"
+                        });
+                    }
+
+                    List<TrafficFineType> trafficFineTypes = await _trafficFineTypeServices.GetTrafficFineTypeById(id);
+
+                    if (trafficFineTypes.Count == 0)
+                    {
+                        return NotFound(new
+                        {
+                            error = "No type found !"
+                        });
+                    }
+
                     await _trafficFineTypeServices.UpdateTrafficFineType(id, trafficFineType);
 
                     return Ok(new
@@ -144,6 +171,24 @@ namespace webapi.Controllers
 
                 if (userRole == "Admin")
                 {
+                    if (!ObjectId.TryParse(id, out _))
+                    {
+                        return BadRequest(new
+                        {
+                            error = "Invalid ID !"
+                        });
+                    }
+
+                    List<TrafficFineType> trafficFineTypes = await _trafficFineTypeServices.GetTrafficFineTypeById(id);
+
+                    if (trafficFineTypes.Count == 0)
+                    {
+                        return NotFound(new
+                        {
+                            error = "No type found !"
+                        });
+                    }
+
                     await _trafficFineTypeServices.DeleteTrafficFineType(id);
 
                     return Ok(new

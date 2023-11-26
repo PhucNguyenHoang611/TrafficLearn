@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using MongoDB.Bson;
 using System.Security.Claims;
 using webapi.Models;
 using webapi.Services;
@@ -56,10 +57,17 @@ namespace webapi.Controllers
 
         [HttpGet]
         [Route("getUserById/{id}")]
-        public async Task<IActionResult> GetUserById(String id)
+        public async Task<IActionResult> GetUserById(string id)
         {
             try
             {
+                if (!ObjectId.TryParse(id, out _))
+                {
+                    return BadRequest(new
+                    {
+                        error = "Invalid ID !"
+                    });
+                }
 
                 List<User> users = await _userServices.GetUserById(id);
 
@@ -82,7 +90,7 @@ namespace webapi.Controllers
         [HttpPut]
         [Route("updateUser/{id}")]
         [Authorize]
-        public async Task<IActionResult> UpdateUser(String id, [FromBody] User user)
+        public async Task<IActionResult> UpdateUser(string id, [FromBody] User user)
         {
             try
             {
@@ -92,7 +100,26 @@ namespace webapi.Controllers
 
                 if (userRole == "User")
                 {
+                    if (!ObjectId.TryParse(id, out _))
+                    {
+                        return BadRequest(new
+                        {
+                            error = "Invalid ID !"
+                        });
+                    }
+
+                    List<User> users = await _userServices.GetUserById(id);
+
+                    if (users.Count == 0)
+                    {
+                        return NotFound(new
+                        {
+                            error = "No user found !"
+                        });
+                    }
+
                     await _userServices.UpdateUser(id, user);
+
                     return Ok(new
                     {
                         success = "Update user successfully !"
@@ -115,7 +142,7 @@ namespace webapi.Controllers
         [HttpPut]
         [Route("updateUserByAdmin/{id}")]
         [Authorize]
-        public async Task<IActionResult> UpdateUserByAdmin(String id, [FromBody] User user)
+        public async Task<IActionResult> UpdateUserByAdmin(string id, [FromBody] User user)
         {
             try
             {
@@ -125,7 +152,26 @@ namespace webapi.Controllers
 
                 if (userRole == "Admin")
                 {
+                    if (!ObjectId.TryParse(id, out _))
+                    {
+                        return BadRequest(new
+                        {
+                            error = "Invalid ID !"
+                        });
+                    }
+
+                    List<User> users = await _userServices.GetUserById(id);
+
+                    if (users.Count == 0)
+                    {
+                        return NotFound(new
+                        {
+                            error = "No user found !"
+                        });
+                    }
+
                     await _userServices.UpdateUser(id, user);
+
                     return Ok(new
                     {
                         success = "Update user successfully !"
@@ -148,7 +194,7 @@ namespace webapi.Controllers
         [HttpDelete]
         [Route("deleteUser/{id}")]
         [Authorize]
-        public async Task<IActionResult> DeleteUser(String id)
+        public async Task<IActionResult> DeleteUser(string id)
         {
             try
             {
@@ -158,7 +204,26 @@ namespace webapi.Controllers
 
                 if (userRole == "Admin")
                 {
+                    if (!ObjectId.TryParse(id, out _))
+                    {
+                        return BadRequest(new
+                        {
+                            error = "Invalid ID !"
+                        });
+                    }
+
+                    List<User> users = await _userServices.GetUserById(id);
+
+                    if (users.Count == 0)
+                    {
+                        return NotFound(new
+                        {
+                            error = "No user found !"
+                        });
+                    }
+
                     await _userServices.DeleteUser(id);
+
                     return Ok(new
                     {
                         success = "Delete user successfully !"
@@ -181,7 +246,7 @@ namespace webapi.Controllers
         [HttpPut]
         [Route("activeOrInactiveUser/{id}")]
         [Authorize]
-        public async Task<IActionResult> ActiveOrInactiveUser(String id)
+        public async Task<IActionResult> ActiveOrInactiveUser(string id)
         {
             try
             {
@@ -191,6 +256,14 @@ namespace webapi.Controllers
 
                 if (userRole == "Admin")
                 {
+                    if (!ObjectId.TryParse(id, out _))
+                    {
+                        return BadRequest(new
+                        {
+                            error = "Invalid ID !"
+                        });
+                    }
+
                     List<User> users = await _userServices.GetUserById(id);
 
                     if (users.Count == 0)
