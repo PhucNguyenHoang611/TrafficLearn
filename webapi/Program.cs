@@ -44,6 +44,7 @@ builder.Services.AddSingleton<ExaminationServices>();
 builder.Services.AddSingleton<ExaminationQuestionServices>();
 
 builder.Services.AddSingleton<EmailServices>();
+builder.Services.AddSingleton<FileServices>();
 
 builder.Services.AddCors(options =>
 {
