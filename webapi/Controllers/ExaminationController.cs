@@ -67,6 +67,38 @@ namespace webapi.Controllers
             }
         }
 
+        [HttpGet]
+        [Route("getAllExaminationQuestions/{id}")]
+        public async Task<IActionResult> GetAllExaminationQuestions(string id)
+        {
+            try
+            {
+                if (!ObjectId.TryParse(id, out _))
+                {
+                    return BadRequest(new
+                    {
+                        error = "Invalid ID !"
+                    });
+                }
+
+                List<Question> questions = await _examinationServices.GetAllQuestions(id);
+
+                if (questions.Count == 0)
+                {
+                    return NotFound(new
+                    {
+                        error = "No question found !"
+                    });
+                }
+                else
+                    return Ok(questions);
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
         [HttpPost]
         [Route("createExamination")]
         [Authorize]

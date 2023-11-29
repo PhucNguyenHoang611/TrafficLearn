@@ -20,9 +20,7 @@ namespace webapi.Models
         [Required(ErrorMessage = "Type ID is required")]
         public string SignTypeId { get; set; } = null!;
 
-        [BsonRequired]
-        [Required(ErrorMessage = "Image is required")]
-        public string SignImage { get; set; } = null!;
+        public string SignImage { get; set; } = string.Empty;
 
         public string SignExplanation { get; set; } = string.Empty;
     }

@@ -27,8 +27,8 @@ namespace webapi.Models
         [Required(ErrorMessage = "Content is required")]
         public string NewsContent { get; set; } = null!;
 
-        public string NewsImage { get; set; } = string.Empty;
+        public string NewsThumbnail { get; set; } = string.Empty;
 
-        public string NewsImageTitle { get; set; } = string.Empty;
+        public bool IsHidden { get; set; } = false;
     }
 }

@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
 using System.Security.Claims;
+using System.Text;
 using webapi.Models;
 using webapi.Services;
 
@@ -12,11 +13,13 @@ namespace webapi.Controllers
     public class TrafficSignController : ControllerBase
     {
         private readonly TrafficSignServices _trafficSignServices;
+        private readonly FileServices _fileServices;
         private readonly UserServices _userServices;
 
-        public TrafficSignController(TrafficSignServices trafficSignServices, UserServices userServices)
+        public TrafficSignController(TrafficSignServices trafficSignServices, FileServices fileServices, UserServices userServices)
         {
             _trafficSignServices = trafficSignServices;
+            _fileServices = fileServices;
             _userServices = userServices;
         }
 
@@ -92,7 +95,6 @@ namespace webapi.Controllers
                     {
                         SignName = trafficSign.SignName,
                         SignTypeId = trafficSign.SignTypeId,
-                        SignImage = trafficSign.SignImage,
                         SignExplanation = trafficSign.SignExplanation
                     };
 
@@ -102,6 +104,69 @@ namespace webapi.Controllers
                     {
                         success = "Create traffic sign successfully !"
                     });
+                }
+                else
+                {
+                    return Unauthorized(new
+                    {
+                        error = "Unauthorized user !"
+                    });
+                }
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        [HttpPost]
+        [Route("uploadTrafficSignImage/{id}")]
+        [Authorize]
+        public async Task<IActionResult> UploadTrafficSignImage(string id, IFormFile file)
+        {
+            try
+            {
+                var identity = User.Identity as ClaimsIdentity;
+
+                string userRole = await _userServices.JwtAuthentication(identity);
+
+                if (userRole == "Admin")
+                {
+                    if (!ObjectId.TryParse(id, out _))
+                    {
+                        return BadRequest(new
+                        {
+                            error = "Invalid ID !"
+                        });
+                    }
+
+                    List<TrafficSign> trafficSigns = await _trafficSignServices.GetTrafficSignById(id);
+
+                    if (trafficSigns.Count == 0)
+                    {
+                        return NotFound(new
+                        {
+                            error = "No traffic sign found !"
+                        });
+                    }
+                    else
+                    {
+                        using (var memoryStream = new MemoryStream())
+                        {
+                            await file.CopyToAsync(memoryStream);
+                            memoryStream.Seek(0, SeekOrigin.Begin);
+
+                            string imageUrl = await _fileServices.UploadToFirebaseStorage(memoryStream, "TrafficSign_" + file.FileName + "_" + DateTime.Now.ToString("yyyyMMddHHmmssff"));
+
+                            trafficSigns[0].SignImage = imageUrl;
+                            await _trafficSignServices.UpdateTrafficSign(id, trafficSigns[0]);
+
+                            return Ok(new
+                            {
+                                success = "Upload traffic sign image successfully !"
+                            });
+                        }
+                    }
                 }
                 else
                 {

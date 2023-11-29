@@ -23,7 +23,7 @@ namespace webapi.Models
         [Required(ErrorMessage = "Content is required")]
         public string QuestionContent { get; set; } = null!;
 
-        public string QuestionImage { get; set; } = string.Empty;
+        public string QuestionMedia { get; set; } = string.Empty;
 
         public bool Important { get; set; } = false;
 

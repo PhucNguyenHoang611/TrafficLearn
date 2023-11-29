@@ -12,11 +12,13 @@ namespace webapi.Controllers
     public class QuestionController : ControllerBase
     {
         private readonly QuestionServices _questionServices;
+        private readonly FileServices _fileServices;
         private readonly UserServices _userServices;
 
-        public QuestionController(QuestionServices questionServices, UserServices userServices)
+        public QuestionController(QuestionServices questionServices, FileServices fileServices, UserServices userServices)
         {
             _questionServices = questionServices;
+            _fileServices = fileServices;
             _userServices = userServices;
         }
 
@@ -67,6 +69,38 @@ namespace webapi.Controllers
             }
         }
 
+        [HttpGet]
+        [Route("getAllAnswers/{id}")]
+        public async Task<IActionResult> GetAllAnswers(string id)
+        {
+            try
+            {
+                if (!ObjectId.TryParse(id, out _))
+                {
+                    return BadRequest(new
+                    {
+                        error = "Invalid ID !"
+                    });
+                }
+
+                List<Answer> answers = await _questionServices.GetAllAnswers(id);
+
+                if (answers.Count == 0)
+                {
+                    return NotFound(new
+                    {
+                        error = "No answer found !"
+                    });
+                }
+                else
+                    return Ok(answers[0]);
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
         [HttpPost]
         [Route("createQuestion")]
         [Authorize]
@@ -85,7 +119,6 @@ namespace webapi.Controllers
                         TestGroup = question.TestGroup,
                         QuestionType = question.QuestionType,
                         QuestionContent = question.QuestionContent,
-                        QuestionImage = question.QuestionImage,
                         Important = question.Important,
                         Explanation = question.Explanation
                     };
@@ -96,6 +129,69 @@ namespace webapi.Controllers
                     {
                         success = "Create question successfully !"
                     });
+                }
+                else
+                {
+                    return Unauthorized(new
+                    {
+                        error = "Unauthorized user !"
+                    });
+                }
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        [HttpPost]
+        [Route("uploadQuestionMedia/{id}")]
+        [Authorize]
+        public async Task<IActionResult> UploadQuestionMedia(string id, IFormFile file)
+        {
+            try
+            {
+                var identity = User.Identity as ClaimsIdentity;
+
+                string userRole = await _userServices.JwtAuthentication(identity);
+
+                if (userRole == "Admin")
+                {
+                    if (!ObjectId.TryParse(id, out _))
+                    {
+                        return BadRequest(new
+                        {
+                            error = "Invalid ID !"
+                        });
+                    }
+
+                    List<Question> questions = await _questionServices.GetQuestionById(id);
+
+                    if (questions.Count == 0)
+                    {
+                        return NotFound(new
+                        {
+                            error = "No question found !"
+                        });
+                    }
+                    else
+                    {
+                        using (var memoryStream = new MemoryStream())
+                        {
+                            await file.CopyToAsync(memoryStream);
+                            memoryStream.Seek(0, SeekOrigin.Begin);
+
+                            string fileUrl = await _fileServices.UploadToFirebaseStorage(memoryStream, "Question_" + file.FileName + "_" + DateTime.Now.ToString("yyyyMMddHHmmssff"));
+
+                            questions[0].QuestionMedia = fileUrl;
+                            await _questionServices.UpdateQuestion(id, questions[0]);
+
+                            return Ok(new
+                            {
+                                success = "Upload question media successfully !"
+                            });
+                        }
+                    }
                 }
                 else
                 {
