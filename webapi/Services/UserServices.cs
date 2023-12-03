@@ -4,6 +4,7 @@ using webapi.Models;
 using AspNetCore.Totp;
 using System.Security.Claims;
 using webapi.Models.Settings;
+using Azure.Security.KeyVault.Secrets;
 
 namespace webapi.Services
 {
@@ -11,12 +12,15 @@ namespace webapi.Services
     {
         private readonly IMongoCollection<User> _usersCollection;
         private readonly IConfiguration _configuration;
+        private readonly SecretClient _secretClient;
 
-        public UserServices (IOptions<DatabaseSettings> databaseSettings, IConfiguration configuration)
+        public UserServices (IOptions<DatabaseSettings> databaseSettings, IConfiguration configuration, SecretClient secretClient)
         {
             _configuration = configuration;
+            _secretClient = secretClient;
 
-            var connectionString = _configuration["DatabaseSettings:ConnectionString"];
+            /*var connectionString = _configuration["DatabaseSettings:ConnectionString"];*/
+            var connectionString = _secretClient.GetSecret("DatabaseSettings-ConnectionString").Value.Value.ToString();
             var mongoClient = new MongoClient(connectionString);
 
             var mongoDatabase = mongoClient.GetDatabase(databaseSettings.Value.DatabaseName);

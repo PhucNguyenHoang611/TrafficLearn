@@ -1,4 +1,5 @@
-﻿using Firebase.Auth;
+﻿using Azure.Security.KeyVault.Secrets;
+using Firebase.Auth;
 using Firebase.Storage;
 
 namespace webapi.Services
@@ -10,15 +11,22 @@ namespace webapi.Services
         private static string? FirebaseStorageBucket;
         private static string? FirebaseAuthenticationEmail;
         private static string? FirebaseAuthenticationPassword;
+        private readonly SecretClient _secretClient;
 
-        public FileServices(IConfiguration configuration)
+        public FileServices(IConfiguration configuration, SecretClient secretClient)
         {
             _configuration = configuration;
+            _secretClient = secretClient;
 
-            FirebaseApiKey = _configuration["Storage:Firebase:ApiKey"];
+            /*FirebaseApiKey = _configuration["Storage:Firebase:ApiKey"];
             FirebaseStorageBucket = _configuration["Storage:Firebase:StorageBucket"];
             FirebaseAuthenticationEmail = _configuration["Authentication:Firebase:Email"];
-            FirebaseAuthenticationPassword = _configuration["Authentication:Firebase:Password"];
+            FirebaseAuthenticationPassword = _configuration["Authentication:Firebase:Password"];*/
+
+            FirebaseApiKey = _secretClient.GetSecret("Storage-Firebase-ApiKey").Value.Value.ToString();
+            FirebaseStorageBucket = _secretClient.GetSecret("Storage-Firebase-StorageBucket").Value.Value.ToString();
+            FirebaseAuthenticationEmail = _secretClient.GetSecret("Authentication-Firebase-Email").Value.Value.ToString();
+            FirebaseAuthenticationPassword = _secretClient.GetSecret("Authentication-Firebase-Password").Value.Value.ToString();
         }
 
         public async Task<string> UploadToFirebaseStorage(MemoryStream memoryStream, string fileName)

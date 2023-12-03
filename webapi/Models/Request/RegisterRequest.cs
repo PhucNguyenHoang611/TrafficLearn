@@ -1,9 +1,5 @@
-﻿using MongoDB.Bson;
-using MongoDB.Bson.Serialization.Attributes;
-
-namespace webapi.Models.Request
+﻿namespace webapi.Models.Request
 {
-    [BsonIgnoreExtraElements]
     public class RegisterRequest
     {
         public string Email { get; set; } = null!;

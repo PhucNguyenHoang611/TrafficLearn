@@ -1,4 +1,5 @@
-﻿using MailKit.Net.Smtp;
+﻿using Azure.Security.KeyVault.Secrets;
+using MailKit.Net.Smtp;
 using MailKit.Security;
 using Microsoft.Extensions.Options;
 using MimeKit;
@@ -11,11 +12,13 @@ namespace webapi.Services.Email
     {
         private readonly EmailSettings _emailSettings;
         private readonly IConfiguration _configuration;
+        private readonly SecretClient _secretClient;
 
-        public EmailServices(IOptions<EmailSettings> options, IConfiguration configuration)
+        public EmailServices(IOptions<EmailSettings> options, IConfiguration configuration, SecretClient secretClient)
         {
             _emailSettings = options.Value;
             _configuration = configuration;
+            _secretClient = secretClient;
         }
 
         public async Task SendEmailAsync(EmailRequest request)
@@ -31,7 +34,8 @@ namespace webapi.Services.Email
             email.Body = builder.ToMessageBody();
 
             using var smtp = new SmtpClient();
-            var password = _configuration["EmailSettings:Password"];
+            /*var password = _configuration["EmailSettings:Password"];*/
+            var password = _secretClient.GetSecret("EmailSettings-Password").Value.Value.ToString();
             smtp.Connect(_emailSettings.Host, _emailSettings.Port, SecureSocketOptions.StartTls);
             smtp.Authenticate(_emailSettings.Email, password);
             await smtp.SendAsync(email);

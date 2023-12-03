@@ -8,9 +8,12 @@ using Microsoft.AspNetCore.Authentication;
 using System.Security.Claims;
 using webapi.Models.Settings;
 using webapi.Services.Email;
+using Azure.Identity;
+using Microsoft.Extensions.Configuration.AzureKeyVault;
+using Azure.Security.KeyVault.Secrets;
 
 var builder = WebApplication.CreateBuilder(args);
-var secretKey = builder.Configuration["Jwt:SecretKey"];
+/*var secretKey = builder.Configuration["Jwt:SecretKey"];*/
 
 // Add services to the container.
 builder.Services.Configure<DatabaseSettings>(builder.Configuration.GetSection("DatabaseSettings"));
@@ -45,6 +48,17 @@ builder.Services.AddSingleton<ExaminationQuestionServices>();
 
 builder.Services.AddSingleton<EmailServices>();
 builder.Services.AddSingleton<FileServices>();
+
+var keyVaultUri = builder.Configuration.GetSection("KeyVaultSettings:VaultUri");
+var keyVaultClientId = builder.Configuration.GetSection("KeyVaultSettings:ClientId");
+var keyVaultClientSecret = builder.Configuration.GetSection("KeyVaultSettings:ClientSecret");
+var keyVaultDirectoryId = builder.Configuration.GetSection("KeyVaultSettings:DirectoryId");
+
+var credentials = new ClientSecretCredential(keyVaultDirectoryId.Value!.ToString(), keyVaultClientId.Value!.ToString(), keyVaultClientSecret.Value!.ToString());
+builder.Configuration.AddAzureKeyVault(keyVaultUri.Value!.ToString(), keyVaultClientId.Value!.ToString(), keyVaultClientSecret.Value!.ToString(), new DefaultKeyVaultSecretManager());
+
+var client = new SecretClient(new Uri(keyVaultUri.Value!.ToString()), credentials);
+builder.Services.AddSingleton(client);
 
 builder.Services.AddCors(options =>
 {
@@ -103,12 +117,15 @@ builder.Services.AddAuthentication(options =>
 })
 .AddCookie(options =>
 {
-    options.LoginPath = builder.Configuration["Authentication:Google:LoginPath"];
+    /*options.LoginPath = builder.Configuration["Authentication:Google:LoginPath"];*/
+    options.LoginPath = client.GetSecret("Authentication-Google-LoginPath").Value.Value.ToString();
 })
 .AddGoogle("TrafficLearn", googleOptions =>
 {
-    googleOptions.ClientId = builder.Configuration["Authentication:Google:ClientId"];
-    googleOptions.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
+    /*googleOptions.ClientId = builder.Configuration["Authentication:Google:ClientId"];
+    googleOptions.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];*/
+    googleOptions.ClientId = client.GetSecret("Authentication-Google-ClientId").Value.Value.ToString();
+    googleOptions.ClientSecret = client.GetSecret("Authentication-Google-ClientSecret").Value.Value.ToString();
 });
 
 builder.Services.AddAuthentication(options =>
@@ -126,7 +143,7 @@ builder.Services.AddAuthentication(options =>
         ValidateIssuerSigningKey = true,
         ValidAudience = "TrafficLearnBackend",
         ValidIssuer = "TrafficLearnBackend",
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey))
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(client.GetSecret("Jwt-SecretKey").Value.Value.ToString()))
     };
 
     options.Events = new JwtBearerEvents

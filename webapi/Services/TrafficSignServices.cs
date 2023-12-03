@@ -2,6 +2,7 @@
 using MongoDB.Driver;
 using webapi.Models.Settings;
 using webapi.Models;
+using Azure.Security.KeyVault.Secrets;
 
 namespace webapi.Services
 {
@@ -9,12 +10,15 @@ namespace webapi.Services
     {
         private readonly IMongoCollection<TrafficSign> _trafficSignsCollection;
         private readonly IConfiguration _configuration;
+        private readonly SecretClient _secretClient;
 
-        public TrafficSignServices(IOptions<DatabaseSettings> databaseSettings, IConfiguration configuration)
+        public TrafficSignServices(IOptions<DatabaseSettings> databaseSettings, IConfiguration configuration, SecretClient secretClient)
         {
             _configuration = configuration;
+            _secretClient = secretClient;
 
-            var connectionString = _configuration["DatabaseSettings:ConnectionString"];
+            /*var connectionString = _configuration["DatabaseSettings:ConnectionString"];*/
+            var connectionString = _secretClient.GetSecret("DatabaseSettings-ConnectionString").Value.Value.ToString();
             var mongoClient = new MongoClient(connectionString);
 
             var mongoDatabase = mongoClient.GetDatabase(databaseSettings.Value.DatabaseName);

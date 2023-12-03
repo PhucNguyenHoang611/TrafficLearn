@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Options;
+﻿using Azure.Security.KeyVault.Secrets;
+using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 using webapi.Models;
 using webapi.Models.Settings;
@@ -9,12 +10,15 @@ namespace webapi.Services
     {
         private readonly IMongoCollection<Answer> _answersCollection;
         private readonly IConfiguration _configuration;
+        private readonly SecretClient _secretClient;
 
-        public AnswerServices(IOptions<DatabaseSettings> databaseSettings, IConfiguration configuration)
+        public AnswerServices(IOptions<DatabaseSettings> databaseSettings, IConfiguration configuration, SecretClient secretClient)
         {
             _configuration = configuration;
+            _secretClient = secretClient;
 
-            var connectionString = _configuration["DatabaseSettings:ConnectionString"];
+            /*var connectionString = _configuration["DatabaseSettings:ConnectionString"];*/
+            var connectionString = _secretClient.GetSecret("DatabaseSettings-ConnectionString").Value.Value.ToString();
             var mongoClient = new MongoClient(connectionString);
 
             var mongoDatabase = mongoClient.GetDatabase(databaseSettings.Value.DatabaseName);

@@ -9,6 +9,7 @@ using webapi.Services;
 using Microsoft.AspNetCore.Authentication;
 using webapi.Models.Request;
 using webapi.Services.Email;
+using Azure.Security.KeyVault.Secrets;
 
 namespace webapi.Controllers.Authentication
 {
@@ -26,12 +27,14 @@ namespace webapi.Controllers.Authentication
         private readonly UserServices _userServices;
         private readonly EmailServices _emailServices;
         private readonly IConfiguration _configuration;
+        private readonly SecretClient _secretClient;
 
-        public LoginController(UserServices userServices, EmailServices emailServices, IConfiguration configuration)
+        public LoginController(UserServices userServices, EmailServices emailServices, IConfiguration configuration, SecretClient secretClient)
         {
             _userServices = userServices;
             _emailServices = emailServices;
             _configuration = configuration;
+            _secretClient = secretClient;
         }
 
         [HttpPost]
@@ -79,7 +82,8 @@ namespace webapi.Controllers.Authentication
                         new Claim(ClaimTypes.Name, user.UserEmail)
                     };
 
-                    var secretKey = _configuration["Jwt:SecretKey"];
+                    /*var secretKey = _configuration["Jwt:SecretKey"];*/
+                    var secretKey = _secretClient.GetSecret("Jwt-SecretKey").Value.Value.ToString();
                     var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey));
 
                     var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
@@ -199,7 +203,8 @@ namespace webapi.Controllers.Authentication
         {
             var properties = new AuthenticationProperties()
             {
-                RedirectUri = _configuration["Authentication:Google:RedirectUri"],
+                /*RedirectUri = _configuration["Authentication:Google:RedirectUri"],*/
+                RedirectUri = _secretClient.GetSecret("Authentication-Google-RedirectUri").Value.Value.ToString(),
                 AllowRefresh = true
             };
 
