@@ -4,8 +4,6 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authentication;
-using System.Security.Claims;
 using webapi.Models.Settings;
 using webapi.Services.Email;
 using Azure.Identity;
@@ -49,16 +47,20 @@ builder.Services.AddSingleton<ExaminationQuestionServices>();
 builder.Services.AddSingleton<EmailServices>();
 builder.Services.AddSingleton<FileServices>();
 
-var keyVaultUri = builder.Configuration.GetSection("KeyVaultSettings:VaultUri");
-var keyVaultClientId = builder.Configuration.GetSection("KeyVaultSettings:ClientId");
-var keyVaultClientSecret = builder.Configuration.GetSection("KeyVaultSettings:ClientSecret");
-var keyVaultDirectoryId = builder.Configuration.GetSection("KeyVaultSettings:DirectoryId");
+// var client = new SecretClient(new Uri(builder.Configuration.GetSection("KeyVaultSettings:VaultUri").Value!.ToString()), new DefaultAzureCredential());
+// if (builder.Environment.IsProduction())
+// {
+    var keyVaultUri = builder.Configuration.GetSection("KeyVaultSettings:VaultUri");
+    var keyVaultClientId = builder.Configuration.GetSection("KeyVaultSettings:ClientId");
+    var keyVaultClientSecret = builder.Configuration.GetSection("KeyVaultSettings:ClientSecret");
+    var keyVaultDirectoryId = builder.Configuration.GetSection("KeyVaultSettings:DirectoryId");
 
-var credentials = new ClientSecretCredential(keyVaultDirectoryId.Value!.ToString(), keyVaultClientId.Value!.ToString(), keyVaultClientSecret.Value!.ToString());
-builder.Configuration.AddAzureKeyVault(keyVaultUri.Value!.ToString(), keyVaultClientId.Value!.ToString(), keyVaultClientSecret.Value!.ToString(), new DefaultKeyVaultSecretManager());
+    var credentials = new ClientSecretCredential(keyVaultDirectoryId.Value!.ToString(), keyVaultClientId.Value!.ToString(), keyVaultClientSecret.Value!.ToString());
+    builder.Configuration.AddAzureKeyVault(keyVaultUri.Value!.ToString(), keyVaultClientId.Value!.ToString(), keyVaultClientSecret.Value!.ToString(), new DefaultKeyVaultSecretManager());
 
-var client = new SecretClient(new Uri(keyVaultUri.Value!.ToString()), credentials);
-builder.Services.AddSingleton(client);
+    var client = new SecretClient(new Uri(keyVaultUri.Value!.ToString()), credentials);
+    builder.Services.AddSingleton(client);
+// }
 
 builder.Services.AddCors(options =>
 {
@@ -162,11 +164,11 @@ builder.Services.AddAuthentication(options =>
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
+// if (app.Environment.IsDevelopment())
+// {
     app.UseSwagger();
     app.UseSwaggerUI();
-}
+// }
 
 app.UseHttpsRedirection();
 
