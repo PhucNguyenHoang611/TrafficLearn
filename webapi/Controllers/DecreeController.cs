@@ -7,16 +7,33 @@ using webapi.Services;
 
 namespace webapi.Controllers
 {
+    public class ClauseDetails
+    {
+        public Clause Clause { get; set; } = null!;
+        public List<Point> PointsList { get; set; } = new List<Point>();
+    }
+    public class ArticleDetails
+    {
+        public Article Article { get; set; } = null!;
+        public List<ClauseDetails> ClausesList { get; set; } = new List<ClauseDetails>();
+    }
+
     [ApiController]
     [Route("api/decree")]
     public class DecreeController : ControllerBase
     {
         private readonly DecreeServices _decreeServices;
+        private readonly ArticleServices _articleServices;
+        private readonly ClauseServices _clauseServices;
+        private readonly PointServices _pointServices;
         private readonly UserServices _userServices;
 
-        public DecreeController(DecreeServices decreeServices, UserServices userServices)
+        public DecreeController(DecreeServices decreeServices, ArticleServices articleServices, ClauseServices clauseServices, PointServices pointServices, UserServices userServices)
         {
             _decreeServices = decreeServices;
+            _articleServices = articleServices;
+            _clauseServices = clauseServices;
+            _pointServices = pointServices;
             _userServices = userServices;
         }
 
@@ -60,6 +77,69 @@ namespace webapi.Controllers
                 }
                 else
                     return Ok(decrees[0]);
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        [HttpGet]
+        [Route("getAllDecreeDetails/{id}")]
+        public async Task<IActionResult> GetAllDecreeDetails(string id)
+        {
+            try
+            {
+                if (!ObjectId.TryParse(id, out _))
+                {
+                    return BadRequest(new
+                    {
+                        error = "Invalid ID !"
+                    });
+                }
+
+                List<Decree> decrees = await _decreeServices.GetDecreeById(id);
+                List<ArticleDetails> articles = new List<ArticleDetails>();
+
+                if (decrees.Count == 0)
+                {
+                    return NotFound(new
+                    {
+                        error = "No decree found !"
+                    });
+                }
+                else
+                {
+                    List<Article> aList = await _articleServices.GetArticleByDecreeId(id);
+
+                    for (int i = 0; i < aList.Count; i++)
+                    {
+                        ArticleDetails ad = new ArticleDetails();
+
+                        ad.Article = aList[i];
+
+                        List<Clause> cList = await _clauseServices.GetClauseByArticleId(aList[i].Id);
+
+                        for (int j = 0; j < cList.Count; j++)
+                        {
+                            ClauseDetails cd = new ClauseDetails();
+
+                            cd.Clause = cList[j];
+                            cd.PointsList = await _pointServices.GetPointByClauseId(cList[j].Id);
+
+                            ad.ClausesList.Add(cd);
+                        }
+
+                        articles.Add(ad);
+                    }
+
+                    return Ok(new
+                    {
+                        success = "Get decree details successfully !",
+                        decree = decrees[0],
+                        details = articles
+                    });
+                }
             }
             catch
             {
