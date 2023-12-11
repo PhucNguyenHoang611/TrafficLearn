@@ -30,6 +30,8 @@ namespace webapi.Services
 
         public async Task<List<Point>> GetPointById(string id) => await _pointsCollection.Find(x => x.Id == id).ToListAsync();
 
+        public async Task<List<Point>> GetPointByClauseId(string id) => await _pointsCollection.Find(x => x.ClauseId == id).ToListAsync();
+
         public async Task CreatePoint(Point point) => await _pointsCollection.InsertOneAsync(point);
 
         public async Task UpdatePoint(string id, Point point) => await _pointsCollection.ReplaceOneAsync(x => x.Id == id, point);
