@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Authentication;
 using webapi.Models.Request;
 using webapi.Services.Email;
 using Azure.Security.KeyVault.Secrets;
+using webapi.Services.PasswordHasher;
 
 namespace webapi.Controllers.Authentication
 {
@@ -28,13 +29,15 @@ namespace webapi.Controllers.Authentication
         private readonly EmailServices _emailServices;
         private readonly IConfiguration _configuration;
         private readonly SecretClient _secretClient;
+        private readonly IPasswordHasher _passwordHasher;
 
-        public LoginController(UserServices userServices, EmailServices emailServices, IConfiguration configuration, SecretClient secretClient)
+        public LoginController(UserServices userServices, EmailServices emailServices, IConfiguration configuration, SecretClient secretClient, IPasswordHasher passwordHasher)
         {
             _userServices = userServices;
             _emailServices = emailServices;
             _configuration = configuration;
             _secretClient = secretClient;
+            _passwordHasher = passwordHasher;
         }
 
         [HttpPost]
@@ -52,8 +55,9 @@ namespace webapi.Controllers.Authentication
             else
             {
                 User user = users[0];
+                var passwordCheck = _passwordHasher.Verify(user.UserPassword, request.Password);
 
-                if (request.Password != user.UserPassword)
+                if (!passwordCheck)
                 {
                     return BadRequest(new
                     {
@@ -175,7 +179,9 @@ namespace webapi.Controllers.Authentication
 
                     if (check)
                     {
-                        await _userServices.UpdatePassword(user, body.NewPassword);
+                        var hashPassword = _passwordHasher.Hash(body.NewPassword);
+                        await _userServices.UpdatePassword(user, hashPassword);
+
                         return Ok(new
                         {
                             success = "Reset password successfully !"
