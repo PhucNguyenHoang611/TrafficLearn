@@ -67,6 +67,38 @@ namespace webapi.Controllers
             }
         }
 
+        [HttpGet]
+        [Route("GetLicenseTitleByLicenseId/{id}")]
+        public async Task<IActionResult> GetLicenseTitleByLicenseId(string id)
+        {
+            try
+            {
+                if (!ObjectId.TryParse(id, out _))
+                {
+                    return BadRequest(new
+                    {
+                        error = "Invalid license ID !"
+                    });
+                }
+
+                List<LicenseTitle> licenseTitles = await _licenseTitleServices.GetLicenseTitleByLicenseId(id);
+
+                if (licenseTitles.Count == 0)
+                {
+                    return NotFound(new
+                    {
+                        error = "No license title found !"
+                    });
+                }
+                else
+                    return Ok(licenseTitles[0]);
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
         [HttpPost]
         [Route("createLicenseTitle")]
         [Authorize]

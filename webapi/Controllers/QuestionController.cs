@@ -1,23 +1,39 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
+using System.Drawing;
 using System.Security.Claims;
 using webapi.Models;
 using webapi.Services;
 
 namespace webapi.Controllers
 {
+    public class QuestionDetails
+    {
+        public Question Question { get; set; } = null!;
+        public License License { get; set; } = null!;
+        public Title Title { get; set; } = null!;
+    }
+
     [ApiController]
     [Route("api/question")]
     public class QuestionController : ControllerBase
     {
         private readonly QuestionServices _questionServices;
+        private readonly LicenseTitleServices _licenseTitleServices;
+        private readonly LicenseServices _licenseServices;
+        private readonly TitleServices _titleServices;
+
         private readonly FileServices _fileServices;
         private readonly UserServices _userServices;
 
-        public QuestionController(QuestionServices questionServices, FileServices fileServices, UserServices userServices)
+        public QuestionController(QuestionServices questionServices, LicenseTitleServices licenseTitleServices, LicenseServices licenseServices, TitleServices titleServices, FileServices fileServices, UserServices userServices)
         {
             _questionServices = questionServices;
+            _licenseTitleServices = licenseTitleServices;
+            _licenseServices = licenseServices;
+            _titleServices = titleServices;
+
             _fileServices = fileServices;
             _userServices = userServices;
         }
@@ -28,8 +44,30 @@ namespace webapi.Controllers
         {
             try
             {
+                List<QuestionDetails> result = new List<QuestionDetails>();
                 List<Question> questions = await _questionServices.GetAllQuestions();
-                return Ok(questions);
+
+                if (questions.Count > 0)
+                {
+                    for (int i = 0; i < questions.Count; i++)
+                    {
+                        QuestionDetails qd = new QuestionDetails();
+                        qd.Question = questions[i];
+
+                        List<LicenseTitle> ltList = await _licenseTitleServices.GetLicenseTitleById(questions[i].LicenseTitleId);
+                        LicenseTitle lt = ltList[0];
+
+                        List<License> lList = await _licenseServices.GetLicenseById(lt.LicenseId);
+                        qd.License = lList[0];
+
+                        List<Title> tList = await _titleServices.GetTitleById(lt.TitleId);
+                        qd.Title = tList[0];
+
+                        result.Add(qd);
+                    }
+                }
+
+                return Ok(result);
             }
             catch
             {
@@ -61,7 +99,73 @@ namespace webapi.Controllers
                     });
                 }
                 else
-                    return Ok(questions[0]);
+                {
+                    QuestionDetails qd = new QuestionDetails();
+                    qd.Question = questions[0];
+
+                    List<LicenseTitle> ltList = await _licenseTitleServices.GetLicenseTitleById(questions[0].LicenseTitleId);
+                    LicenseTitle lt = ltList[0];
+
+                    List<License> lList = await _licenseServices.GetLicenseById(lt.LicenseId);
+                    qd.License = lList[0];
+
+                    List<Title> tList = await _titleServices.GetTitleById(lt.TitleId);
+                    qd.Title = tList[0];
+
+                    return Ok(qd);
+                }
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        [HttpGet]
+        [Route("GetQuestionByLicenseTitleId/{id}")]
+        public async Task<IActionResult> GetQuestionByLicenseTitleId(string id)
+        {
+            try
+            {
+                if (!ObjectId.TryParse(id, out _))
+                {
+                    return BadRequest(new
+                    {
+                        error = "Invalid license title ID !"
+                    });
+                }
+
+                List<QuestionDetails> result = new List<QuestionDetails>();
+                List<Question> questions = await _questionServices.GetQuestionByLicenseTitleId(id);
+
+                if (questions.Count == 0)
+                {
+                    return NotFound(new
+                    {
+                        error = "No question found !"
+                    });
+                }
+                else
+                {
+                    for (int i = 0; i < questions.Count; i++)
+                    {
+                        QuestionDetails qd = new QuestionDetails();
+                        qd.Question = questions[i];
+
+                        List<LicenseTitle> ltList = await _licenseTitleServices.GetLicenseTitleById(questions[i].LicenseTitleId);
+                        LicenseTitle lt = ltList[0];
+
+                        List<License> lList = await _licenseServices.GetLicenseById(lt.LicenseId);
+                        qd.License = lList[0];
+
+                        List<Title> tList = await _titleServices.GetTitleById(lt.TitleId);
+                        qd.Title = tList[0];
+
+                        result.Add(qd);
+                    }
+
+                    return Ok(result);
+                }
             }
             catch
             {
@@ -114,10 +218,17 @@ namespace webapi.Controllers
 
                 if (userRole == "Admin")
                 {
+                    if (!ObjectId.TryParse(question.LicenseTitleId, out _))
+                    {
+                        return BadRequest(new
+                        {
+                            error = "Invalid license title ID !"
+                        });
+                    }
+
                     Question q = new Question
                     {
-                        TestGroup = question.TestGroup,
-                        QuestionType = question.QuestionType,
+                        LicenseTitleId = question.LicenseTitleId,
                         QuestionContent = question.QuestionContent,
                         Important = question.Important,
                         Explanation = question.Explanation
@@ -235,6 +346,14 @@ namespace webapi.Controllers
                         return NotFound(new
                         {
                             error = "No question found !"
+                        });
+                    }
+
+                    if (!ObjectId.TryParse(question.LicenseTitleId, out _))
+                    {
+                        return BadRequest(new
+                        {
+                            error = "Invalid license title ID !"
                         });
                     }
 

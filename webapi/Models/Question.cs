@@ -12,12 +12,9 @@ namespace webapi.Models
         public string? Id { get; set; } = null!;
 
         [BsonRequired]
-        [Required(ErrorMessage = "Group is required")]
-        public string TestGroup { get; set; } = null!;
-
-        [BsonRequired]
-        [Required(ErrorMessage = "Type is required")]
-        public string QuestionType { get; set; } = null!;
+        [BsonRepresentation(BsonType.ObjectId)]
+        [Required(ErrorMessage = "License title ID is required")]
+        public string LicenseTitleId { get; set; } = null!;
 
         [BsonRequired]
         [Required(ErrorMessage = "Content is required")]
