@@ -9,6 +9,7 @@ using webapi.Services.Email;
 using Azure.Identity;
 using Microsoft.Extensions.Configuration.AzureKeyVault;
 using Azure.Security.KeyVault.Secrets;
+using webapi.Services.PasswordHasher;
 
 var builder = WebApplication.CreateBuilder(args);
 /*var secretKey = builder.Configuration["Jwt:SecretKey"];*/
@@ -17,6 +18,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.Configure<DatabaseSettings>(builder.Configuration.GetSection("DatabaseSettings"));
 builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
 
+builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
 builder.Services.AddTransient<IEmailServices, EmailServices>();
 
 builder.Services.AddSingleton<UserServices>();

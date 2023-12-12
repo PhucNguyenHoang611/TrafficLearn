@@ -3,6 +3,7 @@ using webapi.Models;
 using webapi.Services;
 using webapi.Models.Request;
 using webapi.Services.Email;
+using webapi.Services.PasswordHasher;
 
 namespace webapi.Controllers.Authentication
 {
@@ -18,11 +19,13 @@ namespace webapi.Controllers.Authentication
     {
         private readonly UserServices _userServices;
         private readonly EmailServices _emailServices;
+        private readonly IPasswordHasher _passwordHasher;
 
-        public RegisterController(UserServices userServices, EmailServices emailServices)
+        public RegisterController(UserServices userServices, EmailServices emailServices, IPasswordHasher passwordHasher)
         {
             _userServices = userServices;
             _emailServices = emailServices;
+            _passwordHasher = passwordHasher;
         }
 
         [HttpPost]
@@ -38,10 +41,12 @@ namespace webapi.Controllers.Authentication
                 });
             }
 
+            var passwordHash = _passwordHasher.Hash(request.Password);
+
             User user = new User
             {
                 UserEmail = request.Email,
-                UserPassword = request.Password,
+                UserPassword = passwordHash,
                 UserFirstName = request.FirstName,
                 UserLastName = request.LastName,
                 UserBirthday = request.Birthday,

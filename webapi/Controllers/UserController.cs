@@ -4,6 +4,7 @@ using MongoDB.Bson;
 using System.Security.Claims;
 using webapi.Models;
 using webapi.Services;
+using webapi.Services.PasswordHasher;
 
 namespace webapi.Controllers
 {
@@ -19,10 +20,12 @@ namespace webapi.Controllers
     public class UserController : ControllerBase
     {
         private readonly UserServices _userServices;
+        private readonly IPasswordHasher _passwordHasher;
 
-        public UserController(UserServices userServices)
+        public UserController(UserServices userServices, IPasswordHasher passwordHasher)
         {
             _userServices = userServices;
+            _passwordHasher = passwordHasher;
         }
 
         [HttpGet]
@@ -317,10 +320,13 @@ namespace webapi.Controllers
                 else
                 {
                     User user = users[0];
+                    var passwordCheck = _passwordHasher.Verify(user.UserPassword, request.OldPassword);
 
-                    if (user.UserPassword == request.OldPassword)
+                    if (passwordCheck)
                     {
-                        await _userServices.UpdatePassword(user, request.NewPassword);
+                        var passwordHash = _passwordHasher.Hash(request.NewPassword);
+
+                        await _userServices.UpdatePassword(user, passwordHash);
 
                         return Ok(new
                         {
