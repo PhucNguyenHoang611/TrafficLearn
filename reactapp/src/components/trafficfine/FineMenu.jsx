@@ -1,12 +1,37 @@
-import React, { useState } from "react";
-import { NavLink, Outlet } from "react-router-dom";
+/* eslint-disable react-hooks/exhaustive-deps */
 
-const FineMenu = () => {
-  const [searchValue, setSearchValue] = useState("");
+import React, { useEffect, useState } from "react";
+import { Box } from "@mui/material";
+
+import { getAllTrafficFineTypes } from "@/apis/api_function"
+
+const FineMenu = ({ searchValue, setSearchValue, selectedFineType,setSelectedFineType }) => {
+  const [fineTypes, setFineTypes] = useState([]);
 
   const handleSearchChange = (event) => {
     setSearchValue(event.target.value);
   };
+
+  const handleChangeFineType = (id) => {
+    setSelectedFineType(id);
+  }
+
+  const getTrafficFineTypes = () => {
+    try {
+      getAllTrafficFineTypes()
+        .then((res) => {
+          setFineTypes(res.data);
+        });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    if (fineTypes.length == 0) {
+      getTrafficFineTypes()
+    }
+  }, []);
 
   return (
     <nav className="z-10 shadow-md w-full sm:w-56 flex-shrink-0">
@@ -63,20 +88,25 @@ const FineMenu = () => {
           </div>
           <p className="ml-2 mt-2">Lọc theo: </p>
           <hr className="bg-gray-500 border-1 border-gray-300 mx-2" />
-          <NavLink
-            to="/trafficfine"
-            activeClassName="bg-gray-900 text-white px-3 py-2 rounded-md text-sm font-medium"
-            className="text-gray-800 no-underline hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
-          >
-            Hiệu lệnh, chỉ dẫn
-          </NavLink>
-          <NavLink
-            to="/trafficfine/search"
-            activeClassName="bg-gray-900 text-white px-3 py-2 rounded-md text-sm font-medium"
-            className="text-gray-800 no-underline hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
-          >
-            Chuyển hướng, nhường đường
-          </NavLink>
+
+          {(fineTypes.length > 0) && fineTypes.map((item, index) => (
+            <Box
+              key={index}
+              onClick={() => handleChangeFineType(item.Id)}
+              className={(selectedFineType == item.Id)
+                ? "bg-gray-900 text-white px-3 py-2 rounded-md text-sm font-medium"
+                : "text-gray-800 no-underline hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"}
+            >
+              {item.FineType}
+            </Box>
+            // <NavLink
+            //   to="/trafficfine"
+            //   activeClassName="bg-gray-900 text-white px-3 py-2 rounded-md text-sm font-medium"
+            //   className="text-gray-800 no-underline hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
+            // >
+            //   Hiệu lệnh, chỉ dẫn
+            // </NavLink>
+          ))}
         </div>
       </div>
     </nav>

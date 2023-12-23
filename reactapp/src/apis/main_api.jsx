@@ -1,6 +1,8 @@
 import axios from "axios";
 
-export const baseURL = "https://localhost:7220/api";
+export const baseURL = "https://trafficlearn-api.azurewebsites.net/api";
+// https://trafficlearn-api.azurewebsites.net/api
+// https://localhost:7220/api
 
 let instance = null;
 

@@ -1,3 +1,9 @@
+export const getAccessToken = (token) => ({
+  headers: {
+    Authorization: "Bearer " + token,
+  },
+});
+
 // Login
 export const LOGIN = "/login";
 export const getLoginBody = (email, password) => ({
@@ -71,3 +77,14 @@ export const getResetPasswordBody = (email, password, TOTP) => ({
   TOTP: TOTP,
   NewPassword: password,
 });
+
+
+// Traffic fine
+export const GET_ALL_TRAFFIC_FINES = "/trafficFine/getAllTrafficFines";
+
+export const GET_TRAFFIC_FINE = (id) => `/trafficFine/getTrafficFineById/${id}`;
+
+// Traffic fine type
+export const GET_ALL_TRAFFIC_FINE_TYPES = "/trafficFineType/getAllTrafficFineTypes";
+
+export const GET_TRAFFIC_FINE_TYPE = (id) => `/trafficFineType/getTrafficFineTypeById/${id}`;

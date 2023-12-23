@@ -58,7 +58,7 @@ const NavFine = () => {
           ref={menuRef}
         >
           <Link
-            to={"fine/motobike"}
+            to={"fine/motorbike"}
             className="no-underline block px-4 py-2 text-gray-800 hover:bg-gray-100 hover:text-gray-900"
           >
             Xe máy
