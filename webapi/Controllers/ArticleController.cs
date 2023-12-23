@@ -12,11 +12,15 @@ namespace webapi.Controllers
     public class ArticleController : ControllerBase
     {
         private readonly ArticleServices _articleServices;
+        private readonly ClauseServices _clauseServices;
+        private readonly PointServices _pointServices;
         private readonly UserServices _userServices;
 
-        public ArticleController(ArticleServices ArticleServices, UserServices userServices)
+        public ArticleController(ArticleServices ArticleServices, ClauseServices clauseServices, PointServices pointServices, UserServices userServices)
         {
             _articleServices = ArticleServices;
+            _clauseServices = clauseServices;
+            _pointServices = pointServices;
             _userServices = userServices;
         }
 
@@ -60,6 +64,58 @@ namespace webapi.Controllers
                 }
                 else
                     return Ok(articles[0]);
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        [HttpGet]
+        [Route("getAllArticleDetails/{id}")]
+        public async Task<IActionResult> GetAllArticleDetails(string id)
+        {
+            try
+            {
+                if (!ObjectId.TryParse(id, out _))
+                {
+                    return BadRequest(new
+                    {
+                        error = "Invalid ID !"
+                    });
+                }
+
+                List<Article> articles = await _articleServices.GetArticleById(id);
+                List<ClauseDetails> clauses = new List<ClauseDetails>();
+
+                if (articles.Count == 0)
+                {
+                    return NotFound(new
+                    {
+                        error = "No article found !"
+                    });
+                }
+                else
+                {
+                    List<Clause> cList = await _clauseServices.GetClauseByArticleId(id);
+
+                    for (int i = 0;  i < cList.Count; i++)
+                    {
+                        ClauseDetails cd = new ClauseDetails();
+
+                        cd.Clause = cList[i];
+                        cd.PointsList = await _pointServices.GetPointByClauseId(cList[i].Id);
+
+                        clauses.Add(cd);
+                    }
+
+                    return Ok(new
+                    {
+                        success = "Get article details successfully !",
+                        article = articles[0],
+                        details = clauses
+                    });
+                }
             }
             catch
             {
