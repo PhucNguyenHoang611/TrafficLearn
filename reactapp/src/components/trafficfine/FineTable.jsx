@@ -1,13 +1,13 @@
 import React from "react";
 
-const fines = [
-  { title: "Not following traffic sign", penalty: "100 - 200$" },
-  { title: "Speeding", penalty: "50 - 100$" },
-  { title: "Driving under the influence", penalty: "500 - 1000$" },
-  { title: "Using phone while driving", penalty: "50 - 100$" },
-];
+// const fines = [
+//   { title: "Not following traffic sign", penalty: "100 - 200$" },
+//   { title: "Speeding", penalty: "50 - 100$" },
+//   { title: "Driving under the influence", penalty: "500 - 1000$" },
+//   { title: "Using phone while driving", penalty: "50 - 100$" },
+// ];
 
-const FineTable = () => {
+const FineTable = ({ fines }) => {
   return (
     <table className="w-full border-collapse">
       <thead>

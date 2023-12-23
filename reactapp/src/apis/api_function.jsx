@@ -88,3 +88,29 @@ export const resetPassword = (email, password, TOTP) => {
     NewPassword: password,
   });
 };
+
+// Traffic fine
+export const getAllTrafficFines = async () => {
+  return await mainApi.get(
+    apiEndpoints.GET_ALL_TRAFFIC_FINES
+  );
+};
+
+export const getTrafficFine = async (id) => {
+  return await mainApi.get(
+    apiEndpoints.GET_TRAFFIC_FINE(id)
+  );
+}
+
+// Traffic fine type
+export const getAllTrafficFineTypes = async () => {
+  return await mainApi.get(
+    apiEndpoints.GET_ALL_TRAFFIC_FINE_TYPES
+  );
+};
+
+export const getTrafficFineType = async (id) => {
+  return await mainApi.get(
+    apiEndpoints.GET_TRAFFIC_FINE_TYPE(id)
+  );
+}
