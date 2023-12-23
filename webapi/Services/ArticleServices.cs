@@ -30,7 +30,7 @@ namespace webapi.Services
 
         public async Task<List<Article>> GetArticleById(string id) => await _articlesCollection.Find(x => x.Id == id).ToListAsync();
 
-        public async Task<List<Article>> GetArticleByDecreeId(string id) => await _articlesCollection.Find(x => x.DecreeId == id).ToListAsync();
+        public async Task<List<Article>> GetArticlesByDecreeId(string id) => await _articlesCollection.Find(x => x.DecreeId == id).ToListAsync();
 
         public async Task CreateArticle(Article article) => await _articlesCollection.InsertOneAsync(article);
 

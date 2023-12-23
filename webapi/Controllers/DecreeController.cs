@@ -110,7 +110,7 @@ namespace webapi.Controllers
                 }
                 else
                 {
-                    List<Article> aList = await _articleServices.GetArticleByDecreeId(id);
+                    List<Article> aList = await _articleServices.GetArticlesByDecreeId(id);
 
                     for (int i = 0; i < aList.Count; i++)
                     {
@@ -118,14 +118,14 @@ namespace webapi.Controllers
 
                         ad.Article = aList[i];
 
-                        List<Clause> cList = await _clauseServices.GetClauseByArticleId(aList[i].Id);
+                        List<Clause> cList = await _clauseServices.GetClausesByArticleId(aList[i].Id);
 
                         for (int j = 0; j < cList.Count; j++)
                         {
                             ClauseDetails cd = new ClauseDetails();
 
                             cd.Clause = cList[j];
-                            cd.PointsList = await _pointServices.GetPointByClauseId(cList[j].Id);
+                            cd.PointsList = await _pointServices.GetPointsByClauseId(cList[j].Id);
 
                             ad.ClausesList.Add(cd);
                         }

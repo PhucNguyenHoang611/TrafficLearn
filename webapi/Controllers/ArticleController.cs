@@ -40,6 +40,29 @@ namespace webapi.Controllers
         }
 
         [HttpGet]
+        [Route("getArticlesByDecreeId/{id}")]
+        public async Task<IActionResult> GetArticlesByDecreeId(string id)
+        {
+            try
+            {
+                if (!ObjectId.TryParse(id, out _))
+                {
+                    return BadRequest(new
+                    {
+                        error = "Invalid ID !"
+                    });
+                }
+
+                List<Article> articles = await _articleServices.GetArticlesByDecreeId(id);
+                return Ok(articles);
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        [HttpGet]
         [Route("getArticleById/{id}")]
         public async Task<IActionResult> GetArticleById(string id)
         {
@@ -97,14 +120,14 @@ namespace webapi.Controllers
                 }
                 else
                 {
-                    List<Clause> cList = await _clauseServices.GetClauseByArticleId(id);
+                    List<Clause> cList = await _clauseServices.GetClausesByArticleId(id);
 
                     for (int i = 0;  i < cList.Count; i++)
                     {
                         ClauseDetails cd = new ClauseDetails();
 
                         cd.Clause = cList[i];
-                        cd.PointsList = await _pointServices.GetPointByClauseId(cList[i].Id);
+                        cd.PointsList = await _pointServices.GetPointsByClauseId(cList[i].Id);
 
                         clauses.Add(cd);
                     }

@@ -36,6 +36,29 @@ namespace webapi.Controllers
         }
 
         [HttpGet]
+        [Route("getClausesByArticleId/{id}")]
+        public async Task<IActionResult> GetClausesByArticleId(string id)
+        {
+            try
+            {
+                if (!ObjectId.TryParse(id, out _))
+                {
+                    return BadRequest(new
+                    {
+                        error = "Invalid ID !"
+                    });
+                }
+
+                List<Clause> clauses = await _clauseServices.GetClausesByArticleId(id);
+                return Ok(clauses);
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        [HttpGet]
         [Route("getClauseById/{id}")]
         public async Task<IActionResult> GetClauseById(string id)
         {

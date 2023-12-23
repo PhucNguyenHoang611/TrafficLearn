@@ -30,7 +30,7 @@ namespace webapi.Services
 
         public async Task<List<Clause>> GetClauseById(string id) => await _clausesCollection.Find(x => x.Id == id).ToListAsync();
 
-        public async Task<List<Clause>> GetClauseByArticleId(string id) => await _clausesCollection.Find(x => x.ArticleId == id).ToListAsync();
+        public async Task<List<Clause>> GetClausesByArticleId(string id) => await _clausesCollection.Find(x => x.ArticleId == id).ToListAsync();
 
         public async Task CreateClause(Clause clause) => await _clausesCollection.InsertOneAsync(clause);
 

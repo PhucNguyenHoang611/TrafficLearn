@@ -36,6 +36,29 @@ namespace webapi.Controllers
         }
 
         [HttpGet]
+        [Route("getPointsByClauseId/{id}")]
+        public async Task<IActionResult> GetPointsByClauseId(string id)
+        {
+            try
+            {
+                if (!ObjectId.TryParse(id, out _))
+                {
+                    return BadRequest(new
+                    {
+                        error = "Invalid ID !"
+                    });
+                }
+
+                List<Point> points = await _pointServices.GetPointsByClauseId(id);
+                return Ok(points);
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        [HttpGet]
         [Route("getPointById/{id}")]
         public async Task<IActionResult> GetPointById(string id)
         {
