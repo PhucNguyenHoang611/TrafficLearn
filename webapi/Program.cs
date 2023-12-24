@@ -69,7 +69,7 @@ builder.Services.AddCors(options =>
     options.AddPolicy(name: "policy",
         builder =>
         {
-            builder.WithOrigins("https://trafficlearn-admin.vercel.app", "https://traffic-admin.vercel.app", "https://localhost:5173", "http://localhost:5173", "https://localhost:7220")
+            builder.WithOrigins("https://trafficlearn.azurewebsites.net", "https://trafficlearn-admin.vercel.app", "https://traffic-admin.vercel.app", "https://localhost:5173", "http://localhost:5173", "https://localhost:7220")
                 .AllowAnyHeader()
                 .AllowAnyMethod()
                 .AllowCredentials();
