@@ -1,32 +1,32 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { Box } from "@mui/material";
 import LoadingSpinner from "../loading/LoadingSpinner";
 
-import { getAllTrafficFineTypes } from "@/apis/api_function"
+import { getAllTrafficSignTypes } from "@/apis/api_function"
 
-const FineMenu = ({
-  fineTypes,
-  setFineTypes,
+const SignMenu = ({
+  signTypes,
+  setSignTypes,
   searchValue,
   setSearchValue,
-  selectedFineType,
-  setSelectedFineType }) => {
+  selectedSignType,
+  setSelectedSignType }) => {
   
   const handleSearchChange = (event) => {
     setSearchValue(event.target.value);
   };
 
-  const handleChangeFineType = (id) => {
-    setSelectedFineType(id);
+  const handleChangeSignType = (id) => {
+    setSelectedSignType(id);
   }
 
-  const getTrafficFineTypes = () => {
+  const getTrafficSignTypes = () => {
     try {
-      getAllTrafficFineTypes()
+      getAllTrafficSignTypes()
         .then((res) => {
-          setFineTypes(res.data);
+          setSignTypes(res.data);
         });
     } catch (error) {
       console.log(error);
@@ -34,8 +34,8 @@ const FineMenu = ({
   };
 
   useEffect(() => {
-    if (fineTypes.length == 0) {
-      getTrafficFineTypes()
+    if (signTypes.length == 0) {
+      getTrafficSignTypes()
     }
   }, []);
 
@@ -95,44 +95,44 @@ const FineMenu = ({
           <p className="ml-2 mt-2">Lọc theo: </p>
           <hr className="bg-gray-500 border-1 border-gray-300 mx-2" />
 
-          {/* Fine type filter: Small screen */}
+          {/* Sign type filter: Small screen */}
           <select
-            onChange={(e) => handleChangeFineType(e.target.value)}
-            value={selectedFineType}
+            onChange={(e) => handleChangeSignType(e.target.value)}
+            value={selectedSignType}
             className="sm:hidden w-full my-2 px-3 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent"
           >
             <option key={-1} value="all">Tất cả</option>
-            {(fineTypes.length > 0) && fineTypes.map((item, index) => (
-                <option key={index} value={item.Id}>{item.FineType}</option>
+            {(signTypes.length > 0) && signTypes.map((item, index) => (
+                <option key={index} value={item.Id}>{item.SignType}</option>
             ))}
           </select>
 
-          {/* Fine type filter: Large screen */}
+          {/* Sign type filter: Large screen */}
           <div className="hidden sm:block">
-            {(fineTypes.length > 0) && (
+            {(signTypes.length > 0) && (
               <Box
                 key={-1}
-                onClick={() => handleChangeFineType("all")}
-                className={(selectedFineType == "all")
+                onClick={() => handleChangeSignType("all")}
+                className={(selectedSignType == "all")
                   ? "bg-gray-900 text-white px-3 py-2 rounded-md text-sm font-medium cursor-pointer"
                   : "text-gray-800 no-underline hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium cursor-pointer"}
               >
                 Tất cả
               </Box>
             )}
-            {(fineTypes.length > 0) && fineTypes.map((item, index) => (
+            {(signTypes.length > 0) && signTypes.map((item, index) => (
               <Box
                 key={index}
-                onClick={() => handleChangeFineType(item.Id)}
-                className={(selectedFineType == item.Id)
+                onClick={() => handleChangeSignType(item.Id)}
+                className={(selectedSignType == item.Id)
                   ? "bg-gray-900 text-white px-3 py-2 rounded-md text-sm font-medium cursor-pointer"
                   : "text-gray-800 no-underline hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium cursor-pointer"}
               >
-                {item.FineType}
+                {item.SignType}
               </Box>
             ))}
 
-            {(fineTypes.length == 0) && <LoadingSpinner />}
+            {(signTypes.length == 0) && <LoadingSpinner />}
           </div>
         </div>
       </div>
@@ -140,4 +140,4 @@ const FineMenu = ({
   );
 };
 
-export default FineMenu;
+export default SignMenu;

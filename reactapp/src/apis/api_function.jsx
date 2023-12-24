@@ -114,3 +114,29 @@ export const getTrafficFineType = async (id) => {
     apiEndpoints.GET_TRAFFIC_FINE_TYPE(id)
   );
 }
+
+// Traffic sign
+export const getAllTrafficSigns = async () => {
+  return await mainApi.get(
+    apiEndpoints.GET_ALL_TRAFFIC_SIGNS
+  );
+};
+
+export const getTrafficSign = async (id) => {
+  return await mainApi.get(
+    apiEndpoints.GET_TRAFFIC_SIGN(id)
+  );
+}
+
+// Traffic sign type
+export const getAllTrafficSignTypes = async () => {
+  return await mainApi.get(
+    apiEndpoints.GET_ALL_TRAFFIC_SIGN_TYPES
+  );
+};
+
+export const getTrafficSignType = async (id) => {
+  return await mainApi.get(
+    apiEndpoints.GET_TRAFFIC_SIGN_TYPE(id)
+  );
+}

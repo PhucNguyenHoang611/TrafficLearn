@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { NavLink, Outlet } from "react-router-dom";
 import FineList from "@/components/trafficfine/FineList";
 import FineMenu from "@/components/trafficfine/FineMenu";
 import FineVehicle from "@/components/trafficfine/FineVehicle";
