@@ -8,25 +8,24 @@ const Footer = () => {
           <div className="grid grid-cols-1 gap-8 xl:col-span-2 md:grid-cols-2">
             <div>
               <h3 className="text-lg font-medium leading-6 text-gray-200">
-                About Us
+                Về website
               </h3>
               <p className="mt-2 max-w-md text-sm leading-5 text-gray-400">
                 Website cho người muồn tìm hiểu về luật giao thông.
               </p>
               <div className="mt-8">
                 <h3 className="text-lg font-medium leading-6 text-gray-200">
-                  Contact Us
+                  Địa chỉ liên hệ
                 </h3>
                 <div className="mt-2 max-w-md text-sm leading-5 text-gray-400">
-                  <p>Nguyen Hoang Phuc</p>
-                  <p>20521767@gm.uit.edu.vn</p>
-                  <p>012345678</p>
+                  <p>Traffic Learn</p>
+                  <p>trafficlearnteam@gmail.com</p>
                 </div>
               </div>
             </div>
             <div className="mt-12 md:mt-0">
               <h3 className="text-lg font-medium leading-6 text-gray-200">
-                Follow Us
+                Theo dõi chúng tôi
               </h3>
               <div className="mt-2 flex">
                 <a
@@ -86,7 +85,7 @@ const Footer = () => {
         </div>
         <div className="mt-12 border-t border-gray-700 pt-8">
           <p className="text-base leading-6 text-gray-400 xl:text-center">
-            &copy; 2023 Traffic Learning. No rights reserved.
+            &copy; 2023 Traffic Learn. No rights reserved.
           </p>
         </div>
       </div>

@@ -15,7 +15,7 @@ export default function BasicButtonGroup() {
       >
         <Button
           onClick={() => {
-            navigate("/fine/mortobike");
+            navigate("/fine/motorbike");
           }}
         >
           Xe máy

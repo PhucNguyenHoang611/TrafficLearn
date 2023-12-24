@@ -21,7 +21,7 @@ const LandFooter = () => {
           <p>
             <span className="font-bold">Email: </span>
             <span>
-              <a href="mailto:20521767@gm.uit.edu.vn">20521767@gm.uit.edu.vn</a>
+              <a href="mailto:trafficlearnteam@gmail.com">trafficlearnteam@gmail.com</a>
             </span>
           </p>
         </div>
