@@ -88,3 +88,13 @@ export const GET_TRAFFIC_FINE = (id) => `/trafficFine/getTrafficFineById/${id}`;
 export const GET_ALL_TRAFFIC_FINE_TYPES = "/trafficFineType/getAllTrafficFineTypes";
 
 export const GET_TRAFFIC_FINE_TYPE = (id) => `/trafficFineType/getTrafficFineTypeById/${id}`;
+
+// Traffic sign
+export const GET_ALL_TRAFFIC_SIGNS = "/trafficSign/getAllTrafficSigns";
+
+export const GET_TRAFFIC_SIGN = (id) => `/trafficSign/getTrafficSignById/${id}`;
+
+// Traffic sign type
+export const GET_ALL_TRAFFIC_SIGN_TYPES = "/trafficSignType/getAllTrafficSignTypes";
+
+export const GET_TRAFFIC_SIGN_TYPE = (id) => `/trafficSignType/getTrafficSignTypeById/${id}`;

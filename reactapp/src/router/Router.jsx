@@ -28,7 +28,7 @@ export const router = createBrowserRouter(
         <Route index element={<Landing />}></Route>
         {/* <Route path="landing" element={<Landing />}></Route> */}
         <Route path="fine/:vehicleType" element={<TrafficFine />}></Route>
-        <Route path="sign/:signId" element={<TrafficSign />}></Route>
+        <Route path="sign" element={<TrafficSign />}></Route>
         <Route path="history" element={<ExamHistory />}></Route>
       </Route>
       <Route path="login" element={<Login />} />

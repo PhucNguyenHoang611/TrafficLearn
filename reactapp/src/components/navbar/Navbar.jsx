@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { NavLink, Link, useNavigate } from "react-router-dom";
 import NavFine from "./NavFine";
 import NavProfile from "./NavProfile";
 
@@ -82,12 +82,14 @@ const NavBar = () => {
               <div className="flex space-x-4">
                 {/* Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" */}
                 <NavFine />
-                <a
-                  href="#"
+
+                <Link
+                  to={"sign"}
                   className="no-underline text-gray-600 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
                 >
                   Biển báo giao thông
-                </a>
+                </Link>
+
                 <a
                   href="#"
                   className="no-underline text-gray-600 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
@@ -115,33 +117,49 @@ const NavBar = () => {
         <section className="sm:hidden" id="mobile-menu">
           <div className="px-2 pt-2 pb-3 space-y-1">
             {/* Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" */}
-            <Link
+            <NavLink
               to={"/fine/motorbike"}
-              className="bg-gray-900 text-white block px-3 py-2 rounded-md text-base font-medium"
+              className={({ isActive }) =>
+                isActive
+                ? "bg-gray-900 text-white block px-3 py-2 rounded-md text-base font-medium"
+                : "text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium"
+              }
             >
               Mức phạt giao thông
-            </Link>
+            </NavLink>
 
-            <a
-              href="#"
-              className="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium"
+            <NavLink
+              to={"/sign"}
+              className={({ isActive }) =>
+                isActive
+                ? "bg-gray-900 text-white block px-3 py-2 rounded-md text-base font-medium"
+                : "text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium"
+              }
             >
               Biển báo giao thông
-            </a>
+            </NavLink>
 
-            <a
-              href="#"
-              className="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium"
+            <NavLink
+              to={"/"}
+              className={({ isActive }) =>
+                isActive
+                ? "bg-gray-900 text-white block px-3 py-2 rounded-md text-base font-medium"
+                : "text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium"
+              }
             >
               Ôn thi GPLX
-            </a>
+            </NavLink>
 
-            <a
-              href="#"
-              className="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium"
+            <NavLink
+              to={"/"}
+              className={({ isActive }) =>
+                isActive
+                ? "bg-gray-900 text-white block px-3 py-2 rounded-md text-base font-medium"
+                : "text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium"
+              }
             >
               Tin tức giao thông
-            </a>
+            </NavLink>
           </div>
         </section>
       )}

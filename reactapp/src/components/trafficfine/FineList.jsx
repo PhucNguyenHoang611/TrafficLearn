@@ -1,11 +1,14 @@
 /* eslint-disable react-hooks/exhaustive-deps */
+
 import React, { useEffect, useState } from "react";
 import FineTable from "./FineTable";
 import FineCard from "./FineCard";
+import LoadingItem from "../loading/LoadingItem";
 
 import { useParams } from "react-router-dom";
 
 import { getAllTrafficFines } from "@/apis/api_function"
+import { Box } from "@mui/material";
 
 const FineList = ({ 
   fineTypes,
@@ -18,6 +21,7 @@ const FineList = ({
   const [fines, setFines] = useState([]);
   const [finesTemp, setFinesTemp] = useState([]);
   const [allFines, setAllFines] = useState([]);
+  const [checkLoading, setCheckLoading] = useState(false);
 
   const getFines = () => {
     try {
@@ -29,6 +33,7 @@ const FineList = ({
           setAllFines(result);
           setFines(filteredResult);
           setFinesTemp(filteredResult);
+          setCheckLoading(true);
         });
     } catch (error) {
       console.log(error);
@@ -98,6 +103,20 @@ const FineList = ({
             );
           })}
         </div>
+      )}
+
+      {(fines.length == 0 && !checkLoading) && (
+        <>
+          <LoadingItem />
+          <LoadingItem />
+          <LoadingItem />
+        </>
+      )}
+
+      {(fines.length == 0 && checkLoading) && (
+        <Box className="ml-4">
+          Không có kết quả phù hợp
+        </Box>
       )}
     </div>
   );
