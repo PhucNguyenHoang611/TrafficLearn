@@ -1,4 +1,4 @@
-import car from "/car.webp?url";
+import car from "/car.png?url";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 
 const LandFooter = () => {

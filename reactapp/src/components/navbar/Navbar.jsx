@@ -65,12 +65,12 @@ const NavBar = () => {
             <div onClick={() => navigate("/")} className="flex-shrink-0 flex items-center cursor-pointer">
               <img
                 className="hidden lg:block h-10 w-auto"
-                src="/logo.webp"
+                src="/logo.jpg"
                 alt="Workflow"
               />
               <img
                 className="hidden lg:block h-8 w-auto"
-                src="/logo_text.webp"
+                src="/logo_text.png"
                 alt="Workflow"
               />
               {/* <p className="uppercase max-sm:hidden mx-2">
