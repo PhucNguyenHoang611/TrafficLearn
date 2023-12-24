@@ -62,15 +62,19 @@ const NavBar = () => {
             </button>
           </div>
           <div className="flex-1 flex items-center justify-center sm:items-stretch sm:justify-start">
-            <div className="flex-shrink-0 flex items-center">
+            <div onClick={() => navigate("/")} className="flex-shrink-0 flex items-center cursor-pointer">
               <img
-                className="hidden lg:block h-10 w-auto cursor-pointer"
+                className="hidden lg:block h-10 w-auto"
                 src="/logo.webp"
                 alt="Workflow"
-                onClick={() => navigate("/landing")}
+              />
+              <img
+                className="hidden lg:block h-8 w-auto"
+                src="/logo_text.webp"
+                alt="Workflow"
               />
               {/* <p className="uppercase max-sm:hidden mx-2">
-                Học luật giao thông
+                Traffic Learn
               </p> */}
             </div>
             {/* sm:ml-6 -> sm:ml-[12rem] */}

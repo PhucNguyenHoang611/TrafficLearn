@@ -34,9 +34,8 @@ const Home = () => {
       <main className="mt-[80px] max-w-8xl mx-auto px-2 sm:px-6 lg:px-8">
         <Outlet />
       </main>
-      <footer>
-        <Footer />
-      </footer>
+      
+      <Footer />
     </>
   );
 };

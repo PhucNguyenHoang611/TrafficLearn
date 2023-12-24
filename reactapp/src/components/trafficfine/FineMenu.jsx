@@ -5,9 +5,14 @@ import { Box } from "@mui/material";
 
 import { getAllTrafficFineTypes } from "@/apis/api_function"
 
-const FineMenu = ({ searchValue, setSearchValue, selectedFineType,setSelectedFineType }) => {
-  const [fineTypes, setFineTypes] = useState([]);
-
+const FineMenu = ({
+  fineTypes,
+  setFineTypes,
+  searchValue,
+  setSearchValue,
+  selectedFineType,
+  setSelectedFineType }) => {
+  
   const handleSearchChange = (event) => {
     setSearchValue(event.target.value);
   };
@@ -89,24 +94,41 @@ const FineMenu = ({ searchValue, setSearchValue, selectedFineType,setSelectedFin
           <p className="ml-2 mt-2">Lọc theo: </p>
           <hr className="bg-gray-500 border-1 border-gray-300 mx-2" />
 
-          {(fineTypes.length > 0) && fineTypes.map((item, index) => (
+          {/* Fine type filter: Small screen */}
+          <select
+            onChange={(e) => handleChangeFineType(e.target.value)}
+            value={selectedFineType}
+            className="sm:hidden w-full my-2 px-3 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent"
+          >
+            <option key={-1} value="all">Tất cả</option>
+            {(fineTypes.length > 0) && fineTypes.map((item, index) => (
+                <option key={index} value={item.Id}>{item.FineType}</option>
+            ))}
+          </select>
+
+          {/* Fine type filter: Large screen */}
+          <div className="hidden sm:block">
             <Box
-              key={index}
-              onClick={() => handleChangeFineType(item.Id)}
-              className={(selectedFineType == item.Id)
-                ? "bg-gray-900 text-white px-3 py-2 rounded-md text-sm font-medium"
-                : "text-gray-800 no-underline hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"}
+              key={-1}
+              onClick={() => handleChangeFineType("all")}
+              className={(selectedFineType == "all")
+                ? "bg-gray-900 text-white px-3 py-2 rounded-md text-sm font-medium cursor-pointer"
+                : "text-gray-800 no-underline hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium cursor-pointer"}
             >
-              {item.FineType}
+              Tất cả
             </Box>
-            // <NavLink
-            //   to="/trafficfine"
-            //   activeClassName="bg-gray-900 text-white px-3 py-2 rounded-md text-sm font-medium"
-            //   className="text-gray-800 no-underline hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
-            // >
-            //   Hiệu lệnh, chỉ dẫn
-            // </NavLink>
-          ))}
+            {(fineTypes.length > 0) && fineTypes.map((item, index) => (
+              <Box
+                key={index}
+                onClick={() => handleChangeFineType(item.Id)}
+                className={(selectedFineType == item.Id)
+                  ? "bg-gray-900 text-white px-3 py-2 rounded-md text-sm font-medium cursor-pointer"
+                  : "text-gray-800 no-underline hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium cursor-pointer"}
+              >
+                {item.FineType}
+              </Box>
+            ))}
+          </div>
         </div>
       </div>
     </nav>
