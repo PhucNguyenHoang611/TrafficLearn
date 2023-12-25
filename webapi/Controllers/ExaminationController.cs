@@ -112,14 +112,6 @@ namespace webapi.Controllers
 
                 if (userRole == "Admin")
                 {
-                    if (!ObjectId.TryParse(examination.UserId, out _))
-                    {
-                        return BadRequest(new
-                        {
-                            error = "Invalid user ID !"
-                        });
-                    }
-
                     if (!ObjectId.TryParse(examination.LicenseId, out _))
                     {
                         return BadRequest(new
@@ -130,18 +122,17 @@ namespace webapi.Controllers
 
                     Examination e = new Examination
                     {
-                        UserId = examination.UserId,
+                        Id = ObjectId.GenerateNewId().ToString(),
                         LicenseId = examination.LicenseId,
-                        ExaminationDate = examination.ExaminationDate,
-                        Score = examination.Score,
-                        IsPassed = examination.IsPassed
+                        ExaminationName = examination.ExaminationName
                     };
 
                     await _examinationServices.CreateExamination(e);
 
                     return Ok(new
                     {
-                        success = "Create examination successfully !"
+                        success = "Create examination successfully !",
+                        examinationId = e.Id
                     });
                 }
                 else
@@ -186,14 +177,6 @@ namespace webapi.Controllers
                         return NotFound(new
                         {
                             error = "No examination found !"
-                        });
-                    }
-
-                    if (!ObjectId.TryParse(examination.UserId, out _))
-                    {
-                        return BadRequest(new
-                        {
-                            error = "Invalid user ID !"
                         });
                     }
 

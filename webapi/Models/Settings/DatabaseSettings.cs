@@ -20,6 +20,8 @@
 
         public string ExaminationsCollectionName { get; set; } = null!;
 
+        public string ExaminationResultsCollectionName { get; set; } = null!;
+
         public string ExaminationQuestionsCollectionName { get; set; } = null!;
 
         public string NewsCollectionName { get; set; } = null!;

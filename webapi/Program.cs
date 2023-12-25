@@ -44,6 +44,7 @@ builder.Services.AddSingleton<TrafficSignServices>();
 builder.Services.AddSingleton<TrafficSignTypeServices>();
 
 builder.Services.AddSingleton<ExaminationServices>();
+builder.Services.AddSingleton<ExaminationResultServices>();
 builder.Services.AddSingleton<ExaminationQuestionServices>();
 
 builder.Services.AddSingleton<EmailServices>();
