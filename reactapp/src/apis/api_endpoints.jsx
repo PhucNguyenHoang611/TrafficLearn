@@ -98,3 +98,8 @@ export const GET_TRAFFIC_SIGN = (id) => `/trafficSign/getTrafficSignById/${id}`;
 export const GET_ALL_TRAFFIC_SIGN_TYPES = "/trafficSignType/getAllTrafficSignTypes";
 
 export const GET_TRAFFIC_SIGN_TYPE = (id) => `/trafficSignType/getTrafficSignTypeById/${id}`;
+
+// News
+export const GET_ALL_NEWS = "/news/getAllNews";
+
+export const GET_NEWS = (id) => `/news/getNewsById/${id}`;

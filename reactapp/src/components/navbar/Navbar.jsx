@@ -96,12 +96,13 @@ const NavBar = () => {
                 >
                   Ôn thi GPLX
                 </a>
-                <a
-                  href="#"
+                
+                <Link
+                  to={"news"}
                   className="no-underline text-gray-600 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
                 >
                   Tin tức giao thông
-                </a>
+                </Link>
               </div>
             </div>
           </div>
@@ -124,6 +125,7 @@ const NavBar = () => {
                 ? "bg-gray-900 text-white block px-3 py-2 rounded-md text-base font-medium"
                 : "text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium"
               }
+              onClick={() => setIsMenuOpen(false)}
             >
               Mức phạt giao thông
             </NavLink>
@@ -135,6 +137,7 @@ const NavBar = () => {
                 ? "bg-gray-900 text-white block px-3 py-2 rounded-md text-base font-medium"
                 : "text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium"
               }
+              onClick={() => setIsMenuOpen(false)}
             >
               Biển báo giao thông
             </NavLink>
@@ -146,17 +149,19 @@ const NavBar = () => {
                 ? "bg-gray-900 text-white block px-3 py-2 rounded-md text-base font-medium"
                 : "text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium"
               }
+              onClick={() => setIsMenuOpen(false)}
             >
               Ôn thi GPLX
             </NavLink>
 
             <NavLink
-              to={"/"}
+              to={"/news"}
               className={({ isActive }) =>
                 isActive
                 ? "bg-gray-900 text-white block px-3 py-2 rounded-md text-base font-medium"
                 : "text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium"
               }
+              onClick={() => setIsMenuOpen(false)}
             >
               Tin tức giao thông
             </NavLink>

@@ -91,7 +91,7 @@ const LandRedirect = () => {
       </div>
       <div className="flex justify-center items-center max-md:hidden">
         <div className="px-6 pt-4 pb-2">
-          <Link>
+          <Link to={"/news"}>
             <span className="inline-block  rounded-full px-3 py-1 text-md underline text-xanh hover:text-den mb-2">
               Xem thêm
             </span>
