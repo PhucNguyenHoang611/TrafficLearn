@@ -20,9 +20,5 @@ namespace webapi.Models
         [BsonRepresentation(BsonType.ObjectId)]
         [Required(ErrorMessage = "Question ID is required")]
         public string QuestionId { get; set; } = null!;
-
-        [BsonRequired]
-        [Required(ErrorMessage = "IsTrue attribute is required")]
-        public bool IsTrue { get; set; }
     }
 }

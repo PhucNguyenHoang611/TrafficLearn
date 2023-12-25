@@ -13,24 +13,11 @@ namespace webapi.Models
 
         [BsonRequired]
         [BsonRepresentation(BsonType.ObjectId)]
-        [Required(ErrorMessage = "User ID is required")]
-        public string UserId { get; set; } = null!;
-
-        [BsonRequired]
-        [BsonRepresentation(BsonType.ObjectId)]
         [Required(ErrorMessage = "License ID is required")]
         public string LicenseId { get; set; } = null!;
 
         [BsonRequired]
-        [Required(ErrorMessage = "Examination date is required")]
-        public DateTime ExaminationDate { get; set; }
-
-        [BsonRequired]
-        [Required(ErrorMessage = "Score is required")]
-        public int Score { get; set; } = 0;
-
-        [BsonRequired]
-        [Required(ErrorMessage = "IsPassed attribute is required")]
-        public bool IsPassed { get; set; }
+        [Required(ErrorMessage = "Examination name is required")]
+        public string ExaminationName { get; set; } = null!;
     }
 }

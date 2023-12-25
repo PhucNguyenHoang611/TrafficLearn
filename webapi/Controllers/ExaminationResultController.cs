@@ -8,26 +8,49 @@ using webapi.Services;
 namespace webapi.Controllers
 {
     [ApiController]
-    [Route("api/examinationQuestion")]
-    public class ExaminationQuestionController : ControllerBase
+    [Route("api/examinationResult")]
+    public class ExaminationResultController : ControllerBase
     {
-        private readonly ExaminationQuestionServices _examinationQuestionServices;
+        private readonly ExaminationResultServices _examinationResultServices;
         private readonly UserServices _userServices;
 
-        public ExaminationQuestionController(ExaminationQuestionServices examinationQuestionServices, UserServices userServices)
+        public ExaminationResultController(ExaminationResultServices examinationResultServices, UserServices userServices)
         {
-            _examinationQuestionServices = examinationQuestionServices;
+            _examinationResultServices = examinationResultServices;
             _userServices = userServices;
         }
 
         [HttpGet]
-        [Route("getAllExaminationQuestions")]
-        public async Task<IActionResult> GetAllExaminationQuestions()
+        [Route("getAllExaminationResults/{userId}")]
+        [Authorize]
+        public async Task<IActionResult> GetAllExaminations(string userId)
         {
             try
             {
-                List<ExaminationQuestion> examinationQuestions = await _examinationQuestionServices.GetAllExaminationQuestions();
-                return Ok(examinationQuestions);
+                var identity = User.Identity as ClaimsIdentity;
+
+                string userRole = await _userServices.JwtAuthentication(identity);
+
+                if (userRole == "User")
+                {
+                    if (!ObjectId.TryParse(userId, out _))
+                    {
+                        return BadRequest(new
+                        {
+                            error = "Invalid user ID !"
+                        });
+                    }
+
+                    List<ExaminationResult> examinationResults = await _examinationResultServices.GetAllExaminationResults(userId);
+                    return Ok(examinationResults);
+                }
+                else
+                {
+                    return Unauthorized(new
+                    {
+                        error = "Unauthorized user !"
+                    });
+                }
             }
             catch
             {
@@ -36,8 +59,8 @@ namespace webapi.Controllers
         }
 
         [HttpGet]
-        [Route("getExaminationQuestionById/{id}")]
-        public async Task<IActionResult> GetExaminationQuestionById(string id)
+        [Route("getExaminationResultById/{id}")]
+        public async Task<IActionResult> GetExaminationResultById(string id)
         {
             try
             {
@@ -49,17 +72,17 @@ namespace webapi.Controllers
                     });
                 }
 
-                List<ExaminationQuestion> examinationQuestions = await _examinationQuestionServices.GetExaminationQuestionById(id);
+                List<ExaminationResult> examinationResults = await _examinationResultServices.GetExaminationResultById(id);
 
-                if (examinationQuestions.Count == 0)
+                if (examinationResults.Count == 0)
                 {
                     return NotFound(new
                     {
-                        error = "No examination question found !"
+                        error = "No examination result found !"
                     });
                 }
                 else
-                    return Ok(examinationQuestions[0]);
+                    return Ok(examinationResults[0]);
             }
             catch
             {
@@ -68,9 +91,9 @@ namespace webapi.Controllers
         }
 
         [HttpPost]
-        [Route("createExaminationQuestion")]
+        [Route("createExaminationResult")]
         [Authorize]
-        public async Task<IActionResult> CreateExaminationQuestion([FromBody] ExaminationQuestion examinationQuestion)
+        public async Task<IActionResult> CreateExaminationResult([FromBody] ExaminationResult examinationResult)
         {
             try
             {
@@ -78,9 +101,17 @@ namespace webapi.Controllers
 
                 string userRole = await _userServices.JwtAuthentication(identity);
 
-                if (userRole == "Admin")
+                if (userRole == "User")
                 {
-                    if (!ObjectId.TryParse(examinationQuestion.ExaminationId, out _))
+                    if (!ObjectId.TryParse(examinationResult.UserId, out _))
+                    {
+                        return BadRequest(new
+                        {
+                            error = "Invalid user ID !"
+                        });
+                    }
+
+                    if (!ObjectId.TryParse(examinationResult.ExaminationId, out _))
                     {
                         return BadRequest(new
                         {
@@ -88,25 +119,22 @@ namespace webapi.Controllers
                         });
                     }
 
-                    if (!ObjectId.TryParse(examinationQuestion.QuestionId, out _))
+                    ExaminationResult er = new ExaminationResult
                     {
-                        return BadRequest(new
-                        {
-                            error = "Invalid question ID !"
-                        });
-                    }
-
-                    ExaminationQuestion e = new ExaminationQuestion
-                    {
-                        ExaminationId = examinationQuestion.ExaminationId,
-                        QuestionId = examinationQuestion.QuestionId
+                        Id = ObjectId.GenerateNewId().ToString(),
+                        UserId = examinationResult.UserId,
+                        ExaminationId = examinationResult.ExaminationId,
+                        ExaminationDate = examinationResult.ExaminationDate,
+                        Score = examinationResult.Score,
+                        IsPassed = examinationResult.IsPassed
                     };
 
-                    await _examinationQuestionServices.CreateExaminationQuestion(e);
+                    await _examinationResultServices.CreateExaminationResult(er);
 
                     return Ok(new
                     {
-                        success = "Create examination question successfully !"
+                        success = "Create examination result successfully !",
+                        examinationResultId = er.Id
                     });
                 }
                 else
@@ -124,9 +152,9 @@ namespace webapi.Controllers
         }
 
         [HttpPut]
-        [Route("updateExaminationQuestion/{id}")]
+        [Route("updateExaminationResult/{id}")]
         [Authorize]
-        public async Task<IActionResult> UpdateExaminationQuestion(string id, [FromBody] ExaminationQuestion examinationQuestion)
+        public async Task<IActionResult> UpdateExaminationResult(string id, [FromBody] ExaminationResult examinationResult)
         {
             try
             {
@@ -144,17 +172,25 @@ namespace webapi.Controllers
                         });
                     }
 
-                    List<ExaminationQuestion> examinationQuestions = await _examinationQuestionServices.GetExaminationQuestionById(id);
+                    List<ExaminationResult> examinationResults = await _examinationResultServices.GetExaminationResultById(id);
 
-                    if (examinationQuestions.Count == 0)
+                    if (examinationResults.Count == 0)
                     {
                         return NotFound(new
                         {
-                            error = "No examination question found !"
+                            error = "No examination result found !"
                         });
                     }
 
-                    if (!ObjectId.TryParse(examinationQuestion.ExaminationId, out _))
+                    if (!ObjectId.TryParse(examinationResult.UserId, out _))
+                    {
+                        return BadRequest(new
+                        {
+                            error = "Invalid user ID !"
+                        });
+                    }
+
+                    if (!ObjectId.TryParse(examinationResult.ExaminationId, out _))
                     {
                         return BadRequest(new
                         {
@@ -162,19 +198,11 @@ namespace webapi.Controllers
                         });
                     }
 
-                    if (!ObjectId.TryParse(examinationQuestion.QuestionId, out _))
-                    {
-                        return BadRequest(new
-                        {
-                            error = "Invalid question ID !"
-                        });
-                    }
-
-                    await _examinationQuestionServices.UpdateExaminationQuestion(id, examinationQuestion);
+                    await _examinationResultServices.UpdateExaminationResult(id, examinationResult);
 
                     return Ok(new
                     {
-                        success = "Update examination question successfully !"
+                        success = "Update examination result successfully !"
                     });
                 }
                 else
@@ -192,9 +220,9 @@ namespace webapi.Controllers
         }
 
         [HttpDelete]
-        [Route("deleteExaminationQuestion/{id}")]
+        [Route("deleteExaminationResult/{id}")]
         [Authorize]
-        public async Task<IActionResult> DeleteExaminationQuestion(string id)
+        public async Task<IActionResult> DeleteExaminationResult(string id)
         {
             try
             {
@@ -212,21 +240,21 @@ namespace webapi.Controllers
                         });
                     }
 
-                    List<ExaminationQuestion> examinationQuestions = await _examinationQuestionServices.GetExaminationQuestionById(id);
+                    List<ExaminationResult> examinationResults = await _examinationResultServices.GetExaminationResultById(id);
 
-                    if (examinationQuestions.Count == 0)
+                    if (examinationResults.Count == 0)
                     {
                         return NotFound(new
                         {
-                            error = "No examination question found !"
+                            error = "No examination result found !"
                         });
                     }
 
-                    await _examinationQuestionServices.DeleteExaminationQuestion(id);
+                    await _examinationResultServices.DeleteExaminationResult(id);
 
                     return Ok(new
                     {
-                        success = "Delete examination question successfully !"
+                        success = "Delete examination result successfully !"
                     });
                 }
                 else
