@@ -82,6 +82,7 @@ namespace webapi.Controllers
                 {
                     Title t = new Title
                     {
+                        Id = ObjectId.GenerateNewId().ToString(),
                         TitleName = title.TitleName
                     };
 
@@ -89,7 +90,8 @@ namespace webapi.Controllers
 
                     return Ok(new
                     {
-                        success = "Create title successfully !"
+                        success = "Create title successfully !",
+                        titleId = t.Id
                     });
                 }
                 else

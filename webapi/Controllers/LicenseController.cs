@@ -82,6 +82,7 @@ namespace webapi.Controllers
                 {
                     License l = new License
                     {
+                        Id = ObjectId.GenerateNewId().ToString(),
                         LicenseName = license.LicenseName
                     };
 
@@ -89,7 +90,8 @@ namespace webapi.Controllers
 
                     return Ok(new
                     {
-                        success = "Create license successfully !"
+                        success = "Create license successfully !",
+                        licenseId = l.Id
                     });
                 }
                 else

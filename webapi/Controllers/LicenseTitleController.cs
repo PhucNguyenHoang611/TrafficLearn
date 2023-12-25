@@ -130,6 +130,7 @@ namespace webapi.Controllers
 
                     LicenseTitle lt = new LicenseTitle
                     {
+                        Id = ObjectId.GenerateNewId().ToString(),
                         LicenseId = licenseTitle.LicenseId,
                         TitleId = licenseTitle.TitleId
                     };
@@ -138,7 +139,8 @@ namespace webapi.Controllers
 
                     return Ok(new
                     {
-                        success = "Create license title successfully !"
+                        success = "Create license title successfully !",
+                        licenseTitleId = lt.Id
                     });
                 }
                 else
