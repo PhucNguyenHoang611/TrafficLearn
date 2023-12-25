@@ -100,21 +100,21 @@ const Verify = () => {
 
   return (
     <div>
-      <div class="relative flex min-h-screen flex-col items-center justify-center overflow-hidden py-6 sm:py-12 bg-white">
-        <div class="max-w-xl px-5 text-center">
+      <div className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden py-6 sm:py-12 bg-white">
+        <div className="max-w-xl px-5 text-center">
           <img
             src="https://cdn4.iconfinder.com/data/icons/social-media-logos-6/512/112-gmail_email_mail-512.png"
             alt="mail"
             className="w-24 h-24 mx-auto"
           />
-          <h2 class="mb-2 text-[42px] font-bold text-zinc-800">
+          <h2 className="mb-2 text-[42px] font-bold text-zinc-800">
             Kiểm tra mail của bạn
           </h2>
-          <p class="mb-2 text-lg text-zinc-500">
+          <p className="mb-2 text-lg text-zinc-500">
             Chúng tôi cũng đã gửi mã xác minh đến địa chỉ email của bạn.{" "}
-            <span class="font-medium text-indigo-500">{email}</span>.
+            <span className="font-medium text-indigo-500">{email}</span>.
           </p>
-          <p class="mb-2 text-lg text-zinc-500">
+          <p className="mb-2 text-lg text-zinc-500">
             Vui lòng nhập mã vào ô bên dưới.
           </p>
           <Box sx={{ mb: 2, mt: 4 }}>
