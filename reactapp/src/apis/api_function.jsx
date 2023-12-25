@@ -100,7 +100,7 @@ export const getTrafficFine = async (id) => {
   return await mainApi.get(
     apiEndpoints.GET_TRAFFIC_FINE(id)
   );
-}
+};
 
 // Traffic fine type
 export const getAllTrafficFineTypes = async () => {
@@ -113,7 +113,7 @@ export const getTrafficFineType = async (id) => {
   return await mainApi.get(
     apiEndpoints.GET_TRAFFIC_FINE_TYPE(id)
   );
-}
+};
 
 // Traffic sign
 export const getAllTrafficSigns = async () => {
@@ -126,7 +126,7 @@ export const getTrafficSign = async (id) => {
   return await mainApi.get(
     apiEndpoints.GET_TRAFFIC_SIGN(id)
   );
-}
+};
 
 // Traffic sign type
 export const getAllTrafficSignTypes = async () => {
@@ -139,4 +139,17 @@ export const getTrafficSignType = async (id) => {
   return await mainApi.get(
     apiEndpoints.GET_TRAFFIC_SIGN_TYPE(id)
   );
-}
+};
+
+// News
+export const getAllNews = async () => {
+  return await mainApi.get(
+    apiEndpoints.GET_ALL_NEWS
+  );
+};
+
+export const getNews = async (id) => {
+  return await mainApi.get(
+    apiEndpoints.GET_NEWS(id)
+  );
+};

@@ -18,6 +18,9 @@ import ForgotPassword from "../pages/ForgotPassword";
 import ResetPassword from "../pages/ResetPassword";
 import Verify from "../pages/Verify";
 import Landing from "../pages/Landing";
+import News from "../pages/News";
+import NewsList from "../components/news/NewsList";
+import NewsDetails from "../components/news/NewsDetails";
 // const Landing = lazy(() => import("../pages/Landing"));
 
 export const router = createBrowserRouter(
@@ -29,6 +32,10 @@ export const router = createBrowserRouter(
         {/* <Route path="landing" element={<Landing />}></Route> */}
         <Route path="fine/:vehicleType" element={<TrafficFine />}></Route>
         <Route path="sign" element={<TrafficSign />}></Route>
+        <Route path="news" element={<News />}>
+          <Route index element={<NewsList />} />
+          <Route path=":newsId" element={<NewsDetails />} />
+        </Route>
         <Route path="history" element={<ExamHistory />}></Route>
       </Route>
       <Route path="login" element={<Login />} />
