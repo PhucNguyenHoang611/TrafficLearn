@@ -84,6 +84,7 @@ namespace webapi.Controllers
                 {
                     News n = new News
                     {
+                        Id = ObjectId.GenerateNewId().ToString(),
                         NewsTitle = news.NewsTitle,
                         NewsClarify = news.NewsClarify,
                         NewsDate = news.NewsDate,
@@ -94,7 +95,8 @@ namespace webapi.Controllers
 
                     return Ok(new
                     {
-                        success = "Create news successfully !"
+                        success = "Create news successfully !",
+                        newsId = n.Id
                     });
                 }
                 else

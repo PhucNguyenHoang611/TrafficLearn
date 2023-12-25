@@ -228,6 +228,7 @@ namespace webapi.Controllers
 
                     Question q = new Question
                     {
+                        Id = ObjectId.GenerateNewId().ToString(),
                         LicenseTitleId = question.LicenseTitleId,
                         QuestionContent = question.QuestionContent,
                         Important = question.Important,
@@ -238,7 +239,8 @@ namespace webapi.Controllers
 
                     return Ok(new
                     {
-                        success = "Create question successfully !"
+                        success = "Create question successfully !",
+                        questionId = q.Id
                     });
                 }
                 else

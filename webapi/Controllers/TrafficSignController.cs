@@ -93,6 +93,7 @@ namespace webapi.Controllers
 
                     TrafficSign ts = new TrafficSign
                     {
+                        Id = ObjectId.GenerateNewId().ToString(),
                         SignName = trafficSign.SignName,
                         SignTypeId = trafficSign.SignTypeId,
                         SignExplanation = trafficSign.SignExplanation
@@ -102,7 +103,8 @@ namespace webapi.Controllers
 
                     return Ok(new
                     {
-                        success = "Create traffic sign successfully !"
+                        success = "Create traffic sign successfully !",
+                        trafficSignId = ts.Id
                     });
                 }
                 else
