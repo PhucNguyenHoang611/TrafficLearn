@@ -301,7 +301,8 @@ namespace webapi.Controllers
 
                             return Ok(new
                             {
-                                success = "Upload question media successfully !"
+                                success = "Upload question media successfully !",
+                                mediaURL = fileUrl
                             });
                         }
                     }

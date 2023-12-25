@@ -165,7 +165,8 @@ namespace webapi.Controllers
 
                             return Ok(new
                             {
-                                success = "Upload traffic sign image successfully !"
+                                success = "Upload traffic sign image successfully !",
+                                imageURL = imageUrl
                             });
                         }
                     }

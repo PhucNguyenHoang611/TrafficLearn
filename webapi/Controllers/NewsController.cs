@@ -157,7 +157,8 @@ namespace webapi.Controllers
 
                             return Ok(new
                             {
-                                success = "Upload news thumbnail successfully !"
+                                success = "Upload news thumbnail successfully !",
+                                imageURL = imageUrl
                             });
                         }
                     }
