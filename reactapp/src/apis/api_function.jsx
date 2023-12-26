@@ -153,3 +153,48 @@ export const getNews = async (id) => {
     apiEndpoints.GET_NEWS(id)
   );
 };
+
+// License
+export const getAllLicenses = async () => {
+  return await mainApi.get(
+    apiEndpoints.GET_ALL_LICENSES
+  );
+};
+
+export const getLicense = async (id) => {
+  return await mainApi.get(
+    apiEndpoints.GET_LICENSE(id)
+  );
+};
+
+// Title
+export const getAllTitles = async () => {
+  return await mainApi.get(
+    apiEndpoints.GET_ALL_TITLES
+  );
+};
+
+export const getTitle = async (id) => {
+  return await mainApi.get(
+    apiEndpoints.GET_TITLE(id)
+  );
+};
+
+// License title
+export const getAllLicenseTitles = async () => {
+  return await mainApi.get(
+    apiEndpoints.GET_ALL_LICENSE_TITLES
+  );
+};
+
+export const getLicenseTitle = async (id) => {
+  return await mainApi.get(
+    apiEndpoints.GET_LICENSE_TITLE(id)
+  );
+};
+
+export const getLicenseTitleByLicenseId = async (id) => {
+  return await mainApi.get(
+    apiEndpoints.GET_LICENSE_TITLE_BY_LICENSE_ID(id)
+  );
+};
