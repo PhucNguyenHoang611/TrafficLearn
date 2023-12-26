@@ -7,16 +7,27 @@ using webapi.Services;
 
 namespace webapi.Controllers
 {
+    public class LicenseTitleDetails
+    {
+        public LicenseTitle LicenseTitle { get; set; } = null!;
+        public License License { get; set; } = null!;
+        public Title Title { get; set; } = null!;
+    }
+
     [ApiController]
     [Route("api/licenseTitle")]
     public class LicenseTitleController : ControllerBase
     {
         private readonly LicenseTitleServices _licenseTitleServices;
+        private readonly LicenseServices _licenseServices;
+        private readonly TitleServices _titleServices;
         private readonly UserServices _userServices;
 
-        public LicenseTitleController(LicenseTitleServices licenseTitleServices, UserServices userServices)
+        public LicenseTitleController(LicenseTitleServices licenseTitleServices, LicenseServices licenseServices, TitleServices titleServices, UserServices userServices)
         {
             _licenseTitleServices = licenseTitleServices;
+            _licenseServices = licenseServices;
+            _titleServices = titleServices;
             _userServices = userServices;
         }
 
@@ -68,8 +79,8 @@ namespace webapi.Controllers
         }
 
         [HttpGet]
-        [Route("GetLicenseTitleByLicenseId/{id}")]
-        public async Task<IActionResult> GetLicenseTitleByLicenseId(string id)
+        [Route("getLicenseTitlesByLicenseId/{id}")]
+        public async Task<IActionResult> GetLicenseTitlesByLicenseId(string id)
         {
             try
             {
@@ -81,7 +92,8 @@ namespace webapi.Controllers
                     });
                 }
 
-                List<LicenseTitle> licenseTitles = await _licenseTitleServices.GetLicenseTitleByLicenseId(id);
+                List<LicenseTitle> licenseTitles = await _licenseTitleServices.GetLicenseTitlesByLicenseId(id);
+                List<LicenseTitleDetails> result = new List<LicenseTitleDetails>();
 
                 if (licenseTitles.Count == 0)
                 {
@@ -91,7 +103,22 @@ namespace webapi.Controllers
                     });
                 }
                 else
-                    return Ok(licenseTitles[0]);
+                {
+                    for (int i = 0; i < licenseTitles.Count; i++)
+                    {
+                        List<License> lList = await _licenseServices.GetLicenseById(licenseTitles[i].LicenseId);
+                        List<Title> tList = await _titleServices.GetTitleById(licenseTitles[i].TitleId);
+                        LicenseTitleDetails ltd = new LicenseTitleDetails();
+
+                        ltd.LicenseTitle = licenseTitles[i];
+                        ltd.License = lList[0];
+                        ltd.Title = tList[0];
+
+                        result.Add(ltd);
+                    }
+
+                    return Ok(result);
+                }
             }
             catch
             {
@@ -134,6 +161,21 @@ namespace webapi.Controllers
                         LicenseId = licenseTitle.LicenseId,
                         TitleId = licenseTitle.TitleId
                     };
+
+                    List<LicenseTitle> tempArray = await _licenseTitleServices.GetLicenseTitlesByLicenseId(lt.LicenseId);
+                    if (tempArray.Count > 0)
+                    {
+                        for (int i = 0; i < tempArray.Count; i++)
+                        {
+                            if (tempArray[i].TitleId == lt.TitleId)
+                            {
+                                return BadRequest(new
+                                {
+                                    error = "License title is already exist !"
+                                });
+                            }
+                        }
+                    }
 
                     await _licenseTitleServices.CreateLicenseTitle(lt);
 
@@ -202,6 +244,21 @@ namespace webapi.Controllers
                         {
                             error = "Invalid title ID !"
                         });
+                    }
+
+                    List<LicenseTitle> tempArray = await _licenseTitleServices.GetLicenseTitlesByLicenseId(licenseTitle.LicenseId);
+                    if (tempArray.Count > 0)
+                    {
+                        for (int i = 0; i < tempArray.Count; i++)
+                        {
+                            if (tempArray[i].TitleId == licenseTitle.TitleId)
+                            {
+                                return BadRequest(new
+                                {
+                                    error = "License title is already exist !"
+                                });
+                            }
+                        }
                     }
 
                     await _licenseTitleServices.UpdateLicenseTitle(id, licenseTitle);

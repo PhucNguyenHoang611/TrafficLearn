@@ -32,7 +32,7 @@ namespace webapi.Services
 
         public async Task<List<Question>> GetQuestionById(string id) => await _questionsCollection.Find(x => x.Id == id).ToListAsync();
 
-        public async Task<List<Question>> GetQuestionByLicenseTitleId(string id) => await _questionsCollection.Find(x => x.LicenseTitleId == id).ToListAsync();
+        public async Task<List<Question>> GetQuestionsByLicenseTitleId(string id) => await _questionsCollection.Find(x => x.LicenseTitleId == id).ToListAsync();
 
         public async Task<List<Answer>> GetAllAnswers(string id) => await _answersCollection.Find(x => x.QuestionId == id).ToListAsync();
 

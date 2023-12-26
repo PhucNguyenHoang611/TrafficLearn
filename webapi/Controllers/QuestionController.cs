@@ -76,6 +76,108 @@ namespace webapi.Controllers
         }
 
         [HttpGet]
+        [Route("getAllQuestionsByLicenseId/{id}")]
+        public async Task<IActionResult> GetAllQuestionsByLicenseId(string id)
+        {
+            try
+            {
+                if (!ObjectId.TryParse(id, out _))
+                {
+                    return BadRequest(new
+                    {
+                        error = "Invalid license ID !"
+                    });
+                }
+
+                List<QuestionDetails> result = new List<QuestionDetails>();
+                List<Question> questions = await _questionServices.GetAllQuestions();
+                int numOfImportantQuestions = 0;
+
+                if (questions.Count > 0)
+                {
+                    for (int i = 0; i < questions.Count; i++)
+                    {
+                        if (questions[i].Important) numOfImportantQuestions++;
+
+                        QuestionDetails qd = new QuestionDetails();
+                        qd.Question = questions[i];
+
+                        List<LicenseTitle> ltList = await _licenseTitleServices.GetLicenseTitleById(questions[i].LicenseTitleId);
+                        LicenseTitle lt = ltList[0];
+
+                        List<License> lList = await _licenseServices.GetLicenseById(lt.LicenseId);
+                        qd.License = lList[0];
+
+                        List<Title> tList = await _titleServices.GetTitleById(lt.TitleId);
+                        qd.Title = tList[0];
+
+                        if (qd.License.Id == id) result.Add(qd);
+                    }
+                }
+
+                return Ok(new
+                {
+                    data = result,
+                    total = result.Count,
+                    numberOfImportantQuestions = numOfImportantQuestions
+                });
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        [HttpGet]
+        [Route("getAllImportantQuestionsByLicenseId/{id}")]
+        public async Task<IActionResult> GetAllImportantQuestionsByLicenseId(string id)
+        {
+            try
+            {
+                if (!ObjectId.TryParse(id, out _))
+                {
+                    return BadRequest(new
+                    {
+                        error = "Invalid license ID !"
+                    });
+                }
+
+                List<QuestionDetails> result = new List<QuestionDetails>();
+                List<Question> questions = await _questionServices.GetAllQuestions();
+
+                if (questions.Count > 0)
+                {
+                    for (int i = 0; i < questions.Count; i++)
+                    {
+                        QuestionDetails qd = new QuestionDetails();
+                        qd.Question = questions[i];
+
+                        List<LicenseTitle> ltList = await _licenseTitleServices.GetLicenseTitleById(questions[i].LicenseTitleId);
+                        LicenseTitle lt = ltList[0];
+
+                        List<License> lList = await _licenseServices.GetLicenseById(lt.LicenseId);
+                        qd.License = lList[0];
+
+                        List<Title> tList = await _titleServices.GetTitleById(lt.TitleId);
+                        qd.Title = tList[0];
+
+                        if (qd.License.Id == id && qd.Question.Important) result.Add(qd);
+                    }
+                }
+
+                return Ok(new
+                {
+                    data = result,
+                    total = result.Count
+                });
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        [HttpGet]
         [Route("getQuestionById/{id}")]
         public async Task<IActionResult> GetQuestionById(string id)
         {
@@ -122,8 +224,8 @@ namespace webapi.Controllers
         }
 
         [HttpGet]
-        [Route("GetQuestionByLicenseTitleId/{id}")]
-        public async Task<IActionResult> GetQuestionByLicenseTitleId(string id)
+        [Route("getQuestionsByLicenseTitleId/{id}")]
+        public async Task<IActionResult> GetQuestionsByLicenseTitleId(string id)
         {
             try
             {
@@ -136,7 +238,8 @@ namespace webapi.Controllers
                 }
 
                 List<QuestionDetails> result = new List<QuestionDetails>();
-                List<Question> questions = await _questionServices.GetQuestionByLicenseTitleId(id);
+                List<Question> questions = await _questionServices.GetQuestionsByLicenseTitleId(id);
+                int numOfImportantQuestions = 0;
 
                 if (questions.Count == 0)
                 {
@@ -149,6 +252,8 @@ namespace webapi.Controllers
                 {
                     for (int i = 0; i < questions.Count; i++)
                     {
+                        if (questions[i].Important) numOfImportantQuestions++;
+
                         QuestionDetails qd = new QuestionDetails();
                         qd.Question = questions[i];
 
@@ -164,7 +269,12 @@ namespace webapi.Controllers
                         result.Add(qd);
                     }
 
-                    return Ok(result);
+                    return Ok(new
+                    {
+                        data = result,
+                        total = result.Count,
+                        numberOfImportantQuestions = numOfImportantQuestions
+                    });
                 }
             }
             catch

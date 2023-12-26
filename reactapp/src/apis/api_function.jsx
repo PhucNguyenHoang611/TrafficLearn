@@ -153,3 +153,67 @@ export const getNews = async (id) => {
     apiEndpoints.GET_NEWS(id)
   );
 };
+
+// License
+export const getAllLicenses = async () => {
+  return await mainApi.get(
+    apiEndpoints.GET_ALL_LICENSES
+  );
+};
+
+export const getLicense = async (id) => {
+  return await mainApi.get(
+    apiEndpoints.GET_LICENSE(id)
+  );
+};
+
+// Title
+export const getAllTitles = async () => {
+  return await mainApi.get(
+    apiEndpoints.GET_ALL_TITLES
+  );
+};
+
+export const getTitle = async (id) => {
+  return await mainApi.get(
+    apiEndpoints.GET_TITLE(id)
+  );
+};
+
+// License title
+export const getAllLicenseTitles = async () => {
+  return await mainApi.get(
+    apiEndpoints.GET_ALL_LICENSE_TITLES
+  );
+};
+
+export const getLicenseTitle = async (id) => {
+  return await mainApi.get(
+    apiEndpoints.GET_LICENSE_TITLE(id)
+  );
+};
+
+export const getLicenseTitlesByLicenseId = async (id) => {
+  return await mainApi.get(
+    apiEndpoints.GET_LICENSE_TITLES_BY_LICENSE_ID(id)
+  );
+};
+
+// Question
+export const getAllQuestionsByLicenseId = async (id) => {
+  return await mainApi.get(
+    apiEndpoints.GET_ALL_QUESTIONS_BY_LICENSE_ID(id)
+  );
+};
+
+export const getAllImportantQuestionsByLicenseId = async (id) => {
+  return await mainApi.get(
+    apiEndpoints.GET_ALL_IMPORTANT_QUESTIONS_BY_LICENSE_ID(id)
+  );
+};
+
+export const getQuestionsByLicenseTitleId = async (id) => {
+  return await mainApi.get(
+    apiEndpoints.GET_QUESTIONS_BY_LICENSE_TITLE_ID(id)
+  );
+};

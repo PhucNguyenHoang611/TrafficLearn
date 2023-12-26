@@ -30,7 +30,7 @@ namespace webapi.Services
 
         public async Task<List<LicenseTitle>> GetLicenseTitleById(string id) => await _licenseTitlesCollection.Find(x => x.Id == id).ToListAsync();
 
-        public async Task<List<LicenseTitle>> GetLicenseTitleByLicenseId(string id) => await _licenseTitlesCollection.Find(x => x.LicenseId == id).ToListAsync();
+        public async Task<List<LicenseTitle>> GetLicenseTitlesByLicenseId(string id) => await _licenseTitlesCollection.Find(x => x.LicenseId == id).ToListAsync();
 
         public async Task CreateLicenseTitle(LicenseTitle licenseTitle) => await _licenseTitlesCollection.InsertOneAsync(licenseTitle);
 

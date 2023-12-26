@@ -103,3 +103,27 @@ export const GET_TRAFFIC_SIGN_TYPE = (id) => `/trafficSignType/getTrafficSignTyp
 export const GET_ALL_NEWS = "/news/getAllNews";
 
 export const GET_NEWS = (id) => `/news/getNewsById/${id}`;
+
+// License
+export const GET_ALL_LICENSES = "/license/getAllLicenses";
+
+export const GET_LICENSE = (id) => `/license/getLicenseById/${id}`;
+
+// Title
+export const GET_ALL_TITLES = "/title/getAllTitles";
+
+export const GET_TITLE = (id) => `/title/getTitleById/${id}`;
+
+// License title
+export const GET_ALL_LICENSE_TITLES = "/licenseTitle/getAllLicenseTitles";
+
+export const GET_LICENSE_TITLE = (id) => `/licenseTitle/getLicenseTitleById/${id}`;
+
+export const GET_LICENSE_TITLES_BY_LICENSE_ID = (id) => `/licenseTitle/getLicenseTitlesByLicenseId/${id}`;
+
+// Question
+export const GET_ALL_QUESTIONS_BY_LICENSE_ID = (id) => `/question/getAllQuestionsByLicenseId/${id}`;
+
+export const GET_ALL_IMPORTANT_QUESTIONS_BY_LICENSE_ID = (id) => `/question/getAllImportantQuestionsByLicenseId/${id}`;
+
+export const GET_QUESTIONS_BY_LICENSE_TITLE_ID = (id) => `$/question/getQuestionsByLicenseTitleId/{id}`;
