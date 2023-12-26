@@ -193,8 +193,8 @@ export const getLicenseTitle = async (id) => {
   );
 };
 
-export const getLicenseTitleByLicenseId = async (id) => {
+export const getLicenseTitlesByLicenseId = async (id) => {
   return await mainApi.get(
-    apiEndpoints.GET_LICENSE_TITLE_BY_LICENSE_ID(id)
+    apiEndpoints.GET_LICENSE_TITLES_BY_LICENSE_ID(id)
   );
 };

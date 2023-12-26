@@ -119,4 +119,4 @@ export const GET_ALL_LICENSE_TITLES = "/licenseTitle/getAllLicenseTitles";
 
 export const GET_LICENSE_TITLE = (id) => `/licenseTitle/getLicenseTitleById/${id}`;
 
-export const GET_LICENSE_TITLE_BY_LICENSE_ID = (id) => `/licenseTitle/getLicenseTitleByLicenseId/${id}`;
+export const GET_LICENSE_TITLES_BY_LICENSE_ID = (id) => `/licenseTitle/getLicenseTitlesByLicenseId/${id}`;
