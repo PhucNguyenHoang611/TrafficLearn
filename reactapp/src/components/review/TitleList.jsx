@@ -1,89 +1,131 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 
 import React, { useEffect, useState } from "react";
-import SignCard from "./SignCard";
 import LoadingItem from "../loading/LoadingItem";
 
-import { getLicenseTitlesByLicenseId } from "@/apis/api_function"
-import { Box } from "@mui/material";
+import {
+  getLicenseTitlesByLicenseId,
+  getAllQuestionsByLicenseId,
+  getAllImportantQuestionsByLicenseId,
+  getQuestionsByLicenseTitleId } from "@/apis/api_function"
 
-const TitleList = ({ 
-  // licenses,
-  // searchValue,
-  selectedLicense }) => {
+import { Box } from "@mui/material";
+import TitleCard from "./TitleCard";
+
+const TitleList = ({ selectedLicense }) => {
+
+  const [startScreen, setStartScreen] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
 
   const [licenseTitles, setLicenseTitles] = useState([]);
   const [licenseTitlesTemp, setLicenseTitlesTemp] = useState([]);
-  // const [checkLoading, setCheckLoading] = useState(false);
 
-  const getLicenseTitles = () => {
+  const [allQuestions, setAllQuestions] = useState(null);
+  const [allImportantQuestions, setAllImportantQuestions] = useState(null);
+
+  const getLicenseTitles = async () => {
+    setIsLoading(true);
+
     try {
-      getLicenseTitlesByLicenseId(selectedLicense)
-        .then((res) => {
-          const result = res.data;
+      const response = await getLicenseTitlesByLicenseId(selectedLicense);
+      const licenseTitlesResult = response.data;
 
-          setLicenseTitles(result);
-          setLicenseTitlesTemp(result);
-          // setCheckLoading(true);
+      const getQuestionsPromises = licenseTitlesResult.map(async (item) => {
+        const questions = await getQuestionsByLicenseTitleId(item.LicenseTitle.Id);
+        return { licenseTitle: item, questions: questions.data };
+      });
+      
+      const result = await Promise.all(getQuestionsPromises);
+      setLicenseTitles(result);
+      setLicenseTitlesTemp(result);
+
+      await getAllQuestions(selectedLicense);
+      await getAllImportantQuestions(selectedLicense);
+    } catch (error) {
+      console.log(error);
+    }
+
+    setIsLoading(false);
+  };
+
+  const getAllQuestions = (id) => {
+    try {
+      getAllQuestionsByLicenseId(id)
+        .then((res) => {
+          setAllQuestions(res.data);
         });
     } catch (error) {
       console.log(error);
     }
   };
 
-  const filterByLicense = (licenseTitles, signType) => {
-    if (signType == "all")
-      return licenseTitles;
-    else
-      return licenseTitles.filter((item) => item.SignTypeId === signType);
+  const getAllImportantQuestions = (id) => {
+    try {
+      getAllImportantQuestionsByLicenseId(id)
+        .then((res) => {
+          setAllImportantQuestions(res.data)
+        });
+    } catch (error) {
+      console.log(error);
+    }
   };
 
-  const filterBySearch = (licenseTitles, input) => {
-    if (input == "")
-      return licenseTitles;
-    else
-      return licenseTitles.filter((item) => item.SignName.toLowerCase().includes(input.toLowerCase()));
-  };
-
-  // useEffect(() => {
-  //   const filteredLicenseTitlesByType = filterBySignType(licenseTitlesTemp, selectedLicense);
-  //   const filteredResult = filterBySearch(filteredLicenseTitlesByType, searchValue);
-
-  //   setLicenseTitles(filteredResult);
-  // }, [searchValue, selectedLicense]);
-  
   useEffect(() => {
-    if (licenseTitles.length == 0) {
+    if (selectedLicense != "") {
+      setStartScreen(false);
       getLicenseTitles();
     }
-  }, []);
+  }, [selectedLicense]);
 
   return (
     <div>
-      {/* <article className="mx-2 my-2 pb-10 text-md font-semibold">
-        Có {licenseTitles.length} kết quả được tìm thấy
-      </article> */}
-
-      {/* {(licenseTitles.length > 0) && (
+      {(licenseTitles.length > 0 && allQuestions && allImportantQuestions) && (
         <div className="ml-4">
-          {licenseTitles.map((item1, index) => {
-            const matchingItem = licenses.find((item2) => item1.SignTypeId === item2.Id);
+          <TitleCard
+            key={0}
+            titleName="Toàn bộ câu hỏi trong bộ đề"
+            total={allQuestions.total}
+            numberOfImportantQuestions={allQuestions.numberOfImportantQuestions}
+            questionsList={allQuestions} />
+
+          {licenseTitles.map((item, index) => {
             return (
-              <SignCard
-                key={index}
-                sign={item1}
-                signTypeName={matchingItem ? matchingItem.SignType : ""} />
+              <TitleCard
+                key={index + 1}
+                titleName={item.licenseTitle.Title.TitleName}
+                total={item.questions.total}
+                numberOfImportantQuestions={item.questions.numberOfImportantQuestions}
+                questionsList={item.questions} />
             );
           })}
-        </div>
-      )} */}
 
-      {(licenseTitles.length == 0) && (
+          <TitleCard
+            key={licenseTitles.length + 1}
+            titleName="Các câu điểm liệt trong bộ đề"
+            total={allImportantQuestions.total}
+            numberOfImportantQuestions={allImportantQuestions.total}
+            questionsList={allImportantQuestions} />
+        </div>
+      )}
+
+      {isLoading && (
         <>
           <LoadingItem />
           <LoadingItem />
           <LoadingItem />
         </>
+      )}
+
+      {startScreen && (
+        <Box className="ml-4">
+          Chọn hạng giấy phép lái xe để bắt đầu
+        </Box>
+      )}
+
+      {(licenseTitles.length == 0 && !startScreen) && (
+        <Box className="ml-4">
+          Không có dữ liệu
+        </Box>
       )}
     </div>
   );

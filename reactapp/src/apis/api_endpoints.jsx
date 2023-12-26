@@ -126,4 +126,4 @@ export const GET_ALL_QUESTIONS_BY_LICENSE_ID = (id) => `/question/getAllQuestion
 
 export const GET_ALL_IMPORTANT_QUESTIONS_BY_LICENSE_ID = (id) => `/question/getAllImportantQuestionsByLicenseId/${id}`;
 
-export const GET_QUESTIONS_BY_LICENSE_TITLE_ID = (id) => `$/question/getQuestionsByLicenseTitleId/{id}`;
+export const GET_QUESTIONS_BY_LICENSE_TITLE_ID = (id) => `/question/getQuestionsByLicenseTitleId/${id}`;

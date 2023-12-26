@@ -21,6 +21,7 @@ import Landing from "../pages/Landing";
 import News from "../pages/News";
 import NewsList from "../components/news/NewsList";
 import NewsDetails from "../components/news/NewsDetails";
+import Review from "../pages/Review/Review";
 // const Landing = lazy(() => import("../pages/Landing"));
 
 export const router = createBrowserRouter(
@@ -36,6 +37,7 @@ export const router = createBrowserRouter(
           <Route index element={<NewsList />} />
           <Route path=":newsId" element={<NewsDetails />} />
         </Route>
+        <Route path="review" element={<Review />}></Route>
         <Route path="history" element={<ExamHistory />}></Route>
       </Route>
       <Route path="login" element={<Login />} />
