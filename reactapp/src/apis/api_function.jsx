@@ -198,3 +198,22 @@ export const getLicenseTitlesByLicenseId = async (id) => {
     apiEndpoints.GET_LICENSE_TITLES_BY_LICENSE_ID(id)
   );
 };
+
+// Question
+export const getAllQuestionsByLicenseId = async (id) => {
+  return await mainApi.get(
+    apiEndpoints.GET_ALL_QUESTIONS_BY_LICENSE_ID(id)
+  );
+};
+
+export const getAllImportantQuestionsByLicenseId = async (id) => {
+  return await mainApi.get(
+    apiEndpoints.GET_ALL_IMPORTANT_QUESTIONS_BY_LICENSE_ID(id)
+  );
+};
+
+export const getQuestionsByLicenseTitleId = async (id) => {
+  return await mainApi.get(
+    apiEndpoints.GET_QUESTIONS_BY_LICENSE_TITLE_ID(id)
+  );
+};

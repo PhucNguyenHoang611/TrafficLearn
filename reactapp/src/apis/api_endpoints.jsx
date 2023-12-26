@@ -120,3 +120,10 @@ export const GET_ALL_LICENSE_TITLES = "/licenseTitle/getAllLicenseTitles";
 export const GET_LICENSE_TITLE = (id) => `/licenseTitle/getLicenseTitleById/${id}`;
 
 export const GET_LICENSE_TITLES_BY_LICENSE_ID = (id) => `/licenseTitle/getLicenseTitlesByLicenseId/${id}`;
+
+// Question
+export const GET_ALL_QUESTIONS_BY_LICENSE_ID = (id) => `/question/getAllQuestionsByLicenseId/${id}`;
+
+export const GET_ALL_IMPORTANT_QUESTIONS_BY_LICENSE_ID = (id) => `/question/getAllImportantQuestionsByLicenseId/${id}`;
+
+export const GET_QUESTIONS_BY_LICENSE_TITLE_ID = (id) => `$/question/getQuestionsByLicenseTitleId/{id}`;

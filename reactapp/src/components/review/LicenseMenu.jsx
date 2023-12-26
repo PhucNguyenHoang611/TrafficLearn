@@ -1,18 +1,20 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Box } from "@mui/material";
 import LoadingSpinner from "../loading/LoadingSpinner";
 
 import { getAllLicenses } from "@/apis/api_function"
 
 const LicenseMenu = ({
-  licenses,
-  setLicenses,
+  // licenses,
+  // setLicenses,
   // searchValue,
   // setSearchValue,
   selectedLicense,
   setSelectedLicense }) => {
+
+  const [licenses, setLicenses] = useState([]);
   
   // const handleSearchChange = (event) => {
   //   setSearchValue(event.target.value);
