@@ -241,14 +241,7 @@ namespace webapi.Controllers
                 List<Question> questions = await _questionServices.GetQuestionsByLicenseTitleId(id);
                 int numOfImportantQuestions = 0;
 
-                if (questions.Count == 0)
-                {
-                    return NotFound(new
-                    {
-                        error = "No question found !"
-                    });
-                }
-                else
+                if (questions.Count > 0)
                 {
                     for (int i = 0; i < questions.Count; i++)
                     {
@@ -268,14 +261,14 @@ namespace webapi.Controllers
 
                         result.Add(qd);
                     }
-
-                    return Ok(new
-                    {
-                        data = result,
-                        total = result.Count,
-                        numberOfImportantQuestions = numOfImportantQuestions
-                    });
                 }
+
+                return Ok(new
+                {
+                    data = result,
+                    total = result.Count,
+                    numberOfImportantQuestions = numOfImportantQuestions
+                });
             }
             catch
             {

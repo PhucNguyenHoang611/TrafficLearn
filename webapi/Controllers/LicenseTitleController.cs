@@ -95,14 +95,7 @@ namespace webapi.Controllers
                 List<LicenseTitle> licenseTitles = await _licenseTitleServices.GetLicenseTitlesByLicenseId(id);
                 List<LicenseTitleDetails> result = new List<LicenseTitleDetails>();
 
-                if (licenseTitles.Count == 0)
-                {
-                    return NotFound(new
-                    {
-                        error = "No license title found !"
-                    });
-                }
-                else
+                if (licenseTitles.Count > 0)
                 {
                     for (int i = 0; i < licenseTitles.Count; i++)
                     {
@@ -116,9 +109,9 @@ namespace webapi.Controllers
 
                         result.Add(ltd);
                     }
-
-                    return Ok(result);
                 }
+
+                return Ok(result);
             }
             catch
             {

@@ -90,12 +90,12 @@ const NavBar = () => {
                   Biển báo giao thông
                 </Link>
 
-                <a
-                  href="#"
+                <Link
+                  to={"review"}
                   className="no-underline text-gray-600 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
                 >
                   Ôn thi GPLX
-                </a>
+                </Link>
                 
                 <Link
                   to={"news"}
@@ -143,7 +143,7 @@ const NavBar = () => {
             </NavLink>
 
             <NavLink
-              to={"/"}
+              to={"/review"}
               className={({ isActive }) =>
                 isActive
                 ? "bg-gray-900 text-white block px-3 py-2 rounded-md text-base font-medium"
