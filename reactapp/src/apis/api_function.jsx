@@ -217,3 +217,24 @@ export const getQuestionsByLicenseTitleId = async (id) => {
     apiEndpoints.GET_QUESTIONS_BY_LICENSE_TITLE_ID(id)
   );
 };
+
+// Examination
+export const getAllExaminations = async () => {
+  return await mainApi.get(
+    apiEndpoints.GET_ALL_EXAMINATIONS
+  );
+};
+
+export const getAllExaminationQuestions = async (id) => {
+  return await mainApi.get(
+    apiEndpoints.GET_ALL_EXAMINATION_QUESTIONS(id)
+  );
+};
+
+// Answer
+export const validateAnswer = async (questionId, answerId, token) => {
+  return await mainApi.get(
+    apiEndpoints.VALIDATE_ANSWER(questionId, answerId),
+    apiEndpoints.getAccessToken(token)
+  );
+};

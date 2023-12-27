@@ -30,6 +30,16 @@ namespace webapi.Services
 
         public async Task<List<Answer>> GetAnswerById(string id) => await _answersCollection.Find(x => x.Id == id).ToListAsync();
 
+        public async Task<bool> ValidateAnswer(string questionId, string answerId)
+        {
+            Answer answer = await _answersCollection.Find(x => x.QuestionId == questionId && x.Id == answerId).FirstOrDefaultAsync();
+
+            if (answer != null)
+                return answer.Result;
+            else
+                return false;
+        }
+
         public async Task CreateAnswer(Answer answer) => await _answersCollection.InsertOneAsync(answer);
 
         public async Task UpdateAnswer(string id, Answer answer) => await _answersCollection.ReplaceOneAsync(x => x.Id == id, answer);

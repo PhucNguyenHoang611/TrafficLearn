@@ -12,11 +12,19 @@ namespace webapi.Controllers
     public class ExaminationController : ControllerBase
     {
         private readonly ExaminationServices _examinationServices;
+        private readonly QuestionServices _questionServices;
+        private readonly LicenseTitleServices _licenseTitleServices;
+        private readonly LicenseServices _licenseServices;
+        private readonly TitleServices _titleServices;
         private readonly UserServices _userServices;
 
-        public ExaminationController(ExaminationServices examinationServices, UserServices userServices)
+        public ExaminationController(ExaminationServices examinationServices, QuestionServices questionServices, LicenseTitleServices licenseTitleServices, LicenseServices licenseServices, TitleServices titleServices, UserServices userServices)
         {
             _examinationServices = examinationServices;
+            _questionServices = questionServices;
+            _licenseTitleServices = licenseTitleServices;
+            _licenseServices = licenseServices;
+            _titleServices = titleServices;
             _userServices = userServices;
         }
 
@@ -81,17 +89,50 @@ namespace webapi.Controllers
                     });
                 }
 
+                List<QuestionDetails> result = new List<QuestionDetails>();
                 List<Question> questions = await _examinationServices.GetAllQuestions(id);
+                int numOfImportantQuestions = 0;
 
-                if (questions.Count == 0)
+                if (questions.Count > 0)
                 {
-                    return NotFound(new
+                    for (int i = 0; i < questions.Count; i++)
                     {
-                        error = "No question found !"
-                    });
+                        if (questions[i].Important) numOfImportantQuestions++;
+
+                        QuestionDetails qd = new QuestionDetails();
+                        qd.Question = questions[i];
+
+                        qd.Answers = new List<AnswerDetails>();
+                        List<Answer> aList = await _questionServices.GetAllAnswers(questions[i].Id);
+
+                        for (int j = 0; j < aList.Count; j++)
+                        {
+                            AnswerDetails ad = new AnswerDetails();
+                            ad.AnswerId = aList[j].Id;
+                            ad.Content = aList[j].AnswerContent;
+
+                            qd.Answers.Add(ad);
+                        }
+
+                        List<LicenseTitle> ltList = await _licenseTitleServices.GetLicenseTitleById(questions[i].LicenseTitleId);
+                        LicenseTitle lt = ltList[0];
+
+                        List<License> lList = await _licenseServices.GetLicenseById(lt.LicenseId);
+                        qd.License = lList[0];
+
+                        List<Title> tList = await _titleServices.GetTitleById(lt.TitleId);
+                        qd.Title = tList[0];
+
+                        result.Add(qd);
+                    }
                 }
-                else
-                    return Ok(questions);
+
+                return Ok(new
+                {
+                    data = result,
+                    total = result.Count,
+                    numberOfImportantQuestions = numOfImportantQuestions
+                });
             }
             catch
             {

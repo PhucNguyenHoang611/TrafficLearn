@@ -15,6 +15,7 @@ import authReducer from "./reducers/auth_reducers";
 import verifyReducer from "./reducers/verify_reducers";
 import notifyReducer from "./reducers/notify_reducers";
 import currentReducer from "./reducers/current_reducers";
+import examReducer from "./reducers/exam_reducers";
 
 // Define your root reducer
 const rootReducer = combineReducers({
@@ -22,6 +23,7 @@ const rootReducer = combineReducers({
   verify: verifyReducer,
   notify: notifyReducer,
   current: currentReducer,
+  exam: examReducer
 });
 
 // Define your persist config

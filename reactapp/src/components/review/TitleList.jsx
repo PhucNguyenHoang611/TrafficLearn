@@ -18,7 +18,6 @@ const TitleList = ({ selectedLicense }) => {
   const [isLoading, setIsLoading] = useState(false);
 
   const [licenseTitles, setLicenseTitles] = useState([]);
-  const [licenseTitlesTemp, setLicenseTitlesTemp] = useState([]);
 
   const [allQuestions, setAllQuestions] = useState(null);
   const [allImportantQuestions, setAllImportantQuestions] = useState(null);
@@ -37,7 +36,6 @@ const TitleList = ({ selectedLicense }) => {
       
       const result = await Promise.all(getQuestionsPromises);
       setLicenseTitles(result);
-      setLicenseTitlesTemp(result);
 
       await getAllQuestions(selectedLicense);
       await getAllImportantQuestions(selectedLicense);
@@ -122,7 +120,7 @@ const TitleList = ({ selectedLicense }) => {
         </Box>
       )}
 
-      {(licenseTitles.length == 0 && !startScreen) && (
+      {(licenseTitles.length == 0 && !startScreen && !isLoading) && (
         <Box className="ml-4">
           Không có dữ liệu
         </Box>
