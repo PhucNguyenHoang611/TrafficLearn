@@ -1,9 +1,9 @@
-import React, { useState } from "react";
-import TitleList from "@/components/review/TitleList";
+import React, { useState } from 'react';
 import LicenseMenu from "@/components/review/LicenseMenu";
+import ExaminationList from "@/components/review/examination/ExaminationList";
 
-const Review = () => {
-  const [selectedLicense, setSelectedLicense] = useState("");
+const Examination = () => {
+  const [selectedLicense, setSelectedLicense] = useState("all");
   const [licensesList, setLicensesList] = useState([]);
 
   return (
@@ -15,12 +15,13 @@ const Review = () => {
           setLicensesList={setLicensesList} />
           
         <div className="flex-grow overflow-y-auto">
-          <TitleList
+          <ExaminationList
+            licensesList={licensesList}
             selectedLicense={selectedLicense} />
         </div>
       </section>
     </div>
   );
-};
+}
 
-export default Review;
+export default Examination;

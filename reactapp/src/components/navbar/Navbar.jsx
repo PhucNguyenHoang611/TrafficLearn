@@ -96,6 +96,13 @@ const NavBar = () => {
                 >
                   Ôn thi GPLX
                 </Link>
+
+                <Link
+                  to={"examination"}
+                  className="no-underline text-gray-600 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
+                >
+                  Thi thử
+                </Link>
                 
                 <Link
                   to={"news"}
@@ -152,6 +159,18 @@ const NavBar = () => {
               onClick={() => setIsMenuOpen(false)}
             >
               Ôn thi GPLX
+            </NavLink>
+
+            <NavLink
+              to={"/examination"}
+              className={({ isActive }) =>
+                isActive
+                ? "bg-gray-900 text-white block px-3 py-2 rounded-md text-base font-medium"
+                : "text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium"
+              }
+              onClick={() => setIsMenuOpen(false)}
+            >
+              Thi thử
             </NavLink>
 
             <NavLink

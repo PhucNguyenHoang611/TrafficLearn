@@ -8,7 +8,8 @@ import { getAllLicenses } from "@/apis/api_function"
 
 const LicenseMenu = ({
   selectedLicense,
-  setSelectedLicense }) => {
+  setSelectedLicense,
+  setLicensesList }) => {
 
   const [licenses, setLicenses] = useState([]);
 
@@ -21,6 +22,7 @@ const LicenseMenu = ({
       getAllLicenses()
         .then((res) => {
           setLicenses(res.data);
+          setLicensesList(res.data);
         });
     } catch (error) {
       console.log(error);

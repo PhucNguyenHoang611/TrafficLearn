@@ -8,9 +8,15 @@ using webapi.Services;
 
 namespace webapi.Controllers
 {
+    public class AnswerDetails
+    {
+        public string AnswerId { get; set; } = null!;
+        public string Content { get; set; } = null!;
+    }
     public class QuestionDetails
     {
         public Question Question { get; set; } = null!;
+        public List<AnswerDetails> Answers { get; set; } = null!;
         public License License { get; set; } = null!;
         public Title Title { get; set; } = null!;
     }
@@ -53,6 +59,18 @@ namespace webapi.Controllers
                     {
                         QuestionDetails qd = new QuestionDetails();
                         qd.Question = questions[i];
+
+                        qd.Answers = new List<AnswerDetails>();
+                        List<Answer> aList = await _questionServices.GetAllAnswers(questions[i].Id);
+
+                        for (int j = 0; j < aList.Count; j++)
+                        {
+                            AnswerDetails ad = new AnswerDetails();
+                            ad.AnswerId = aList[j].Id;
+                            ad.Content = aList[j].AnswerContent;
+
+                            qd.Answers.Add(ad);
+                        }
 
                         List<LicenseTitle> ltList = await _licenseTitleServices.GetLicenseTitleById(questions[i].LicenseTitleId);
                         LicenseTitle lt = ltList[0];
@@ -101,6 +119,18 @@ namespace webapi.Controllers
 
                         QuestionDetails qd = new QuestionDetails();
                         qd.Question = questions[i];
+
+                        qd.Answers = new List<AnswerDetails>();
+                        List<Answer> aList = await _questionServices.GetAllAnswers(questions[i].Id);
+
+                        for (int j = 0; j < aList.Count; j++)
+                        {
+                            AnswerDetails ad = new AnswerDetails();
+                            ad.AnswerId = aList[j].Id;
+                            ad.Content = aList[j].AnswerContent;
+
+                            qd.Answers.Add(ad);
+                        }
 
                         List<LicenseTitle> ltList = await _licenseTitleServices.GetLicenseTitleById(questions[i].LicenseTitleId);
                         LicenseTitle lt = ltList[0];
@@ -151,6 +181,18 @@ namespace webapi.Controllers
                     {
                         QuestionDetails qd = new QuestionDetails();
                         qd.Question = questions[i];
+
+                        qd.Answers = new List<AnswerDetails>();
+                        List<Answer> aList = await _questionServices.GetAllAnswers(questions[i].Id);
+
+                        for (int j = 0; j < aList.Count; j++)
+                        {
+                            AnswerDetails ad = new AnswerDetails();
+                            ad.AnswerId = aList[j].Id;
+                            ad.Content = aList[j].AnswerContent;
+
+                            qd.Answers.Add(ad);
+                        }
 
                         List<LicenseTitle> ltList = await _licenseTitleServices.GetLicenseTitleById(questions[i].LicenseTitleId);
                         LicenseTitle lt = ltList[0];
@@ -205,6 +247,18 @@ namespace webapi.Controllers
                     QuestionDetails qd = new QuestionDetails();
                     qd.Question = questions[0];
 
+                    qd.Answers = new List<AnswerDetails>();
+                    List<Answer> aList = await _questionServices.GetAllAnswers(questions[0].Id);
+
+                    for (int i = 0; i < aList.Count; i++)
+                    {
+                        AnswerDetails ad = new AnswerDetails();
+                        ad.AnswerId = aList[i].Id;
+                        ad.Content = aList[i].AnswerContent;
+
+                        qd.Answers.Add(ad);
+                    }
+
                     List<LicenseTitle> ltList = await _licenseTitleServices.GetLicenseTitleById(questions[0].LicenseTitleId);
                     LicenseTitle lt = ltList[0];
 
@@ -250,6 +304,18 @@ namespace webapi.Controllers
                         QuestionDetails qd = new QuestionDetails();
                         qd.Question = questions[i];
 
+                        qd.Answers = new List<AnswerDetails>();
+                        List<Answer> aList = await _questionServices.GetAllAnswers(questions[i].Id);
+
+                        for (int j = 0; j < aList.Count; j++)
+                        {
+                            AnswerDetails ad = new AnswerDetails();
+                            ad.AnswerId = aList[j].Id;
+                            ad.Content = aList[j].AnswerContent;
+
+                            qd.Answers.Add(ad);
+                        }
+
                         List<LicenseTitle> ltList = await _licenseTitleServices.GetLicenseTitleById(questions[i].LicenseTitleId);
                         LicenseTitle lt = ltList[0];
 
@@ -278,29 +344,44 @@ namespace webapi.Controllers
 
         [HttpGet]
         [Route("getAllAnswers/{id}")]
+        [Authorize]
         public async Task<IActionResult> GetAllAnswers(string id)
         {
             try
             {
-                if (!ObjectId.TryParse(id, out _))
-                {
-                    return BadRequest(new
-                    {
-                        error = "Invalid ID !"
-                    });
-                }
+                var identity = User.Identity as ClaimsIdentity;
 
-                List<Answer> answers = await _questionServices.GetAllAnswers(id);
+                string userRole = await _userServices.JwtAuthentication(identity);
 
-                if (answers.Count == 0)
+                if (userRole == "Admin")
                 {
-                    return NotFound(new
+                    if (!ObjectId.TryParse(id, out _))
                     {
-                        error = "No answer found !"
-                    });
-                }
+                        return BadRequest(new
+                        {
+                            error = "Invalid ID !"
+                        });
+                    }
+
+                    List<Answer> answers = await _questionServices.GetAllAnswers(id);
+
+                    if (answers.Count == 0)
+                    {
+                        return NotFound(new
+                        {
+                            error = "No answer found !"
+                        });
+                    }
+                    else
+                        return Ok(answers);
+                    }
                 else
-                    return Ok(answers[0]);
+                {
+                    return Unauthorized(new
+                    {
+                        error = "Unauthorized user !"
+                    });
+                }
             }
             catch
             {

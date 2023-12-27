@@ -127,3 +127,11 @@ export const GET_ALL_QUESTIONS_BY_LICENSE_ID = (id) => `/question/getAllQuestion
 export const GET_ALL_IMPORTANT_QUESTIONS_BY_LICENSE_ID = (id) => `/question/getAllImportantQuestionsByLicenseId/${id}`;
 
 export const GET_QUESTIONS_BY_LICENSE_TITLE_ID = (id) => `/question/getQuestionsByLicenseTitleId/${id}`;
+
+// Examination
+export const GET_ALL_EXAMINATIONS = "/examination/getAllExaminations";
+
+export const GET_ALL_EXAMINATION_QUESTIONS = (id) => `/examination/getAllExaminationQuestions/${id}`;
+
+// Answer
+export const VALIDATE_ANSWER = (questionId, answerId) => `/answer/validateAnswer/${questionId}/${answerId}`;

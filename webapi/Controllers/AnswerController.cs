@@ -22,12 +22,27 @@ namespace webapi.Controllers
 
         [HttpGet]
         [Route("getAllAnswers")]
+        [Authorize]
         public async Task<IActionResult> GetAllAnswers()
         {
             try
             {
-                List<Answer> answers = await _answerServices.GetAllAnswers();
-                return Ok(answers);
+                var identity = User.Identity as ClaimsIdentity;
+
+                string userRole = await _userServices.JwtAuthentication(identity);
+
+                if (userRole == "Admin")
+                {
+                    List<Answer> answers = await _answerServices.GetAllAnswers();
+                    return Ok(answers);
+                }
+                else
+                {
+                    return Unauthorized(new
+                    {
+                        error = "Unauthorized user !"
+                    });
+                }
             }
             catch
             {
@@ -37,29 +52,95 @@ namespace webapi.Controllers
 
         [HttpGet]
         [Route("getAnswerById/{id}")]
+        [Authorize]
         public async Task<IActionResult> GetAnswerById(string id)
         {
             try
             {
-                if (!ObjectId.TryParse(id, out _))
+                var identity = User.Identity as ClaimsIdentity;
+
+                string userRole = await _userServices.JwtAuthentication(identity);
+
+                if (userRole == "Admin")
                 {
-                    return BadRequest(new
+
+                    if (!ObjectId.TryParse(id, out _))
                     {
-                        error = "Invalid ID !"
+                        return BadRequest(new
+                        {
+                            error = "Invalid ID !"
+                        });
+                    }
+
+                    List<Answer> answers = await _answerServices.GetAnswerById(id);
+
+                    if (answers.Count == 0)
+                    {
+                        return NotFound(new
+                        {
+                            error = "No answer found !"
+                        });
+                    }
+                    else
+                        return Ok(answers[0]);
+                }
+                else
+                {
+                    return Unauthorized(new
+                    {
+                        error = "Unauthorized user !"
                     });
                 }
+            }
+            catch
+            {
+                throw;
+            }
+        }
 
-                List<Answer> answers = await _answerServices.GetAnswerById(id);
+        [HttpGet]
+        [Route("validateAnswer/{questionId}/{answerId}")]
+        [Authorize]
+        public async Task<IActionResult> ValidateAnswer(string questionId, string answerId)
+        {
+            try
+            {
+                var identity = User.Identity as ClaimsIdentity;
 
-                if (answers.Count == 0)
+                string userRole = await _userServices.JwtAuthentication(identity);
+
+                if (userRole == "User")
                 {
-                    return NotFound(new
+                    if (!ObjectId.TryParse(questionId, out _))
                     {
-                        error = "No answer found !"
+                        return BadRequest(new
+                        {
+                            error = "Invalid question ID !"
+                        });
+                    }
+
+                    if (!ObjectId.TryParse(answerId, out _))
+                    {
+                        return BadRequest(new
+                        {
+                            error = "Invalid answer ID !"
+                        });
+                    }
+
+                    bool checkAnswer = await _answerServices.ValidateAnswer(questionId, answerId);
+
+                    return Ok(new
+                    {
+                        result = checkAnswer
                     });
                 }
                 else
-                    return Ok(answers[0]);
+                {
+                    return Unauthorized(new
+                    {
+                        error = "Unauthorized user !"
+                    });
+                }
             }
             catch
             {
