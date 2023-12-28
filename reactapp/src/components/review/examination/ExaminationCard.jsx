@@ -20,12 +20,27 @@ const style = {
   p: 4,
 };
 
-const ExaminationCard = ({ examination, licenseName }) => {
+const ExaminationCard = ({ auth, examination, licenseName, numberOfQuestions, timeRemaining }) => {
   const navigate = useNavigate();
   const [openModal, setOpenModal] = useState(false);
 
   const handleCloseModal = () => {
     setOpenModal(false);
+  };
+
+  const startExam = () => {
+    if (auth.token) {
+      if (localStorage.getItem("examId") && localStorage.getItem("examId") !== examination.Id)
+        localStorage.removeItem("timeRemaining");
+
+      navigate(`/exam/${examination.Id}`, {
+        state: {
+          license: licenseName
+        }
+      });
+    }
+    else
+      navigate("/login");
   };
 
   return (
@@ -59,11 +74,14 @@ const ExaminationCard = ({ examination, licenseName }) => {
               Xác nhận làm bài thi thử
             </Typography>
             <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-              Thời gian dành cho bạn là 20 phút
+              Bài thi có tổng cộng {numberOfQuestions} câu hỏi.
+            </Typography>
+            <Typography id="modal-modal-description">
+              Thời gian dành cho bạn là {timeRemaining / 60} phút.
             </Typography>
             <Box className="flex w-full justify-end items-center mt-4">
               <Button onClick={handleCloseModal}>Hủy</Button>
-              <Button onClick={() => navigate(`/exam/${examination.Id}`, { state: { license: licenseName } })}>Bắt đầu</Button>
+              <Button onClick={startExam}>Bắt đầu</Button>
             </Box>
           </Box>
         </Modal>

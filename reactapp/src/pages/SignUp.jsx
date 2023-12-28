@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { set, useForm } from "react-hook-form";
-import { registerUser, checkValid } from "../apis/api_function";
+import { registerUser, checkValid, sendVerifyEmail } from "../apis/api_function";
 import { useDispatch } from "react-redux";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import VpnKeyIcon from "@mui/icons-material/VpnKey";

@@ -24,7 +24,9 @@ const ExamPage = () => {
     return license.time;
   };
 
-  const initialTimeRemaining = parseInt(localStorage.getItem("timeRemaining")) || getLicenseTime();
+  const initialTimeRemaining = localStorage.getItem("timeRemaining")
+    ? parseInt(localStorage.getItem("timeRemaining"))
+    : getLicenseTime();
   const [timeRemaining, setTimeRemaining] = useState(initialTimeRemaining);
 
   const minutes = Math.floor(timeRemaining / 60);
@@ -32,6 +34,7 @@ const ExamPage = () => {
   
   const getQuestions = () => {
     try {
+      localStorage.setItem("examId", examId.toString());
       getAllExaminationQuestions(examId)
         .then((res) => {
           setExamData(res.data);
@@ -56,7 +59,6 @@ const ExamPage = () => {
       setExamData(exam.examData);
       setQuestions(exam.questionsData);
     } else {
-      localStorage.removeItem("timeRemaining");
       getQuestions();
     }
   }, [examId]);
@@ -65,6 +67,8 @@ const ExamPage = () => {
     // Exit early if we reach 0
     if (timeRemaining <= 0) {
       localStorage.removeItem("timeRemaining");
+      localStorage.removeItem("examId");
+
       dispatch(storeExamData({
         examId: "",
         examData: null
