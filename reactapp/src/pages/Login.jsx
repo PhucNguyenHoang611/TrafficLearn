@@ -107,9 +107,9 @@ const Login = () => {
     }
   };
 
-  useEffect(() => {
-    document.title = "Đăng nhập";
-  }, []);
+  // useEffect(() => {
+  //   document.title = "Đăng nhập";
+  // }, []);
 
   return (
     <div>

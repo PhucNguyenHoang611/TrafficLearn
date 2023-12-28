@@ -130,9 +130,9 @@ const SignUp = () => {
     }
   };
 
-  useEffect(() => {
-    document.title = "Đăng ký";
-  }, []);
+  // useEffect(() => {
+  //   document.title = "Đăng ký";
+  // }, []);
 
   return (
     <div>
