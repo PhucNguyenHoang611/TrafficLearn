@@ -33,39 +33,40 @@ const Login = () => {
     }
 
     setLoading(true);
-    try {
-      const check = await checkValid(data.email);
-      if (check.status === 200) {
-        if (check.data === false) {
-          dispatch({
-            type: "NOTIFY",
-            payload: {
-              type: "error",
-              message: "Email chưa được xác thực !",
-            },
-          });
-          // email verify
-          dispatch({ type: "SET_EMAIL", payload: data });
-          const send = await sendVerifyEmail(data.email);
-          if (send.status === 200) {
-            navigate("/verify");
-            setLoading(false);
-            return;
-          }
+    // try {
+    //   const check = await checkValid(data.email);
+    //   if (check.status === 200) {
+    //     if (check.data === false) {
+    //       dispatch({
+    //         type: "NOTIFY",
+    //         payload: {
+    //           type: "error",
+    //           message: "Email chưa được xác thực !",
+    //         },
+    //       });
+    //       // email verify
+    //       dispatch({ type: "SET_EMAIL", payload: data });
+    //       const send = await sendVerifyEmail(data.email);
+    //       if (send.status === 200) {
+    //         navigate("/verify");
+    //         setLoading(false);
+    //         return;
+    //       }
 
-          setLoading(false);
-          return;
-        }
-      }
-    } catch (error) {
-      setLoading(false);
-      console.log(error);
-    }
+    //       setLoading(false);
+    //       return;
+    //     }
+    //   }
+    // } catch (error) {
+    //   setLoading(false);
+    //   console.log(error);
+    // }
 
     try {
       const res = await login(data.email, data.password);
       if (res.status === 200) {
         dispatch({ type: "LOGIN", payload: res.data });
+        localStorage.setItem("auth", JSON.stringify(res.data));
         // dispatch({
         //   type: "NOTIFY",
         //   payload: { type: "success", message: "Đăng nhập thành công !" },
@@ -80,6 +81,28 @@ const Login = () => {
       }
       if (error.response.data.error === "Incorrect password !") {
         toast.error("Mật khẩu không đúng !");
+      }
+      if (error.response.data.error === "Please verify your email !") {
+        toast.error("Email chưa được xác thực !");
+
+        dispatch({
+          type: "NOTIFY",
+          payload: {
+            type: "error",
+            message: "Email chưa được xác thực !",
+          },
+        });
+        // email verify
+        dispatch({ type: "SET_EMAIL", payload: data });
+        const send = await sendVerifyEmail(data.email);
+        if (send.status === 200) {
+          navigate("/verify");
+          setLoading(false);
+          return;
+        }
+
+        setLoading(false);
+        return;
       }
     }
   };

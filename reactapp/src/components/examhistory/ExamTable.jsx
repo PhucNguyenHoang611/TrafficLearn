@@ -7,45 +7,40 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
-import { Button } from "@mui/material";
 import { theme } from "../../themes/CustomeTheme";
 
 const columns = [
-  { id: "license", label: "Loại\u00a0bằng", minWidth: 40 },
   {
-    id: "date",
-    label: "Ngày\u00a0thi",
-    minWidth: 120,
-    align: "right",
-    format: (value) => value.toLocaleString("vn-VN"),
+    id: "examinationName",
+    label: "Tên\u00a0bài\u00a0thi",
+    minWidth: 120
+  },
+  {
+    id: "license",
+    label: "Loại\u00a0GPLX",
+    minWidth: 40
+  },
+  {
+    id: "examinationDate",
+    label: "Ngày\u00a0làm\u00a0bài",
+    minWidth: 80
   },
   {
     id: "score",
-    label: "Điểm\u00a0số",
-    minWidth: 100,
-    align: "right",
-    format: (value) => value.toFixed(0),
+    label: "Điểm",
+    minWidth: 80,
+    align: "center",
+    format: (value) => value.toFixed(0)
   },
-  //   {
-  //     id: "detail",
-  //     label: "Chi\u00a0tiết",
-  //     minWidth: 100,
-  //     align: "right",
-  //     format: (value) => value.toFixed(2),
-  //   },
+  {
+    id: "isPassed",
+    label: "Kết\u00a0quả",
+    minWidth: 100,
+    align: "center"
+  }
 ];
 
-function createData(license, date, score) {
-  return { license, date, score };
-}
-
-const rows = [
-  createData("B2", "22-11-2022", 45),
-  createData("A2", "31-10-2002", 56),
-  createData("A2", "01-01-2000", 67),
-];
-
-export default function StickyHeadTable() {
+export default function StickyHeadTable({ results }) {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
@@ -76,11 +71,11 @@ export default function StickyHeadTable() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {rows
+            {results
               .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-              .map((row) => {
+              .map((row, index) => {
                 return (
-                  <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
+                  <TableRow hover role="checkbox" tabIndex={-1} key={index}>
                     {columns.map((column) => {
                       const value = row[column.id];
                       return (
@@ -91,11 +86,6 @@ export default function StickyHeadTable() {
                         </TableCell>
                       );
                     })}
-                    <TableCell align="right">
-                      <Button variant="contained" color="secondary">
-                        Chi tiết
-                      </Button>
-                    </TableCell>
                   </TableRow>
                 );
               })}
@@ -105,7 +95,7 @@ export default function StickyHeadTable() {
       <TablePagination
         rowsPerPageOptions={[10, 25, 100]}
         component="div"
-        count={rows.length}
+        count={results.length}
         rowsPerPage={rowsPerPage}
         page={page}
         onPageChange={handleChangePage}

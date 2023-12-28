@@ -2,6 +2,8 @@ import { useEffect, lazy } from "react";
 import {
   createBrowserRouter,
   createRoutesFromElements,
+  Navigate,
+  redirect,
   Route,
   RouterProvider,
   useNavigate,
@@ -25,7 +27,15 @@ import Review from "../pages/Review/Review";
 import Examination from "../pages/Review/Examination/Examination";
 import ExamPage from "../pages/Review/Examination/ExamPage";
 import ExamResult from "../pages/Review/Examination/ExamResult";
+import ReviewDetails from "../pages/Review/ReviewDetails";
 // const Landing = lazy(() => import("../pages/Landing"));
+
+const authLoader = () => {
+  if (!JSON.parse(localStorage.getItem("auth")))
+    return redirect("/login");
+  else
+    return true;
+};
 
 export const router = createBrowserRouter(
   createRoutesFromElements(
@@ -41,10 +51,12 @@ export const router = createBrowserRouter(
           <Route path=":newsId" element={<NewsDetails />} />
         </Route>
         <Route path="review" element={<Review />}></Route>
+        <Route path="reviewDetails" element={<ReviewDetails />}></Route>
         <Route path="examination" element={<Examination />}></Route>
-        <Route path="exam/:examId" element={<ExamPage />}></Route>
-        <Route path="result/:examId" element={<ExamResult />}></Route>
-        <Route path="history" element={<ExamHistory />}></Route>
+
+        <Route path="exam/:examId" element={<ExamPage />} loader={authLoader}></Route>
+        <Route path="result/:examId" element={<ExamResult />} loader={authLoader}></Route>
+        <Route path="history" element={<ExamHistory />} loader={authLoader}></Route>
       </Route>
       <Route path="login" element={<Login />} />
       <Route path="signup" element={<SignUp />} />
@@ -52,7 +64,11 @@ export const router = createBrowserRouter(
       <Route path="forgotpassword" element={<ForgotPassword />} />
       <Route path="resetpassword" element={<ResetPassword />} />
 
-      <Route path="*" element={<NotFound />} />
+      {(JSON.parse(localStorage.getItem("auth"))) ? (
+        <Route path="*" element={<NotFound />} />
+      ) : (
+        <Route path="*" element={<Navigate to="login" />} />
+      )}
     </Route>
   )
 );

@@ -12,6 +12,11 @@ const NavProfile = () => {
 
   const handleLogout = () => {
     navigate("/login");
+
+    localStorage.removeItem("auth");
+    localStorage.removeItem("timeRemaining");
+    localStorage.removeItem("examId");
+
     dispatch({ type: "LOGOUT" });
   };
 

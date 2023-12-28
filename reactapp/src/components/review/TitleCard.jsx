@@ -13,8 +13,19 @@ const TitleCard = ({
 
   const navigate = useNavigate();
 
+  const viewQuestions = () => {
+    navigate("/reviewDetails", {
+      state: {
+        questionsList: questionsList.data,
+        check: true
+      }
+    });
+  };
+
   return (
-    <Card sx={{ maxWidth: "95%", mb: 2, cursor: "pointer" }}>
+    <Card
+      onClick={viewQuestions}
+      sx={{ maxWidth: "95%", mb: 2, cursor: "pointer" }}>
       <CardHeader
           title={titleName} />
       

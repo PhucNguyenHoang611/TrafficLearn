@@ -225,9 +225,31 @@ export const getAllExaminations = async () => {
   );
 };
 
+export const getExamination = async (id) => {
+  return await mainApi.get(
+    apiEndpoints.GET_EXAMINATION(id)
+  );
+};
+
 export const getAllExaminationQuestions = async (id) => {
   return await mainApi.get(
     apiEndpoints.GET_ALL_EXAMINATION_QUESTIONS(id)
+  );
+};
+
+// Examination result
+export const getAllExaminationResults = async (userId, token) => {
+  return await mainApi.get(
+    apiEndpoints.GET_ALL_EXAMINATION_RESULTS(userId),
+    apiEndpoints.getAccessToken(token)
+  );
+};
+
+export const createExaminationResults = async (UserId, ExaminationId, ExaminationDate, Score, IsPassed, token) => {
+  return await mainApi.post(
+    apiEndpoints.CREATE_EXAMINATION_RESULT,
+    apiEndpoints.getExaminationResultBody(UserId, ExaminationId, ExaminationDate, Score, IsPassed),
+    apiEndpoints.getAccessToken(token)
   );
 };
 

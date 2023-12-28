@@ -131,7 +131,21 @@ export const GET_QUESTIONS_BY_LICENSE_TITLE_ID = (id) => `/question/getQuestions
 // Examination
 export const GET_ALL_EXAMINATIONS = "/examination/getAllExaminations";
 
+export const GET_EXAMINATION = (id) => `/examination/getExaminationById/${id}`;
+
 export const GET_ALL_EXAMINATION_QUESTIONS = (id) => `/examination/getAllExaminationQuestions/${id}`;
+
+// Examination result
+export const GET_ALL_EXAMINATION_RESULTS = (userId) => `/examinationResult/getAllExaminationResults/${userId}`;
+
+export const CREATE_EXAMINATION_RESULT = "/examinationResult/createExaminationResult";
+export const getExaminationResultBody = (UserId, ExaminationId, ExaminationDate, Score, IsPassed) => ({
+  UserId: UserId,
+  ExaminationId: ExaminationId,
+  ExaminationDate: ExaminationDate,
+  Score: Score,
+  IsPassed: IsPassed
+});
 
 // Answer
 export const VALIDATE_ANSWER = (questionId, answerId) => `/answer/validateAnswer/${questionId}/${answerId}`;
