@@ -95,13 +95,15 @@ const NavProfile = () => {
               </>
             ) : (
               <>
-                <button
-                  href=""
-                  className="block w-full px-4 py-2 text-left text-sm bg-transparent border-none text-gray-700 hover:bg-gray-100"
-                  role="menuitem"
-                >
-                  Tài khoản
-                </button>
+                <Link to={"/information"}>
+                  <button
+                    href=""
+                    className="block w-full px-4 py-2 text-left text-sm bg-transparent border-none text-gray-700 hover:bg-gray-100"
+                    role="menuitem"
+                  >
+                    Tài khoản
+                  </button>
+                </Link>
 
                 <Link to={"/history"}>
                   <button
