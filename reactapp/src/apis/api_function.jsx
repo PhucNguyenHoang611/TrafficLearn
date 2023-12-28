@@ -89,6 +89,21 @@ export const resetPassword = (email, password, TOTP) => {
   });
 };
 
+// User
+export const getUser = async (id) => {
+  return await mainApi.get(
+    apiEndpoints.GET_USER(id)
+  );
+};
+
+export const updateUser = async (id, user, token) => {
+  return await mainApi.put(
+    apiEndpoints.UPDATE_USER(id),
+    user,
+    apiEndpoints.getAccessToken(token)
+  );
+}
+
 // Traffic fine
 export const getAllTrafficFines = async () => {
   return await mainApi.get(

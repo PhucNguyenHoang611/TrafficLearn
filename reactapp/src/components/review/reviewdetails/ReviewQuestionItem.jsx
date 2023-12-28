@@ -3,7 +3,7 @@ import Card from "@mui/material/Card";
 import CardHeader from "@mui/material/CardHeader";
 import CardContent from "@mui/material/CardContent";
 import { CheckIcon } from "@heroicons/react/24/outline";
-import { Box, FormControl, FormControlLabel, FormLabel, RadioGroup, Radio } from "@mui/material";
+import { Box, FormControl, FormControlLabel, FormLabel, RadioGroup, Radio, Typography } from "@mui/material";
 
 const ReviewQuestionItem = ({ index, question }) => {
 
@@ -41,6 +41,15 @@ const ReviewQuestionItem = ({ index, question }) => {
             ))}
           </RadioGroup>
         </FormControl>
+
+        <Box className="mt-4">
+          <Typography variant="h6" sx={{ fontWeight: 600, mb: 2 }}>
+            Giải thích
+          </Typography>
+          <Typography>
+            {question.Question.Explanation}
+          </Typography>
+        </Box>
       </CardContent>
     </Card>
   );

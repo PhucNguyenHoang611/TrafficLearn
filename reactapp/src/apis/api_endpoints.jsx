@@ -78,6 +78,10 @@ export const getResetPasswordBody = (email, password, TOTP) => ({
   NewPassword: password,
 });
 
+// User
+export const GET_USER = (id) => `/user/getUserById/${id}`;
+
+export const UPDATE_USER = (id) => `/user/updateUser/${id}`;
 
 // Traffic fine
 export const GET_ALL_TRAFFIC_FINES = "/trafficFine/getAllTrafficFines";

@@ -28,6 +28,7 @@ import Examination from "../pages/Review/Examination/Examination";
 import ExamPage from "../pages/Review/Examination/ExamPage";
 import ExamResult from "../pages/Review/Examination/ExamResult";
 import ReviewDetails from "../pages/Review/ReviewDetails";
+import PersonalInfo from "../pages/PersonalInfo";
 // const Landing = lazy(() => import("../pages/Landing"));
 
 const authLoader = () => {
@@ -44,6 +45,7 @@ export const router = createBrowserRouter(
       <Route path="/" element={<Home />}>
         <Route index element={<Landing />}></Route>
         {/* <Route path="landing" element={<Landing />}></Route> */}
+        <Route path="information" element={<PersonalInfo />} loader={authLoader}></Route>
         <Route path="fine/:vehicleType" element={<TrafficFine />}></Route>
         <Route path="sign" element={<TrafficSign />}></Route>
         <Route path="news" element={<News />}>
