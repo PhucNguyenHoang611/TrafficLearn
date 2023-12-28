@@ -100,17 +100,17 @@ namespace webapi.Controllers
 
         [HttpGet]
         [Route("validateAnswer/{questionId}/{answerId}")]
-        [Authorize]
+        /*[Authorize]*/
         public async Task<IActionResult> ValidateAnswer(string questionId, string answerId)
         {
             try
             {
-                var identity = User.Identity as ClaimsIdentity;
+                /*var identity = User.Identity as ClaimsIdentity;
 
                 string userRole = await _userServices.JwtAuthentication(identity);
 
                 if (userRole == "User")
-                {
+                {*/
                     if (!ObjectId.TryParse(questionId, out _))
                     {
                         return BadRequest(new
@@ -133,14 +133,14 @@ namespace webapi.Controllers
                     {
                         result = checkAnswer
                     });
-                }
+                /*}
                 else
                 {
                     return Unauthorized(new
                     {
                         error = "Unauthorized user !"
                     });
-                }
+                }*/
             }
             catch
             {
