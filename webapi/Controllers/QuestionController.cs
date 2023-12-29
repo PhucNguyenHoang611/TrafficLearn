@@ -26,6 +26,7 @@ namespace webapi.Controllers
     public class QuestionController : ControllerBase
     {
         private readonly QuestionServices _questionServices;
+        private readonly AnswerServices _answerServices;
         private readonly LicenseTitleServices _licenseTitleServices;
         private readonly LicenseServices _licenseServices;
         private readonly TitleServices _titleServices;
@@ -33,9 +34,10 @@ namespace webapi.Controllers
         private readonly FileServices _fileServices;
         private readonly UserServices _userServices;
 
-        public QuestionController(QuestionServices questionServices, LicenseTitleServices licenseTitleServices, LicenseServices licenseServices, TitleServices titleServices, FileServices fileServices, UserServices userServices)
+        public QuestionController(QuestionServices questionServices, AnswerServices answerServices, LicenseTitleServices licenseTitleServices, LicenseServices licenseServices, TitleServices titleServices, FileServices fileServices, UserServices userServices)
         {
             _questionServices = questionServices;
+            _answerServices = answerServices;
             _licenseTitleServices = licenseTitleServices;
             _licenseServices = licenseServices;
             _titleServices = titleServices;
@@ -597,6 +599,17 @@ namespace webapi.Controllers
                     }
 
                     await _questionServices.DeleteQuestion(id);
+
+                    List<Answer> aList = await _questionServices.GetAllAnswers(id);
+
+                    if (aList.Count > 0)
+                    {
+                        for (int i = 0; i < aList.Count; i++)
+                        {
+                            Answer a = aList[i];
+                            await _answerServices.DeleteAnswer(a.Id);
+                        }
+                    }
 
                     return Ok(new
                     {

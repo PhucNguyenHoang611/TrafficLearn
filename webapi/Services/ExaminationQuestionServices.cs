@@ -28,6 +28,8 @@ namespace webapi.Services
 
         public async Task<List<ExaminationQuestion>> GetAllExaminationQuestions() => await _examinationQuestionsCollection.Find(_ => true).ToListAsync();
 
+        public async Task<List<ExaminationQuestion>> GetAllExaminationQuestionsByExaminationId(string id) => await _examinationQuestionsCollection.Find(x => x.ExaminationId == id).ToListAsync();
+
         public async Task<List<ExaminationQuestion>> GetExaminationQuestionById(string id) => await _examinationQuestionsCollection.Find(x => x.Id == id).ToListAsync();
 
         public async Task CreateExaminationQuestion(ExaminationQuestion examinationQuestion) => await _examinationQuestionsCollection.InsertOneAsync(examinationQuestion);

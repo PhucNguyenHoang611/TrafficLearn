@@ -12,15 +12,24 @@ namespace webapi.Controllers
     public class ExaminationController : ControllerBase
     {
         private readonly ExaminationServices _examinationServices;
+        private readonly ExaminationQuestionServices _examinationQuestionServices;
         private readonly QuestionServices _questionServices;
         private readonly LicenseTitleServices _licenseTitleServices;
         private readonly LicenseServices _licenseServices;
         private readonly TitleServices _titleServices;
         private readonly UserServices _userServices;
 
-        public ExaminationController(ExaminationServices examinationServices, QuestionServices questionServices, LicenseTitleServices licenseTitleServices, LicenseServices licenseServices, TitleServices titleServices, UserServices userServices)
+        public ExaminationController(
+            ExaminationServices examinationServices,
+            ExaminationQuestionServices examinationQuestionServices,
+            QuestionServices questionServices,
+            LicenseTitleServices licenseTitleServices,
+            LicenseServices licenseServices,
+            TitleServices titleServices,
+            UserServices userServices)
         {
             _examinationServices = examinationServices;
+            _examinationQuestionServices = examinationQuestionServices;
             _questionServices = questionServices;
             _licenseTitleServices = licenseTitleServices;
             _licenseServices = licenseServices;
@@ -282,6 +291,17 @@ namespace webapi.Controllers
                     }
 
                     await _examinationServices.DeleteExamination(id);
+
+                    List<ExaminationQuestion> eqList = await _examinationQuestionServices.GetAllExaminationQuestionsByExaminationId(id);
+
+                    if (eqList.Count > 0)
+                    {
+                        for (int i = 0; i < eqList.Count; i++)
+                        {
+                            ExaminationQuestion eq = eqList[i];
+                            await _examinationQuestionServices.DeleteExaminationQuestion(eq.Id);
+                        }
+                    }
 
                     return Ok(new
                     {
