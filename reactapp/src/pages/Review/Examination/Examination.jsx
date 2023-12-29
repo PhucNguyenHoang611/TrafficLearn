@@ -6,6 +6,10 @@ const Examination = () => {
   const [selectedLicense, setSelectedLicense] = useState("all");
   const [licensesList, setLicensesList] = useState([]);
 
+  React.useEffect(() => {
+    document.title = "Thi thử";
+  }, []);
+
   return (
     <div>
       <section className="flex flex-col sm:flex-row h-screen">

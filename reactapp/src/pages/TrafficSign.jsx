@@ -7,6 +7,10 @@ const TrafficSign = () => {
   const [signTypes, setSignTypes] = useState([]);
   const [selectedSignType, setSelectedSignType] = useState("all");
 
+  React.useEffect(() => {
+    document.title = "Tra cứu biển báo";
+  }, []);
+
   return (
     <div>
       <section className="flex flex-col sm:flex-row h-screen">

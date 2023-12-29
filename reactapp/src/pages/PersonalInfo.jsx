@@ -65,6 +65,7 @@ const PersonalInfo = () => {
   };
 
   useEffect(() => {
+    document.title = "Thông tin cá nhân";
     if (!userInfo && !userInfoTemp && auth.id)
       getUserInfo();
   }, []);
@@ -126,7 +127,7 @@ const PersonalInfo = () => {
               </Grid>
               <Grid item xs={12} sm={6}>
                 <FormControl fullWidth>
-                  <InputLabel>Gender</InputLabel>
+                  <InputLabel>Giới tính</InputLabel>
                   <Select
                     label="Giới tính"
                     name="UserGender"

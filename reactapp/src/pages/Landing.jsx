@@ -33,6 +33,7 @@ const Landing = () => {
             <Button
               variant="contained"
               component={Link}
+              to="/examination"
               sx={{
                 backgroundColor: theme.palette.secondary.main,
                 ":hover": { backgroundColor: theme.palette.secondary.dark },

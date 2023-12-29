@@ -15,7 +15,7 @@ const NavBar = () => {
     <nav className="shadow-md bg-white">
       <section className="lg:max-w-8xl mx-auto px-2 sm:px-6 lg:px-8">
         <div className="relative flex items-center justify-between h-16">
-          <div className="absolute inset-y-0 left-0 flex items-center sm:hidden">
+          <div className="absolute inset-y-0 left-0 flex items-center md:hidden">
             {/* Mobile menu button */}
             <button
               type="button"
@@ -78,35 +78,35 @@ const NavBar = () => {
               </p> */}
             </div>
             {/* sm:ml-6 -> sm:ml-[12rem] */}
-            <div className="hidden sm:block sm:ml-[12rem]">
+            <div className="hidden md:block md:ml-[12rem]">
               <div className="flex space-x-4">
                 {/* Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" */}
                 <NavFine />
 
                 <Link
                   to={"sign"}
-                  className="no-underline text-gray-600 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
+                  className="no-underline text-gray-600 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium text-center"
                 >
                   Biển báo giao thông
                 </Link>
 
                 <Link
                   to={"review"}
-                  className="no-underline text-gray-600 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
+                  className="no-underline text-gray-600 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium text-center"
                 >
                   Ôn thi GPLX
                 </Link>
 
                 <Link
                   to={"examination"}
-                  className="no-underline text-gray-600 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
+                  className="no-underline text-gray-600 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium text-center"
                 >
                   Thi thử
                 </Link>
                 
                 <Link
                   to={"news"}
-                  className="no-underline text-gray-600 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
+                  className="no-underline text-gray-600 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium text-center"
                 >
                   Tin tức giao thông
                 </Link>
@@ -122,7 +122,7 @@ const NavBar = () => {
 
       {/* Mobile menu, show/hide based on menu state. */}
       {isMenuOpen && (
-        <section className="sm:hidden" id="mobile-menu">
+        <section className="md:hidden" id="mobile-menu">
           <div className="px-2 pt-2 pb-3 space-y-1">
             {/* Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" */}
             <NavLink

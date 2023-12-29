@@ -8,6 +8,10 @@ const TrafficFine = () => {
   const [fineTypes, setFineTypes] = useState([]);
   const [selectedFineType, setSelectedFineType] = useState("all");
 
+  React.useEffect(() => {
+    document.title = "Tra cứu mức phạt";
+  }, []);
+
   return (
     <div>
       <section className="sm:hidden flex justify-center">

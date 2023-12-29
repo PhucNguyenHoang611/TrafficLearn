@@ -96,6 +96,10 @@ const ExamPage = () => {
     return () => clearInterval(timerId);
   }, [timeRemaining]);
 
+  React.useEffect(() => {
+    document.title = "Bài thi";
+  }, []);
+
   return (  
     <div>
       <section className="flex flex-col sm:flex-row h-screen">

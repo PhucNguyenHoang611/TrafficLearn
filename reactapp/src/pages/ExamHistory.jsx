@@ -40,6 +40,7 @@ const ExamHistory = () => {
   };
 
   useEffect(() => {
+    document.title = "Lịch sử bài thi";
     if (examResults.length == 0) {
       getResults();
     }

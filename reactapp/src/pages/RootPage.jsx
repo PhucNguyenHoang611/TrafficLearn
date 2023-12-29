@@ -11,7 +11,7 @@ const RootPage = () => {
   const notify = useSelector((state) => state.notify);
   const provider = useSelector((state) => state.auth.provider);
   useEffect(() => {
-    // document.title = "Trang chủ";
+    document.title = "Trang chủ";
 
     dispatch({
       type: "UN_NOTIFY",

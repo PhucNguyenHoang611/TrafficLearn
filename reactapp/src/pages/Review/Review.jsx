@@ -6,6 +6,10 @@ const Review = () => {
   const [selectedLicense, setSelectedLicense] = useState("");
   const [licensesList, setLicensesList] = useState([]);
 
+  React.useEffect(() => {
+    document.title = "Ôn thi";
+  }, []);
+
   return (
     <div>
       <section className="flex flex-col sm:flex-row h-screen">

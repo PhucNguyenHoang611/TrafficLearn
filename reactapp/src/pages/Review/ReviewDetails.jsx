@@ -46,6 +46,10 @@ const ReviewDetails = () => {
     else
       navigate("/review");
   }, [location]);
+
+  React.useEffect(() => {
+    document.title = "Danh sách câu hỏi";
+  }, []);
   
   return (
     <div>

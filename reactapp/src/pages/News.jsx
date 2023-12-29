@@ -4,6 +4,10 @@ import { Outlet } from 'react-router-dom';
 import LatestNews from '../components/news/latest/LatestNews';
 
 const News = () => {
+  React.useEffect(() => {
+    document.title = "Tin tức";
+  }, []);
+
   return (
     <Box className="flex gap-4 justify-center max-[1300px]:flex-col-reverse mb-4">
       <Box className="min-[1300px]:w-4/12 overflow-hidden">

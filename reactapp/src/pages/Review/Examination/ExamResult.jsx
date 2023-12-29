@@ -74,6 +74,10 @@ const ExamResult = () => {
       storeResult();
   }, [result]);
 
+  React.useEffect(() => {
+    document.title = "Kết quả bài thi";
+  }, []);
+
   return (
     <Box width="100%" height="100%" display="flex" justifyContent="center" alignItems="center">
       {result && (
