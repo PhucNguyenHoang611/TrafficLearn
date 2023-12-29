@@ -67,6 +67,155 @@ namespace webapi.Controllers
             }
         }
 
+        [HttpGet]
+        [Route("getExaminationQuestion/{examinationId}/{questionId}")]
+        [Authorize]
+        public async Task<IActionResult> GetExaminationQuestion(string examinationId, string questionId)
+        {
+            try
+            {
+                var identity = User.Identity as ClaimsIdentity;
+
+                string userRole = await _userServices.JwtAuthentication(identity);
+
+                if (userRole == "Admin")
+                {
+                    if (!ObjectId.TryParse(examinationId, out _))
+                    {
+                        return BadRequest(new
+                        {
+                            error = "Invalid examination ID !"
+                        });
+                    }
+
+                    if (!ObjectId.TryParse(questionId, out _))
+                    {
+                        return BadRequest(new
+                        {
+                            error = "Invalid question ID !"
+                        });
+                    }
+
+                    List<ExaminationQuestion> examinationQuestions = await _examinationQuestionServices.GetExaminationQuestion(examinationId, questionId);
+
+                    if (examinationQuestions.Count == 0)
+                    {
+                        return NotFound(new
+                        {
+                            error = "No examination question found !"
+                        });
+                    }
+                    else
+                        return Ok(examinationQuestions);
+                }
+                else
+                {
+                    return Unauthorized(new
+                    {
+                        error = "Unauthorized user !"
+                    });
+                }
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        [HttpGet]
+        [Route("getAllExaminationQuestionsByExaminationId/{id}")]
+        [Authorize]
+        public async Task<IActionResult> GetAllExaminationQuestionsByExaminationId(string id)
+        {
+            try
+            {
+                var identity = User.Identity as ClaimsIdentity;
+
+                string userRole = await _userServices.JwtAuthentication(identity);
+
+                if (userRole == "Admin")
+                {
+                    if (!ObjectId.TryParse(id, out _))
+                    {
+                        return BadRequest(new
+                        {
+                            error = "Invalid examination ID !"
+                        });
+                    }
+
+                    List<ExaminationQuestion> examinationQuestions = await _examinationQuestionServices.GetAllExaminationQuestionsByExaminationId(id);
+
+                    if (examinationQuestions.Count == 0)
+                    {
+                        return NotFound(new
+                        {
+                            error = "No examination question found !"
+                        });
+                    }
+                    else
+                        return Ok(examinationQuestions);
+                }
+                else
+                {
+                    return Unauthorized(new
+                    {
+                        error = "Unauthorized user !"
+                    });
+                }
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        [HttpGet]
+        [Route("getAllExaminationQuestionsByQuestionId/{id}")]
+        [Authorize]
+        public async Task<IActionResult> GetAllExaminationQuestionsByQuestionId(string id)
+        {
+            try
+            {
+                var identity = User.Identity as ClaimsIdentity;
+
+                string userRole = await _userServices.JwtAuthentication(identity);
+
+                if (userRole == "Admin")
+                {
+                    if (!ObjectId.TryParse(id, out _))
+                    {
+                        return BadRequest(new
+                        {
+                            error = "Invalid question ID !"
+                        });
+                    }
+
+                    List<ExaminationQuestion> examinationQuestions = await _examinationQuestionServices.GetAllExaminationQuestionsByQuestionId(id);
+
+                    if (examinationQuestions.Count == 0)
+                    {
+                        return NotFound(new
+                        {
+                            error = "No examination question found !"
+                        });
+                    }
+                    else
+                        return Ok(examinationQuestions);
+                }
+                else
+                {
+                    return Unauthorized(new
+                    {
+                        error = "Unauthorized user !"
+                    });
+                }
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
         [HttpPost]
         [Route("createExaminationQuestion")]
         [Authorize]

@@ -30,6 +30,10 @@ namespace webapi.Services
 
         public async Task<List<ExaminationQuestion>> GetAllExaminationQuestionsByExaminationId(string id) => await _examinationQuestionsCollection.Find(x => x.ExaminationId == id).ToListAsync();
 
+        public async Task<List<ExaminationQuestion>> GetAllExaminationQuestionsByQuestionId(string id) => await _examinationQuestionsCollection.Find(x => x.QuestionId == id).ToListAsync();
+
+        public async Task<List<ExaminationQuestion>> GetExaminationQuestion(string examinationId, string questionId) => await _examinationQuestionsCollection.Find(x => x.ExaminationId == examinationId && x.QuestionId == questionId).ToListAsync();
+
         public async Task<List<ExaminationQuestion>> GetExaminationQuestionById(string id) => await _examinationQuestionsCollection.Find(x => x.Id == id).ToListAsync();
 
         public async Task CreateExaminationQuestion(ExaminationQuestion examinationQuestion) => await _examinationQuestionsCollection.InsertOneAsync(examinationQuestion);
